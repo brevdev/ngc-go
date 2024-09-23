@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/ngc-go"
-	"github.com/stainless-sdks/ngc-go/internal/testutil"
-	"github.com/stainless-sdks/ngc-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal/testutil"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestRoleListWithOptionalParams(t *testing.T) {

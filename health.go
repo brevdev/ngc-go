@@ -6,9 +6,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/stainless-sdks/ngc-go/internal/requestconfig"
-	"github.com/stainless-sdks/ngc-go/option"
-	"github.com/stainless-sdks/ngc-go/shared"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
+	"github.com/brevdev/ngc-go/shared"
 )
 
 // HealthService contains methods and other services that help with interacting

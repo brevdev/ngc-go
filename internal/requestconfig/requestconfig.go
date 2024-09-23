@@ -17,10 +17,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/ngc-go/internal"
-	"github.com/stainless-sdks/ngc-go/internal/apierror"
-	"github.com/stainless-sdks/ngc-go/internal/apiform"
-	"github.com/stainless-sdks/ngc-go/internal/apiquery"
+	"github.com/brevdev/ngc-go/internal"
+	"github.com/brevdev/ngc-go/internal/apierror"
+	"github.com/brevdev/ngc-go/internal/apiform"
+	"github.com/brevdev/ngc-go/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {

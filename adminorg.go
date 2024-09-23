@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/ngc-go/internal/apijson"
-	"github.com/stainless-sdks/ngc-go/internal/apiquery"
-	"github.com/stainless-sdks/ngc-go/internal/param"
-	"github.com/stainless-sdks/ngc-go/internal/requestconfig"
-	"github.com/stainless-sdks/ngc-go/option"
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/internal/apiquery"
+	"github.com/brevdev/ngc-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // AdminOrgService contains methods and other services that help with interacting

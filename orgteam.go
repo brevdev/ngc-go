@@ -3,8 +3,8 @@
 package ngc
 
 import (
-	"github.com/stainless-sdks/ngc-go/internal/apijson"
-	"github.com/stainless-sdks/ngc-go/option"
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // OrgTeamService contains methods and other services that help with interacting

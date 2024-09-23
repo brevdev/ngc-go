@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/ngc-go"
-	"github.com/stainless-sdks/ngc-go/internal"
-	"github.com/stainless-sdks/ngc-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal"
+	"github.com/brevdev/ngc-go/option"
 )
 
 type closureTransport struct {

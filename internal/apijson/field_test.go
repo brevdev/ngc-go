@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/ngc-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/param"
 )
 
 type Struct struct {
