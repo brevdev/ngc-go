@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stainless-sdks/ngc-go/internal/apijson"
-	"github.com/stainless-sdks/ngc-go/internal/requestconfig"
-	"github.com/stainless-sdks/ngc-go/option"
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // SuperAdminUserOrgService contains methods and other services that help with

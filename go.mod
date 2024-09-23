@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/ngc-go
+module github.com/brevdev/ngc-go
 
 go 1.21
 

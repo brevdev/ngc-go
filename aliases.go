@@ -3,8 +3,8 @@
 package ngc
 
 import (
-	"github.com/stainless-sdks/ngc-go/internal/apierror"
-	"github.com/stainless-sdks/ngc-go/shared"
+	"github.com/brevdev/ngc-go/internal/apierror"
+	"github.com/brevdev/ngc-go/shared"
 )
 
 type Error = apierror.Error

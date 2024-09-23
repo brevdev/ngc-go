@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stainless-sdks/ngc-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc

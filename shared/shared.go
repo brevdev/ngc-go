@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/stainless-sdks/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/internal/apijson"
 )
 
 // This API is invoked by monitoring tools, other services and infrastructure to

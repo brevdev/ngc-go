@@ -11,8 +11,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/stainless-sdks/ngc-go"
-	"github.com/stainless-sdks/ngc-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestV2AdminOrgTeamGet(t *testing.T) {

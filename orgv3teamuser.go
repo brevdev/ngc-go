@@ -3,7 +3,7 @@
 package ngc
 
 import (
-	"github.com/stainless-sdks/ngc-go/option"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // OrgV3TeamUserService contains methods and other services that help with
