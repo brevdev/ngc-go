@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/param"
 )
 
 var encoders sync.Map // map[reflect.Type]encoderFunc

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/testutil"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal/testutil"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestOrgMeteringListWithOptionalParams(t *testing.T) {
@@ -21,43 +21,42 @@ func TestOrgMeteringListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Org.Meterings.List(
+	_, err := client.Orgs.Metering.List(
 		context.TODO(),
 		"org-name",
-		nvidiagpucloud.OrgMeteringListParams{
-			Q: nvidiagpucloud.F(nvidiagpucloud.OrgMeteringListParamsQ{
-				Measurements: nvidiagpucloud.F([]nvidiagpucloud.OrgMeteringListParamsQMeasurement{{
-					Fill:            nvidiagpucloud.F(0.000000),
-					FromDate:        nvidiagpucloud.F("fromDate"),
-					GroupBy:         nvidiagpucloud.F([]string{"string", "string", "string"}),
-					PeriodInSeconds: nvidiagpucloud.F(0.000000),
-					ToDate:          nvidiagpucloud.F("toDate"),
-					Type:            nvidiagpucloud.F(nvidiagpucloud.OrgMeteringListParamsQMeasurementsTypeEgxGPUUtilizationDaily),
+		ngc.OrgMeteringListParams{
+			Q: ngc.F(ngc.OrgMeteringListParamsQ{
+				Measurements: ngc.F([]ngc.OrgMeteringListParamsQMeasurement{{
+					Fill:            ngc.F(0.000000),
+					FromDate:        ngc.F("fromDate"),
+					GroupBy:         ngc.F([]string{"string", "string", "string"}),
+					PeriodInSeconds: ngc.F(0.000000),
+					ToDate:          ngc.F("toDate"),
+					Type:            ngc.F(ngc.OrgMeteringListParamsQMeasurementsTypeEgxGPUUtilizationDaily),
 				}, {
-					Fill:            nvidiagpucloud.F(0.000000),
-					FromDate:        nvidiagpucloud.F("fromDate"),
-					GroupBy:         nvidiagpucloud.F([]string{"string", "string", "string"}),
-					PeriodInSeconds: nvidiagpucloud.F(0.000000),
-					ToDate:          nvidiagpucloud.F("toDate"),
-					Type:            nvidiagpucloud.F(nvidiagpucloud.OrgMeteringListParamsQMeasurementsTypeEgxGPUUtilizationDaily),
+					Fill:            ngc.F(0.000000),
+					FromDate:        ngc.F("fromDate"),
+					GroupBy:         ngc.F([]string{"string", "string", "string"}),
+					PeriodInSeconds: ngc.F(0.000000),
+					ToDate:          ngc.F("toDate"),
+					Type:            ngc.F(ngc.OrgMeteringListParamsQMeasurementsTypeEgxGPUUtilizationDaily),
 				}, {
-					Fill:            nvidiagpucloud.F(0.000000),
-					FromDate:        nvidiagpucloud.F("fromDate"),
-					GroupBy:         nvidiagpucloud.F([]string{"string", "string", "string"}),
-					PeriodInSeconds: nvidiagpucloud.F(0.000000),
-					ToDate:          nvidiagpucloud.F("toDate"),
-					Type:            nvidiagpucloud.F(nvidiagpucloud.OrgMeteringListParamsQMeasurementsTypeEgxGPUUtilizationDaily),
+					Fill:            ngc.F(0.000000),
+					FromDate:        ngc.F("fromDate"),
+					GroupBy:         ngc.F([]string{"string", "string", "string"}),
+					PeriodInSeconds: ngc.F(0.000000),
+					ToDate:          ngc.F("toDate"),
+					Type:            ngc.F(ngc.OrgMeteringListParamsQMeasurementsTypeEgxGPUUtilizationDaily),
 				}}),
 			}),
 		},
 	)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

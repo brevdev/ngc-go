@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
 	"context"
@@ -9,15 +9,15 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apiquery"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/param"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/shared"
+	"github.com/brevdev/ngc-go/internal/apiquery"
+	"github.com/brevdev/ngc-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
+	"github.com/brevdev/ngc-go/shared"
 )
 
 // OrgMeteringService contains methods and other services that help with
-// interacting with the nvidia-gpu-cloud API.
+// interacting with the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -39,7 +39,7 @@ func NewOrgMeteringService(opts ...option.RequestOption) (r *OrgMeteringService)
 
 // Returns Private Registry / EGX resources usage metering as measurement series.
 // Requires admin privileges for organization.
-func (r *OrgMeteringService) List(ctx context.Context, orgName string, query OrgMeteringListParams, opts ...option.RequestOption) (res *shared.MeteringResultList, err error) {
+func (r *OrgMeteringService) List(ctx context.Context, orgName string, query OrgMeteringListParams, opts ...option.RequestOption) (res *shared.MeteringResult, err error) {
 	opts = append(r.Options[:], opts...)
 	if orgName == "" {
 		err = errors.New("missing required org-name parameter")

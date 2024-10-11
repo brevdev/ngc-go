@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/testutil"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal/testutil"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestOrgTeamGet(t *testing.T) {
@@ -21,18 +21,17 @@ func TestOrgTeamGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Orgs.Teams.Get(
+	_, err := client.Org.Teams.Get(
 		context.TODO(),
 		"org-name",
 		"team-name",
 	)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -48,63 +47,32 @@ func TestOrgTeamUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Orgs.Teams.Update(
+	_, err := client.Org.Teams.Update(
 		context.TODO(),
 		"org-name",
 		"team-name",
-		nvidiagpucloud.OrgTeamUpdateParams{
-			Description: nvidiagpucloud.F("description"),
-			InfinityManagerSettings: nvidiagpucloud.F(nvidiagpucloud.OrgTeamUpdateParamsInfinityManagerSettings{
-				InfinityManagerEnabled:            nvidiagpucloud.F(true),
-				InfinityManagerEnableTeamOverride: nvidiagpucloud.F(true),
+		ngc.OrgTeamUpdateParams{
+			Description: ngc.F("description"),
+			InfinityManagerSettings: ngc.F(ngc.OrgTeamUpdateParamsInfinityManagerSettings{
+				InfinityManagerEnabled:            ngc.F(true),
+				InfinityManagerEnableTeamOverride: ngc.F(true),
 			}),
-			RepoScanSettings: nvidiagpucloud.F(nvidiagpucloud.OrgTeamUpdateParamsRepoScanSettings{
-				RepoScanAllowOverride:       nvidiagpucloud.F(true),
-				RepoScanByDefault:           nvidiagpucloud.F(true),
-				RepoScanEnabled:             nvidiagpucloud.F(true),
-				RepoScanEnableNotifications: nvidiagpucloud.F(true),
-				RepoScanEnableTeamOverride:  nvidiagpucloud.F(true),
-				RepoScanShowResults:         nvidiagpucloud.F(true),
+			RepoScanSettings: ngc.F(ngc.OrgTeamUpdateParamsRepoScanSettings{
+				RepoScanAllowOverride:       ngc.F(true),
+				RepoScanByDefault:           ngc.F(true),
+				RepoScanEnabled:             ngc.F(true),
+				RepoScanEnableNotifications: ngc.F(true),
+				RepoScanEnableTeamOverride:  ngc.F(true),
+				RepoScanShowResults:         ngc.F(true),
 			}),
 		},
 	)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestOrgTeamListWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := nvidiagpucloud.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
-	)
-	_, err := client.Orgs.Teams.List(
-		context.TODO(),
-		"org-name",
-		nvidiagpucloud.OrgTeamListParams{
-			PageNumber: nvidiagpucloud.F(int64(0)),
-			PageSize:   nvidiagpucloud.F(int64(0)),
-		},
-	)
-	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -120,18 +88,17 @@ func TestOrgTeamDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Orgs.Teams.Delete(
+	_, err := client.Org.Teams.Delete(
 		context.TODO(),
 		"org-name",
 		"team-name",
 	)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

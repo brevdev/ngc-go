@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
 	"context"
@@ -8,13 +8,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/shared"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
+	"github.com/brevdev/ngc-go/shared"
 )
 
 // OrgTeamStarfleetIDService contains methods and other services that help with
-// interacting with the nvidia-gpu-cloud API.
+// interacting with the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -33,7 +33,7 @@ func NewOrgTeamStarfleetIDService(opts ...option.RequestOption) (r *OrgTeamStarf
 }
 
 // Get User details in team by starfleet Id
-func (r *OrgTeamStarfleetIDService) Get(ctx context.Context, orgName string, teamName string, starfleetID string, opts ...option.RequestOption) (res *shared.User, err error) {
+func (r *OrgTeamStarfleetIDService) Get(ctx context.Context, orgName string, teamName string, starfleetID string, opts ...option.RequestOption) (res *shared.UserResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if orgName == "" {
 		err = errors.New("missing required org-name parameter")

@@ -1,49 +1,50 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
 	"context"
 	"net/http"
-	"os"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // Client creates a struct with services and top level methods that help with
-// interacting with the nvidia-gpu-cloud API. You should not instantiate this
-// client directly, and instead use the [NewClient] method instead.
+// interacting with the ngc API. You should not instantiate this client directly,
+// and instead use the [NewClient] method instead.
 type Client struct {
-	Options                      []option.RequestOption
-	Orgs                         *OrgService
-	Admin                        *AdminService
-	Users                        *UserService
-	Org                          *OrgService
-	Services                     *ServiceService
-	RegistryMeteringDownsampling *RegistryMeteringDownsamplingService
-	AdminOrg                     *AdminOrgService
-	Roles                        *RoleService
-	PublicKeys                   *PublicKeyService
-	OrgUsers                     *OrgUserService
-	TeamUsers                    *TeamUserService
-	AdminOrgUsers                *AdminOrgUserService
-	AdminTeamUsers               *AdminTeamUserService
-	SwaggerResources             *SwaggerResourceService
+	Options                  []option.RequestOption
+	Orgs                     *OrgService
+	Admin                    *AdminService
+	Users                    *UserService
+	Organizations            *OrganizationService
+	SuperAdminUser           *SuperAdminUserService
+	SuperAdminOrg            *SuperAdminOrgService
+	SuperAdminOrgControllers *SuperAdminOrgControllerService
+	UsersManagement          *UsersManagementService
+	Org                      *OrgService
+	V2AdminOrgUsers          *V2AdminOrgUserService
+	V2AdminOrgTeams          *V2AdminOrgTeamService
+	V2AdminOrgTeamUsers      *V2AdminOrgTeamUserService
+	V2AdminOrgEntitlements   *V2AdminOrgEntitlementService
+	V2AdminEntitlements      *V2AdminEntitlementService
+	Services                 *ServiceService
+	V3OrgsUsers              *V3OrgsUserService
+	V3OrgsTeamsUsers         *V3OrgsTeamsUserService
+	V3Orgs                   *V3OrgService
+	Roles                    *RoleService
+	PublicKeys               *PublicKeyService
+	Health                   *HealthService
+	SwaggerResources         *SwaggerResourceService
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (API_KEY, BEARER_TOKEN). The option passed in as arguments are
-// applied after these default arguments, and all option will be passed down to the
-// services and requests that this client makes.
+// environment (). The option passed in as arguments are applied after these
+// default arguments, and all option will be passed down to the services and
+// requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r *Client) {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
-	if o, ok := os.LookupEnv("API_KEY"); ok {
-		defaults = append(defaults, option.WithAPIKey(o))
-	}
-	if o, ok := os.LookupEnv("BEARER_TOKEN"); ok {
-		defaults = append(defaults, option.WithBearerToken(o))
-	}
 	opts = append(defaults, opts...)
 
 	r = &Client{Options: opts}
@@ -51,16 +52,24 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Orgs = NewOrgService(opts...)
 	r.Admin = NewAdminService(opts...)
 	r.Users = NewUserService(opts...)
+	r.Organizations = NewOrganizationService(opts...)
+	r.SuperAdminUser = NewSuperAdminUserService(opts...)
+	r.SuperAdminOrg = NewSuperAdminOrgService(opts...)
+	r.SuperAdminOrgControllers = NewSuperAdminOrgControllerService(opts...)
+	r.UsersManagement = NewUsersManagementService(opts...)
 	r.Org = NewOrgService(opts...)
+	r.V2AdminOrgUsers = NewV2AdminOrgUserService(opts...)
+	r.V2AdminOrgTeams = NewV2AdminOrgTeamService(opts...)
+	r.V2AdminOrgTeamUsers = NewV2AdminOrgTeamUserService(opts...)
+	r.V2AdminOrgEntitlements = NewV2AdminOrgEntitlementService(opts...)
+	r.V2AdminEntitlements = NewV2AdminEntitlementService(opts...)
 	r.Services = NewServiceService(opts...)
-	r.RegistryMeteringDownsampling = NewRegistryMeteringDownsamplingService(opts...)
-	r.AdminOrg = NewAdminOrgService(opts...)
+	r.V3OrgsUsers = NewV3OrgsUserService(opts...)
+	r.V3OrgsTeamsUsers = NewV3OrgsTeamsUserService(opts...)
+	r.V3Orgs = NewV3OrgService(opts...)
 	r.Roles = NewRoleService(opts...)
 	r.PublicKeys = NewPublicKeyService(opts...)
-	r.OrgUsers = NewOrgUserService(opts...)
-	r.TeamUsers = NewTeamUserService(opts...)
-	r.AdminOrgUsers = NewAdminOrgUserService(opts...)
-	r.AdminTeamUsers = NewAdminTeamUserService(opts...)
+	r.Health = NewHealthService(opts...)
 	r.SwaggerResources = NewSwaggerResourceService(opts...)
 
 	return

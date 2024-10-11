@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"bytes"
@@ -11,8 +11,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestAdminOrgOffboardedListWithOptionalParams(t *testing.T) {
@@ -22,17 +22,16 @@ func TestAdminOrgOffboardedListWithOptionalParams(t *testing.T) {
 	}))
 	defer server.Close()
 	baseURL := server.URL
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	resp, err := client.Admin.Orgs.Offboarded.List(context.TODO(), nvidiagpucloud.AdminOrgOffboardedListParams{
-		PageNumber: nvidiagpucloud.F(int64(0)),
-		PageSize:   nvidiagpucloud.F(int64(0)),
+	resp, err := client.Admin.Orgs.Offboarded.List(context.TODO(), ngc.AdminOrgOffboardedListParams{
+		PageNumber: ngc.F(int64(0)),
+		PageSize:   ngc.F(int64(0)),
 	})
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -42,7 +41,7 @@ func TestAdminOrgOffboardedListWithOptionalParams(t *testing.T) {
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
