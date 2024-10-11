@@ -1,478 +1,837 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apierror"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/shared"
+	"github.com/brevdev/ngc-go/internal/apierror"
+	"github.com/brevdev/ngc-go/shared"
 )
 
 type Error = apierror.Error
 
+// This API is invoked by monitoring tools, other services and infrastructure to
+// retrieve health status the targeted service, this is unprotected method
+//
+// This is an alias to an internal type.
+type Health = shared.Health
+
+// object that describes health of the service
+//
+// This is an alias to an internal type.
+type HealthHealth = shared.HealthHealth
+
+// Enum that describes health of the service
+//
+// This is an alias to an internal type.
+type HealthHealthHealthCode = shared.HealthHealthHealthCode
+
+// This is an alias to an internal value.
+const HealthHealthHealthCodeUnknown = shared.HealthHealthHealthCodeUnknown
+
+// This is an alias to an internal value.
+const HealthHealthHealthCodeOk = shared.HealthHealthHealthCodeOk
+
+// This is an alias to an internal value.
+const HealthHealthHealthCodeUnderMaintenance = shared.HealthHealthHealthCodeUnderMaintenance
+
+// This is an alias to an internal value.
+const HealthHealthHealthCodeWarning = shared.HealthHealthHealthCodeWarning
+
+// This is an alias to an internal value.
+const HealthHealthHealthCodeFailed = shared.HealthHealthHealthCodeFailed
+
+// This is an alias to an internal type.
+type HealthHealthMetaData = shared.HealthHealthMetaData
+
+// This is an alias to an internal type.
+type HealthRequestStatus = shared.HealthRequestStatus
+
+// Describes response status reported by the server.
+//
+// This is an alias to an internal type.
+type HealthRequestStatusStatusCode = shared.HealthRequestStatusStatusCode
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeUnknown = shared.HealthRequestStatusStatusCodeUnknown
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeSuccess = shared.HealthRequestStatusStatusCodeSuccess
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeUnauthorized = shared.HealthRequestStatusStatusCodeUnauthorized
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodePaymentRequired = shared.HealthRequestStatusStatusCodePaymentRequired
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeForbidden = shared.HealthRequestStatusStatusCodeForbidden
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeTimeout = shared.HealthRequestStatusStatusCodeTimeout
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeExists = shared.HealthRequestStatusStatusCodeExists
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeNotFound = shared.HealthRequestStatusStatusCodeNotFound
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeInternalError = shared.HealthRequestStatusStatusCodeInternalError
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeInvalidRequest = shared.HealthRequestStatusStatusCodeInvalidRequest
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeInvalidRequestVersion = shared.HealthRequestStatusStatusCodeInvalidRequestVersion
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeInvalidRequestData = shared.HealthRequestStatusStatusCodeInvalidRequestData
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeMethodNotAllowed = shared.HealthRequestStatusStatusCodeMethodNotAllowed
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeConflict = shared.HealthRequestStatusStatusCodeConflict
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeUnprocessableEntity = shared.HealthRequestStatusStatusCodeUnprocessableEntity
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeTooManyRequests = shared.HealthRequestStatusStatusCodeTooManyRequests
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeInsufficientStorage = shared.HealthRequestStatusStatusCodeInsufficientStorage
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeServiceUnavailable = shared.HealthRequestStatusStatusCodeServiceUnavailable
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodePayloadTooLarge = shared.HealthRequestStatusStatusCodePayloadTooLarge
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeNotAcceptable = shared.HealthRequestStatusStatusCodeNotAcceptable
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeUnavailableForLegalReasons = shared.HealthRequestStatusStatusCodeUnavailableForLegalReasons
+
+// This is an alias to an internal value.
+const HealthRequestStatusStatusCodeBadGateway = shared.HealthRequestStatusStatusCodeBadGateway
+
 // response containing a list of all metering queries results
 //
 // This is an alias to an internal type.
-type MeteringResultList = shared.MeteringResultList
+type MeteringResult = shared.MeteringResult
 
 // result of a single measurement query
 //
 // This is an alias to an internal type.
-type MeteringResultListMeasurement = shared.MeteringResultListMeasurement
+type MeteringResultMeasurement = shared.MeteringResultMeasurement
 
 // object for a single series in the measurement
 //
 // This is an alias to an internal type.
-type MeteringResultListMeasurementsSery = shared.MeteringResultListMeasurementsSery
+type MeteringResultMeasurementsSery = shared.MeteringResultMeasurementsSery
 
 // object for measurement tags which identifies a measuurement series
 //
 // This is an alias to an internal type.
-type MeteringResultListMeasurementsSeriesTag = shared.MeteringResultListMeasurementsSeriesTag
+type MeteringResultMeasurementsSeriesTag = shared.MeteringResultMeasurementsSeriesTag
 
 // object for the measurement values
 //
 // This is an alias to an internal type.
-type MeteringResultListMeasurementsSeriesValue = shared.MeteringResultListMeasurementsSeriesValue
+type MeteringResultMeasurementsSeriesValue = shared.MeteringResultMeasurementsSeriesValue
 
 // This is an alias to an internal type.
-type MeteringResultListRequestStatus = shared.MeteringResultListRequestStatus
+type MeteringResultRequestStatus = shared.MeteringResultRequestStatus
 
 // Describes response status reported by the server.
 //
 // This is an alias to an internal type.
-type MeteringResultListRequestStatusStatusCode = shared.MeteringResultListRequestStatusStatusCode
+type MeteringResultRequestStatusStatusCode = shared.MeteringResultRequestStatusStatusCode
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeUnknown = shared.MeteringResultListRequestStatusStatusCodeUnknown
+const MeteringResultRequestStatusStatusCodeUnknown = shared.MeteringResultRequestStatusStatusCodeUnknown
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeSuccess = shared.MeteringResultListRequestStatusStatusCodeSuccess
+const MeteringResultRequestStatusStatusCodeSuccess = shared.MeteringResultRequestStatusStatusCodeSuccess
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeUnauthorized = shared.MeteringResultListRequestStatusStatusCodeUnauthorized
+const MeteringResultRequestStatusStatusCodeUnauthorized = shared.MeteringResultRequestStatusStatusCodeUnauthorized
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodePaymentRequired = shared.MeteringResultListRequestStatusStatusCodePaymentRequired
+const MeteringResultRequestStatusStatusCodePaymentRequired = shared.MeteringResultRequestStatusStatusCodePaymentRequired
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeForbidden = shared.MeteringResultListRequestStatusStatusCodeForbidden
+const MeteringResultRequestStatusStatusCodeForbidden = shared.MeteringResultRequestStatusStatusCodeForbidden
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeTimeout = shared.MeteringResultListRequestStatusStatusCodeTimeout
+const MeteringResultRequestStatusStatusCodeTimeout = shared.MeteringResultRequestStatusStatusCodeTimeout
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeExists = shared.MeteringResultListRequestStatusStatusCodeExists
+const MeteringResultRequestStatusStatusCodeExists = shared.MeteringResultRequestStatusStatusCodeExists
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeNotFound = shared.MeteringResultListRequestStatusStatusCodeNotFound
+const MeteringResultRequestStatusStatusCodeNotFound = shared.MeteringResultRequestStatusStatusCodeNotFound
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeInternalError = shared.MeteringResultListRequestStatusStatusCodeInternalError
+const MeteringResultRequestStatusStatusCodeInternalError = shared.MeteringResultRequestStatusStatusCodeInternalError
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeInvalidRequest = shared.MeteringResultListRequestStatusStatusCodeInvalidRequest
+const MeteringResultRequestStatusStatusCodeInvalidRequest = shared.MeteringResultRequestStatusStatusCodeInvalidRequest
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeInvalidRequestVersion = shared.MeteringResultListRequestStatusStatusCodeInvalidRequestVersion
+const MeteringResultRequestStatusStatusCodeInvalidRequestVersion = shared.MeteringResultRequestStatusStatusCodeInvalidRequestVersion
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeInvalidRequestData = shared.MeteringResultListRequestStatusStatusCodeInvalidRequestData
+const MeteringResultRequestStatusStatusCodeInvalidRequestData = shared.MeteringResultRequestStatusStatusCodeInvalidRequestData
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeMethodNotAllowed = shared.MeteringResultListRequestStatusStatusCodeMethodNotAllowed
+const MeteringResultRequestStatusStatusCodeMethodNotAllowed = shared.MeteringResultRequestStatusStatusCodeMethodNotAllowed
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeConflict = shared.MeteringResultListRequestStatusStatusCodeConflict
+const MeteringResultRequestStatusStatusCodeConflict = shared.MeteringResultRequestStatusStatusCodeConflict
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeUnprocessableEntity = shared.MeteringResultListRequestStatusStatusCodeUnprocessableEntity
+const MeteringResultRequestStatusStatusCodeUnprocessableEntity = shared.MeteringResultRequestStatusStatusCodeUnprocessableEntity
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeTooManyRequests = shared.MeteringResultListRequestStatusStatusCodeTooManyRequests
+const MeteringResultRequestStatusStatusCodeTooManyRequests = shared.MeteringResultRequestStatusStatusCodeTooManyRequests
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeInsufficientStorage = shared.MeteringResultListRequestStatusStatusCodeInsufficientStorage
+const MeteringResultRequestStatusStatusCodeInsufficientStorage = shared.MeteringResultRequestStatusStatusCodeInsufficientStorage
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeServiceUnavailable = shared.MeteringResultListRequestStatusStatusCodeServiceUnavailable
+const MeteringResultRequestStatusStatusCodeServiceUnavailable = shared.MeteringResultRequestStatusStatusCodeServiceUnavailable
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodePayloadTooLarge = shared.MeteringResultListRequestStatusStatusCodePayloadTooLarge
+const MeteringResultRequestStatusStatusCodePayloadTooLarge = shared.MeteringResultRequestStatusStatusCodePayloadTooLarge
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeNotAcceptable = shared.MeteringResultListRequestStatusStatusCodeNotAcceptable
+const MeteringResultRequestStatusStatusCodeNotAcceptable = shared.MeteringResultRequestStatusStatusCodeNotAcceptable
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeUnavailableForLegalReasons = shared.MeteringResultListRequestStatusStatusCodeUnavailableForLegalReasons
+const MeteringResultRequestStatusStatusCodeUnavailableForLegalReasons = shared.MeteringResultRequestStatusStatusCodeUnavailableForLegalReasons
 
 // This is an alias to an internal value.
-const MeteringResultListRequestStatusStatusCodeBadGateway = shared.MeteringResultListRequestStatusStatusCodeBadGateway
+const MeteringResultRequestStatusStatusCodeBadGateway = shared.MeteringResultRequestStatusStatusCodeBadGateway
 
-// about one user
+// listing of all teams
 //
 // This is an alias to an internal type.
-type User = shared.User
+type TeamListResponse = shared.TeamListResponse
 
-// NCA role
+// object that describes the pagination information
 //
 // This is an alias to an internal type.
-type UserNcaRole = shared.UserNcaRole
-
-// This is an alias to an internal value.
-const UserNcaRoleUnknown = shared.UserNcaRoleUnknown
-
-// This is an alias to an internal value.
-const UserNcaRoleAdministrator = shared.UserNcaRoleAdministrator
-
-// This is an alias to an internal value.
-const UserNcaRoleMember = shared.UserNcaRoleMember
-
-// This is an alias to an internal value.
-const UserNcaRoleOwner = shared.UserNcaRoleOwner
-
-// This is an alias to an internal value.
-const UserNcaRolePending = shared.UserNcaRolePending
+type TeamListResponsePaginationInfo = shared.TeamListResponsePaginationInfo
 
 // This is an alias to an internal type.
-type UserRequestStatus = shared.UserRequestStatus
+type TeamListResponseRequestStatus = shared.TeamListResponseRequestStatus
 
 // Describes response status reported by the server.
 //
 // This is an alias to an internal type.
-type UserRequestStatusStatusCode = shared.UserRequestStatusStatusCode
+type TeamListResponseRequestStatusStatusCode = shared.TeamListResponseRequestStatusStatusCode
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeUnknown = shared.UserRequestStatusStatusCodeUnknown
+const TeamListResponseRequestStatusStatusCodeUnknown = shared.TeamListResponseRequestStatusStatusCodeUnknown
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeSuccess = shared.UserRequestStatusStatusCodeSuccess
+const TeamListResponseRequestStatusStatusCodeSuccess = shared.TeamListResponseRequestStatusStatusCodeSuccess
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeUnauthorized = shared.UserRequestStatusStatusCodeUnauthorized
+const TeamListResponseRequestStatusStatusCodeUnauthorized = shared.TeamListResponseRequestStatusStatusCodeUnauthorized
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodePaymentRequired = shared.UserRequestStatusStatusCodePaymentRequired
+const TeamListResponseRequestStatusStatusCodePaymentRequired = shared.TeamListResponseRequestStatusStatusCodePaymentRequired
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeForbidden = shared.UserRequestStatusStatusCodeForbidden
+const TeamListResponseRequestStatusStatusCodeForbidden = shared.TeamListResponseRequestStatusStatusCodeForbidden
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeTimeout = shared.UserRequestStatusStatusCodeTimeout
+const TeamListResponseRequestStatusStatusCodeTimeout = shared.TeamListResponseRequestStatusStatusCodeTimeout
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeExists = shared.UserRequestStatusStatusCodeExists
+const TeamListResponseRequestStatusStatusCodeExists = shared.TeamListResponseRequestStatusStatusCodeExists
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeNotFound = shared.UserRequestStatusStatusCodeNotFound
+const TeamListResponseRequestStatusStatusCodeNotFound = shared.TeamListResponseRequestStatusStatusCodeNotFound
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeInternalError = shared.UserRequestStatusStatusCodeInternalError
+const TeamListResponseRequestStatusStatusCodeInternalError = shared.TeamListResponseRequestStatusStatusCodeInternalError
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeInvalidRequest = shared.UserRequestStatusStatusCodeInvalidRequest
+const TeamListResponseRequestStatusStatusCodeInvalidRequest = shared.TeamListResponseRequestStatusStatusCodeInvalidRequest
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeInvalidRequestVersion = shared.UserRequestStatusStatusCodeInvalidRequestVersion
+const TeamListResponseRequestStatusStatusCodeInvalidRequestVersion = shared.TeamListResponseRequestStatusStatusCodeInvalidRequestVersion
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeInvalidRequestData = shared.UserRequestStatusStatusCodeInvalidRequestData
+const TeamListResponseRequestStatusStatusCodeInvalidRequestData = shared.TeamListResponseRequestStatusStatusCodeInvalidRequestData
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeMethodNotAllowed = shared.UserRequestStatusStatusCodeMethodNotAllowed
+const TeamListResponseRequestStatusStatusCodeMethodNotAllowed = shared.TeamListResponseRequestStatusStatusCodeMethodNotAllowed
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeConflict = shared.UserRequestStatusStatusCodeConflict
+const TeamListResponseRequestStatusStatusCodeConflict = shared.TeamListResponseRequestStatusStatusCodeConflict
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeUnprocessableEntity = shared.UserRequestStatusStatusCodeUnprocessableEntity
+const TeamListResponseRequestStatusStatusCodeUnprocessableEntity = shared.TeamListResponseRequestStatusStatusCodeUnprocessableEntity
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeTooManyRequests = shared.UserRequestStatusStatusCodeTooManyRequests
+const TeamListResponseRequestStatusStatusCodeTooManyRequests = shared.TeamListResponseRequestStatusStatusCodeTooManyRequests
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeInsufficientStorage = shared.UserRequestStatusStatusCodeInsufficientStorage
+const TeamListResponseRequestStatusStatusCodeInsufficientStorage = shared.TeamListResponseRequestStatusStatusCodeInsufficientStorage
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeServiceUnavailable = shared.UserRequestStatusStatusCodeServiceUnavailable
+const TeamListResponseRequestStatusStatusCodeServiceUnavailable = shared.TeamListResponseRequestStatusStatusCodeServiceUnavailable
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodePayloadTooLarge = shared.UserRequestStatusStatusCodePayloadTooLarge
+const TeamListResponseRequestStatusStatusCodePayloadTooLarge = shared.TeamListResponseRequestStatusStatusCodePayloadTooLarge
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeNotAcceptable = shared.UserRequestStatusStatusCodeNotAcceptable
+const TeamListResponseRequestStatusStatusCodeNotAcceptable = shared.TeamListResponseRequestStatusStatusCodeNotAcceptable
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeUnavailableForLegalReasons = shared.UserRequestStatusStatusCodeUnavailableForLegalReasons
+const TeamListResponseRequestStatusStatusCodeUnavailableForLegalReasons = shared.TeamListResponseRequestStatusStatusCodeUnavailableForLegalReasons
 
 // This is an alias to an internal value.
-const UserRequestStatusStatusCodeBadGateway = shared.UserRequestStatusStatusCodeBadGateway
+const TeamListResponseRequestStatusStatusCodeBadGateway = shared.TeamListResponseRequestStatusStatusCodeBadGateway
 
-// information about the user
+// Information about the team
 //
 // This is an alias to an internal type.
-type UserUser = shared.UserUser
-
-// Type of IDP, Identity Provider. Used for login.
-//
-// This is an alias to an internal type.
-type UserUserIdpType = shared.UserUserIdpType
-
-// This is an alias to an internal value.
-const UserUserIdpTypeNvidia = shared.UserUserIdpTypeNvidia
-
-// This is an alias to an internal value.
-const UserUserIdpTypeEnterprise = shared.UserUserIdpTypeEnterprise
-
-// List of roles that the user have
-//
-// This is an alias to an internal type.
-type UserUserRole = shared.UserUserRole
-
-// Information about the Organization
-//
-// This is an alias to an internal type.
-type UserUserRolesOrg = shared.UserUserRolesOrg
-
-// Org Owner Alternate Contact
-//
-// This is an alias to an internal type.
-type UserUserRolesOrgAlternateContact = shared.UserUserRolesOrgAlternateContact
+type TeamListResponseTeam = shared.TeamListResponseTeam
 
 // Infinity manager setting definition
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgInfinityManagerSettings = shared.UserUserRolesOrgInfinityManagerSettings
+type TeamListResponseTeamsInfinityManagerSettings = shared.TeamListResponseTeamsInfinityManagerSettings
+
+// Repo scan setting definition
+//
+// This is an alias to an internal type.
+type TeamListResponseTeamsRepoScanSettings = shared.TeamListResponseTeamsRepoScanSettings
+
+// Response for List User reponse
+//
+// This is an alias to an internal type.
+type UserListResponse = shared.UserListResponse
+
+// object that describes the pagination information
+//
+// This is an alias to an internal type.
+type UserListResponsePaginationInfo = shared.UserListResponsePaginationInfo
+
+// This is an alias to an internal type.
+type UserListResponseRequestStatus = shared.UserListResponseRequestStatus
+
+// Describes response status reported by the server.
+//
+// This is an alias to an internal type.
+type UserListResponseRequestStatusStatusCode = shared.UserListResponseRequestStatusStatusCode
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeUnknown = shared.UserListResponseRequestStatusStatusCodeUnknown
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeSuccess = shared.UserListResponseRequestStatusStatusCodeSuccess
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeUnauthorized = shared.UserListResponseRequestStatusStatusCodeUnauthorized
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodePaymentRequired = shared.UserListResponseRequestStatusStatusCodePaymentRequired
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeForbidden = shared.UserListResponseRequestStatusStatusCodeForbidden
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeTimeout = shared.UserListResponseRequestStatusStatusCodeTimeout
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeExists = shared.UserListResponseRequestStatusStatusCodeExists
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeNotFound = shared.UserListResponseRequestStatusStatusCodeNotFound
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeInternalError = shared.UserListResponseRequestStatusStatusCodeInternalError
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeInvalidRequest = shared.UserListResponseRequestStatusStatusCodeInvalidRequest
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeInvalidRequestVersion = shared.UserListResponseRequestStatusStatusCodeInvalidRequestVersion
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeInvalidRequestData = shared.UserListResponseRequestStatusStatusCodeInvalidRequestData
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeMethodNotAllowed = shared.UserListResponseRequestStatusStatusCodeMethodNotAllowed
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeConflict = shared.UserListResponseRequestStatusStatusCodeConflict
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeUnprocessableEntity = shared.UserListResponseRequestStatusStatusCodeUnprocessableEntity
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeTooManyRequests = shared.UserListResponseRequestStatusStatusCodeTooManyRequests
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeInsufficientStorage = shared.UserListResponseRequestStatusStatusCodeInsufficientStorage
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeServiceUnavailable = shared.UserListResponseRequestStatusStatusCodeServiceUnavailable
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodePayloadTooLarge = shared.UserListResponseRequestStatusStatusCodePayloadTooLarge
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeNotAcceptable = shared.UserListResponseRequestStatusStatusCodeNotAcceptable
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeUnavailableForLegalReasons = shared.UserListResponseRequestStatusStatusCodeUnavailableForLegalReasons
+
+// This is an alias to an internal value.
+const UserListResponseRequestStatusStatusCodeBadGateway = shared.UserListResponseRequestStatusStatusCodeBadGateway
+
+// information about the user
+//
+// This is an alias to an internal type.
+type UserListResponseUser = shared.UserListResponseUser
+
+// Type of IDP, Identity Provider. Used for login.
+//
+// This is an alias to an internal type.
+type UserListResponseUsersIdpType = shared.UserListResponseUsersIdpType
+
+// This is an alias to an internal value.
+const UserListResponseUsersIdpTypeNvidia = shared.UserListResponseUsersIdpTypeNvidia
+
+// This is an alias to an internal value.
+const UserListResponseUsersIdpTypeEnterprise = shared.UserListResponseUsersIdpTypeEnterprise
+
+// List of roles that the user have
+//
+// This is an alias to an internal type.
+type UserListResponseUsersRole = shared.UserListResponseUsersRole
+
+// Information about the Organization
+//
+// This is an alias to an internal type.
+type UserListResponseUsersRolesOrg = shared.UserListResponseUsersRolesOrg
+
+// Org Owner Alternate Contact
+//
+// This is an alias to an internal type.
+type UserListResponseUsersRolesOrgAlternateContact = shared.UserListResponseUsersRolesOrgAlternateContact
+
+// Infinity manager setting definition
+//
+// This is an alias to an internal type.
+type UserListResponseUsersRolesOrgInfinityManagerSettings = shared.UserListResponseUsersRolesOrgInfinityManagerSettings
 
 // Org owner.
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgOrgOwner = shared.UserUserRolesOrgOrgOwner
+type UserListResponseUsersRolesOrgOrgOwner = shared.UserListResponseUsersRolesOrgOrgOwner
 
 // Product Enablement
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgProductEnablement = shared.UserUserRolesOrgProductEnablement
+type UserListResponseUsersRolesOrgProductEnablement = shared.UserListResponseUsersRolesOrgProductEnablement
 
 // Product Enablement Types
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgProductEnablementsType = shared.UserUserRolesOrgProductEnablementsType
+type UserListResponseUsersRolesOrgProductEnablementsType = shared.UserListResponseUsersRolesOrgProductEnablementsType
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductEnablementsTypeNgcAdminEval = shared.UserUserRolesOrgProductEnablementsTypeNgcAdminEval
+const UserListResponseUsersRolesOrgProductEnablementsTypeNgcAdminEval = shared.UserListResponseUsersRolesOrgProductEnablementsTypeNgcAdminEval
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductEnablementsTypeNgcAdminNfr = shared.UserUserRolesOrgProductEnablementsTypeNgcAdminNfr
+const UserListResponseUsersRolesOrgProductEnablementsTypeNgcAdminNfr = shared.UserListResponseUsersRolesOrgProductEnablementsTypeNgcAdminNfr
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductEnablementsTypeNgcAdminCommercial = shared.UserUserRolesOrgProductEnablementsTypeNgcAdminCommercial
+const UserListResponseUsersRolesOrgProductEnablementsTypeNgcAdminCommercial = shared.UserListResponseUsersRolesOrgProductEnablementsTypeNgcAdminCommercial
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductEnablementsTypeEmsEval = shared.UserUserRolesOrgProductEnablementsTypeEmsEval
+const UserListResponseUsersRolesOrgProductEnablementsTypeEmsEval = shared.UserListResponseUsersRolesOrgProductEnablementsTypeEmsEval
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductEnablementsTypeEmsNfr = shared.UserUserRolesOrgProductEnablementsTypeEmsNfr
+const UserListResponseUsersRolesOrgProductEnablementsTypeEmsNfr = shared.UserListResponseUsersRolesOrgProductEnablementsTypeEmsNfr
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductEnablementsTypeEmsCommercial = shared.UserUserRolesOrgProductEnablementsTypeEmsCommercial
+const UserListResponseUsersRolesOrgProductEnablementsTypeEmsCommercial = shared.UserListResponseUsersRolesOrgProductEnablementsTypeEmsCommercial
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductEnablementsTypeNgcAdminDeveloper = shared.UserUserRolesOrgProductEnablementsTypeNgcAdminDeveloper
+const UserListResponseUsersRolesOrgProductEnablementsTypeNgcAdminDeveloper = shared.UserListResponseUsersRolesOrgProductEnablementsTypeNgcAdminDeveloper
 
 // Purchase Order.
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgProductEnablementsPoDetail = shared.UserUserRolesOrgProductEnablementsPoDetail
+type UserListResponseUsersRolesOrgProductEnablementsPoDetail = shared.UserListResponseUsersRolesOrgProductEnablementsPoDetail
 
 // Product Subscription
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgProductSubscription = shared.UserUserRolesOrgProductSubscription
+type UserListResponseUsersRolesOrgProductSubscription = shared.UserListResponseUsersRolesOrgProductSubscription
 
 // EMS Subscription type. (options: EMS_EVAL, EMS_NFR and EMS_COMMERCIAL)
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgProductSubscriptionsEmsEntitlementType = shared.UserUserRolesOrgProductSubscriptionsEmsEntitlementType
+type UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementType = shared.UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementType
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsEval = shared.UserUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsEval
+const UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsEval = shared.UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsEval
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsNfr = shared.UserUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsNfr
+const UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsNfr = shared.UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsNfr
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommerical = shared.UserUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommerical
+const UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommerical = shared.UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommerical
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommercial = shared.UserUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommercial
+const UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommercial = shared.UserListResponseUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommercial
 
 // Subscription type. (options: NGC_ADMIN_EVAL, NGC_ADMIN_NFR,
 // NGC_ADMIN_COMMERCIAL)
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgProductSubscriptionsType = shared.UserUserRolesOrgProductSubscriptionsType
+type UserListResponseUsersRolesOrgProductSubscriptionsType = shared.UserListResponseUsersRolesOrgProductSubscriptionsType
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductSubscriptionsTypeNgcAdminEval = shared.UserUserRolesOrgProductSubscriptionsTypeNgcAdminEval
+const UserListResponseUsersRolesOrgProductSubscriptionsTypeNgcAdminEval = shared.UserListResponseUsersRolesOrgProductSubscriptionsTypeNgcAdminEval
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductSubscriptionsTypeNgcAdminNfr = shared.UserUserRolesOrgProductSubscriptionsTypeNgcAdminNfr
+const UserListResponseUsersRolesOrgProductSubscriptionsTypeNgcAdminNfr = shared.UserListResponseUsersRolesOrgProductSubscriptionsTypeNgcAdminNfr
 
 // This is an alias to an internal value.
-const UserUserRolesOrgProductSubscriptionsTypeNgcAdminCommercial = shared.UserUserRolesOrgProductSubscriptionsTypeNgcAdminCommercial
+const UserListResponseUsersRolesOrgProductSubscriptionsTypeNgcAdminCommercial = shared.UserListResponseUsersRolesOrgProductSubscriptionsTypeNgcAdminCommercial
 
 // Repo scan setting definition
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgRepoScanSettings = shared.UserUserRolesOrgRepoScanSettings
+type UserListResponseUsersRolesOrgRepoScanSettings = shared.UserListResponseUsersRolesOrgRepoScanSettings
 
 // This is an alias to an internal type.
-type UserUserRolesOrgType = shared.UserUserRolesOrgType
+type UserListResponseUsersRolesOrgType = shared.UserListResponseUsersRolesOrgType
 
 // This is an alias to an internal value.
-const UserUserRolesOrgTypeUnknown = shared.UserUserRolesOrgTypeUnknown
+const UserListResponseUsersRolesOrgTypeUnknown = shared.UserListResponseUsersRolesOrgTypeUnknown
 
 // This is an alias to an internal value.
-const UserUserRolesOrgTypeCloud = shared.UserUserRolesOrgTypeCloud
+const UserListResponseUsersRolesOrgTypeCloud = shared.UserListResponseUsersRolesOrgTypeCloud
 
 // This is an alias to an internal value.
-const UserUserRolesOrgTypeEnterprise = shared.UserUserRolesOrgTypeEnterprise
+const UserListResponseUsersRolesOrgTypeEnterprise = shared.UserListResponseUsersRolesOrgTypeEnterprise
 
 // This is an alias to an internal value.
-const UserUserRolesOrgTypeIndividual = shared.UserUserRolesOrgTypeIndividual
+const UserListResponseUsersRolesOrgTypeIndividual = shared.UserListResponseUsersRolesOrgTypeIndividual
 
 // Users information.
 //
 // This is an alias to an internal type.
-type UserUserRolesOrgUsersInfo = shared.UserUserRolesOrgUsersInfo
+type UserListResponseUsersRolesOrgUsersInfo = shared.UserListResponseUsersRolesOrgUsersInfo
 
 // Information about the user who is attempting to run the job
 //
 // This is an alias to an internal type.
-type UserUserRolesTargetSystemUserIdentifier = shared.UserUserRolesTargetSystemUserIdentifier
+type UserListResponseUsersRolesTargetSystemUserIdentifier = shared.UserListResponseUsersRolesTargetSystemUserIdentifier
 
 // Information about the team
 //
 // This is an alias to an internal type.
-type UserUserRolesTeam = shared.UserUserRolesTeam
+type UserListResponseUsersRolesTeam = shared.UserListResponseUsersRolesTeam
 
 // Infinity manager setting definition
 //
 // This is an alias to an internal type.
-type UserUserRolesTeamInfinityManagerSettings = shared.UserUserRolesTeamInfinityManagerSettings
+type UserListResponseUsersRolesTeamInfinityManagerSettings = shared.UserListResponseUsersRolesTeamInfinityManagerSettings
 
 // Repo scan setting definition
 //
 // This is an alias to an internal type.
-type UserUserRolesTeamRepoScanSettings = shared.UserUserRolesTeamRepoScanSettings
+type UserListResponseUsersRolesTeamRepoScanSettings = shared.UserListResponseUsersRolesTeamRepoScanSettings
 
 // represents user storage quota for a given ace and available unused storage
 //
 // This is an alias to an internal type.
-type UserUserStorageQuota = shared.UserUserStorageQuota
+type UserListResponseUsersStorageQuota = shared.UserListResponseUsersStorageQuota
 
 // Metadata information about the user.
 //
 // This is an alias to an internal type.
-type UserUserUserMetadata = shared.UserUserUserMetadata
+type UserListResponseUsersUserMetadata = shared.UserListResponseUsersUserMetadata
 
-// Response for a list of user invitations.
+// about one user
 //
 // This is an alias to an internal type.
-type UserInvitationList = shared.UserInvitationList
+type UserResponse = shared.UserResponse
 
-// User invitation to an NGC org or team
+// NCA role
 //
 // This is an alias to an internal type.
-type UserInvitationListInvitation = shared.UserInvitationListInvitation
-
-// Type of invitation. The invitation is either to an organization or to a team
-// within organization.
-//
-// This is an alias to an internal type.
-type UserInvitationListInvitationsType = shared.UserInvitationListInvitationsType
+type UserResponseNcaRole = shared.UserResponseNcaRole
 
 // This is an alias to an internal value.
-const UserInvitationListInvitationsTypeOrganization = shared.UserInvitationListInvitationsTypeOrganization
+const UserResponseNcaRoleUnknown = shared.UserResponseNcaRoleUnknown
 
 // This is an alias to an internal value.
-const UserInvitationListInvitationsTypeTeam = shared.UserInvitationListInvitationsTypeTeam
+const UserResponseNcaRoleAdministrator = shared.UserResponseNcaRoleAdministrator
 
-// object that describes the pagination information
-//
-// This is an alias to an internal type.
-type UserInvitationListPaginationInfo = shared.UserInvitationListPaginationInfo
+// This is an alias to an internal value.
+const UserResponseNcaRoleMember = shared.UserResponseNcaRoleMember
+
+// This is an alias to an internal value.
+const UserResponseNcaRoleOwner = shared.UserResponseNcaRoleOwner
+
+// This is an alias to an internal value.
+const UserResponseNcaRolePending = shared.UserResponseNcaRolePending
 
 // This is an alias to an internal type.
-type UserInvitationListRequestStatus = shared.UserInvitationListRequestStatus
+type UserResponseRequestStatus = shared.UserResponseRequestStatus
 
 // Describes response status reported by the server.
 //
 // This is an alias to an internal type.
-type UserInvitationListRequestStatusStatusCode = shared.UserInvitationListRequestStatusStatusCode
+type UserResponseRequestStatusStatusCode = shared.UserResponseRequestStatusStatusCode
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeUnknown = shared.UserInvitationListRequestStatusStatusCodeUnknown
+const UserResponseRequestStatusStatusCodeUnknown = shared.UserResponseRequestStatusStatusCodeUnknown
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeSuccess = shared.UserInvitationListRequestStatusStatusCodeSuccess
+const UserResponseRequestStatusStatusCodeSuccess = shared.UserResponseRequestStatusStatusCodeSuccess
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeUnauthorized = shared.UserInvitationListRequestStatusStatusCodeUnauthorized
+const UserResponseRequestStatusStatusCodeUnauthorized = shared.UserResponseRequestStatusStatusCodeUnauthorized
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodePaymentRequired = shared.UserInvitationListRequestStatusStatusCodePaymentRequired
+const UserResponseRequestStatusStatusCodePaymentRequired = shared.UserResponseRequestStatusStatusCodePaymentRequired
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeForbidden = shared.UserInvitationListRequestStatusStatusCodeForbidden
+const UserResponseRequestStatusStatusCodeForbidden = shared.UserResponseRequestStatusStatusCodeForbidden
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeTimeout = shared.UserInvitationListRequestStatusStatusCodeTimeout
+const UserResponseRequestStatusStatusCodeTimeout = shared.UserResponseRequestStatusStatusCodeTimeout
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeExists = shared.UserInvitationListRequestStatusStatusCodeExists
+const UserResponseRequestStatusStatusCodeExists = shared.UserResponseRequestStatusStatusCodeExists
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeNotFound = shared.UserInvitationListRequestStatusStatusCodeNotFound
+const UserResponseRequestStatusStatusCodeNotFound = shared.UserResponseRequestStatusStatusCodeNotFound
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeInternalError = shared.UserInvitationListRequestStatusStatusCodeInternalError
+const UserResponseRequestStatusStatusCodeInternalError = shared.UserResponseRequestStatusStatusCodeInternalError
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeInvalidRequest = shared.UserInvitationListRequestStatusStatusCodeInvalidRequest
+const UserResponseRequestStatusStatusCodeInvalidRequest = shared.UserResponseRequestStatusStatusCodeInvalidRequest
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeInvalidRequestVersion = shared.UserInvitationListRequestStatusStatusCodeInvalidRequestVersion
+const UserResponseRequestStatusStatusCodeInvalidRequestVersion = shared.UserResponseRequestStatusStatusCodeInvalidRequestVersion
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeInvalidRequestData = shared.UserInvitationListRequestStatusStatusCodeInvalidRequestData
+const UserResponseRequestStatusStatusCodeInvalidRequestData = shared.UserResponseRequestStatusStatusCodeInvalidRequestData
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeMethodNotAllowed = shared.UserInvitationListRequestStatusStatusCodeMethodNotAllowed
+const UserResponseRequestStatusStatusCodeMethodNotAllowed = shared.UserResponseRequestStatusStatusCodeMethodNotAllowed
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeConflict = shared.UserInvitationListRequestStatusStatusCodeConflict
+const UserResponseRequestStatusStatusCodeConflict = shared.UserResponseRequestStatusStatusCodeConflict
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeUnprocessableEntity = shared.UserInvitationListRequestStatusStatusCodeUnprocessableEntity
+const UserResponseRequestStatusStatusCodeUnprocessableEntity = shared.UserResponseRequestStatusStatusCodeUnprocessableEntity
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeTooManyRequests = shared.UserInvitationListRequestStatusStatusCodeTooManyRequests
+const UserResponseRequestStatusStatusCodeTooManyRequests = shared.UserResponseRequestStatusStatusCodeTooManyRequests
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeInsufficientStorage = shared.UserInvitationListRequestStatusStatusCodeInsufficientStorage
+const UserResponseRequestStatusStatusCodeInsufficientStorage = shared.UserResponseRequestStatusStatusCodeInsufficientStorage
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeServiceUnavailable = shared.UserInvitationListRequestStatusStatusCodeServiceUnavailable
+const UserResponseRequestStatusStatusCodeServiceUnavailable = shared.UserResponseRequestStatusStatusCodeServiceUnavailable
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodePayloadTooLarge = shared.UserInvitationListRequestStatusStatusCodePayloadTooLarge
+const UserResponseRequestStatusStatusCodePayloadTooLarge = shared.UserResponseRequestStatusStatusCodePayloadTooLarge
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeNotAcceptable = shared.UserInvitationListRequestStatusStatusCodeNotAcceptable
+const UserResponseRequestStatusStatusCodeNotAcceptable = shared.UserResponseRequestStatusStatusCodeNotAcceptable
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeUnavailableForLegalReasons = shared.UserInvitationListRequestStatusStatusCodeUnavailableForLegalReasons
+const UserResponseRequestStatusStatusCodeUnavailableForLegalReasons = shared.UserResponseRequestStatusStatusCodeUnavailableForLegalReasons
 
 // This is an alias to an internal value.
-const UserInvitationListRequestStatusStatusCodeBadGateway = shared.UserInvitationListRequestStatusStatusCodeBadGateway
+const UserResponseRequestStatusStatusCodeBadGateway = shared.UserResponseRequestStatusStatusCodeBadGateway
+
+// information about the user
+//
+// This is an alias to an internal type.
+type UserResponseUser = shared.UserResponseUser
+
+// Type of IDP, Identity Provider. Used for login.
+//
+// This is an alias to an internal type.
+type UserResponseUserIdpType = shared.UserResponseUserIdpType
+
+// This is an alias to an internal value.
+const UserResponseUserIdpTypeNvidia = shared.UserResponseUserIdpTypeNvidia
+
+// This is an alias to an internal value.
+const UserResponseUserIdpTypeEnterprise = shared.UserResponseUserIdpTypeEnterprise
+
+// List of roles that the user have
+//
+// This is an alias to an internal type.
+type UserResponseUserRole = shared.UserResponseUserRole
+
+// Information about the Organization
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrg = shared.UserResponseUserRolesOrg
+
+// Org Owner Alternate Contact
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgAlternateContact = shared.UserResponseUserRolesOrgAlternateContact
+
+// Infinity manager setting definition
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgInfinityManagerSettings = shared.UserResponseUserRolesOrgInfinityManagerSettings
+
+// Org owner.
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgOrgOwner = shared.UserResponseUserRolesOrgOrgOwner
+
+// Product Enablement
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgProductEnablement = shared.UserResponseUserRolesOrgProductEnablement
+
+// Product Enablement Types
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgProductEnablementsType = shared.UserResponseUserRolesOrgProductEnablementsType
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductEnablementsTypeNgcAdminEval = shared.UserResponseUserRolesOrgProductEnablementsTypeNgcAdminEval
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductEnablementsTypeNgcAdminNfr = shared.UserResponseUserRolesOrgProductEnablementsTypeNgcAdminNfr
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductEnablementsTypeNgcAdminCommercial = shared.UserResponseUserRolesOrgProductEnablementsTypeNgcAdminCommercial
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductEnablementsTypeEmsEval = shared.UserResponseUserRolesOrgProductEnablementsTypeEmsEval
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductEnablementsTypeEmsNfr = shared.UserResponseUserRolesOrgProductEnablementsTypeEmsNfr
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductEnablementsTypeEmsCommercial = shared.UserResponseUserRolesOrgProductEnablementsTypeEmsCommercial
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductEnablementsTypeNgcAdminDeveloper = shared.UserResponseUserRolesOrgProductEnablementsTypeNgcAdminDeveloper
+
+// Purchase Order.
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgProductEnablementsPoDetail = shared.UserResponseUserRolesOrgProductEnablementsPoDetail
+
+// Product Subscription
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgProductSubscription = shared.UserResponseUserRolesOrgProductSubscription
+
+// EMS Subscription type. (options: EMS_EVAL, EMS_NFR and EMS_COMMERCIAL)
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementType = shared.UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementType
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsEval = shared.UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsEval
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsNfr = shared.UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsNfr
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommerical = shared.UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommerical
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommercial = shared.UserResponseUserRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommercial
+
+// Subscription type. (options: NGC_ADMIN_EVAL, NGC_ADMIN_NFR,
+// NGC_ADMIN_COMMERCIAL)
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgProductSubscriptionsType = shared.UserResponseUserRolesOrgProductSubscriptionsType
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductSubscriptionsTypeNgcAdminEval = shared.UserResponseUserRolesOrgProductSubscriptionsTypeNgcAdminEval
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductSubscriptionsTypeNgcAdminNfr = shared.UserResponseUserRolesOrgProductSubscriptionsTypeNgcAdminNfr
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgProductSubscriptionsTypeNgcAdminCommercial = shared.UserResponseUserRolesOrgProductSubscriptionsTypeNgcAdminCommercial
+
+// Repo scan setting definition
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgRepoScanSettings = shared.UserResponseUserRolesOrgRepoScanSettings
+
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgType = shared.UserResponseUserRolesOrgType
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgTypeUnknown = shared.UserResponseUserRolesOrgTypeUnknown
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgTypeCloud = shared.UserResponseUserRolesOrgTypeCloud
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgTypeEnterprise = shared.UserResponseUserRolesOrgTypeEnterprise
+
+// This is an alias to an internal value.
+const UserResponseUserRolesOrgTypeIndividual = shared.UserResponseUserRolesOrgTypeIndividual
+
+// Users information.
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesOrgUsersInfo = shared.UserResponseUserRolesOrgUsersInfo
+
+// Information about the user who is attempting to run the job
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesTargetSystemUserIdentifier = shared.UserResponseUserRolesTargetSystemUserIdentifier
+
+// Information about the team
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesTeam = shared.UserResponseUserRolesTeam
+
+// Infinity manager setting definition
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesTeamInfinityManagerSettings = shared.UserResponseUserRolesTeamInfinityManagerSettings
+
+// Repo scan setting definition
+//
+// This is an alias to an internal type.
+type UserResponseUserRolesTeamRepoScanSettings = shared.UserResponseUserRolesTeamRepoScanSettings
+
+// represents user storage quota for a given ace and available unused storage
+//
+// This is an alias to an internal type.
+type UserResponseUserStorageQuota = shared.UserResponseUserStorageQuota
+
+// Metadata information about the user.
+//
+// This is an alias to an internal type.
+type UserResponseUserUserMetadata = shared.UserResponseUserUserMetadata

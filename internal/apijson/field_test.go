@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/param"
 )
 
 type Struct struct {

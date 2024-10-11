@@ -11,15 +11,15 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
 	"github.com/tidwall/sjson"
 )
 
-// RequestOption is an option for the requests made by the nvidia-gpu-cloud API Client
+// RequestOption is an option for the requests made by the ngc API Client
 // which can be supplied to clients, services, and methods. You can read more about this functional
 // options pattern in our [README].
 //
-// [README]: https://pkg.go.dev/github.com/stainless-sdks/nvidia-gpu-cloud-go#readme-requestoptions
+// [README]: https://pkg.go.dev/github.com/brevdev/ngc-go#readme-requestoptions
 type RequestOption = func(*requestconfig.RequestConfig) error
 
 // WithBaseURL returns a RequestOption that sets the BaseURL for the client.
@@ -233,13 +233,5 @@ func WithAPIKey(value string) RequestOption {
 	return func(r *requestconfig.RequestConfig) error {
 		r.APIKey = value
 		return r.Apply(WithHeader("Authorization", r.APIKey))
-	}
-}
-
-// WithBearerToken returns a RequestOption that sets the client setting "bearer_token".
-func WithBearerToken(value string) RequestOption {
-	return func(r *requestconfig.RequestConfig) error {
-		r.BearerToken = value
-		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.BearerToken)))
 	}
 }

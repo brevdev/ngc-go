@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
 	"context"
@@ -9,16 +9,16 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apijson"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apiquery"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/param"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/shared"
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/internal/apiquery"
+	"github.com/brevdev/ngc-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
+	"github.com/brevdev/ngc-go/shared"
 )
 
 // OrgTeamUserService contains methods and other services that help with
-// interacting with the nvidia-gpu-cloud API.
+// interacting with the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -33,26 +33,6 @@ type OrgTeamUserService struct {
 func NewOrgTeamUserService(opts ...option.RequestOption) (r *OrgTeamUserService) {
 	r = &OrgTeamUserService{}
 	r.Options = opts
-	return
-}
-
-// Get info and role/invitation in a team by email or id
-func (r *OrgTeamUserService) Get(ctx context.Context, orgName string, teamName string, userEmailOrID string, opts ...option.RequestOption) (res *shared.User, err error) {
-	opts = append(r.Options[:], opts...)
-	if orgName == "" {
-		err = errors.New("missing required org-name parameter")
-		return
-	}
-	if teamName == "" {
-		err = errors.New("missing required team-name parameter")
-		return
-	}
-	if userEmailOrID == "" {
-		err = errors.New("missing required user-email-or-id parameter")
-		return
-	}
-	path := fmt.Sprintf("v3/orgs/%s/teams/%s/users/%s", orgName, teamName, userEmailOrID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -76,8 +56,8 @@ func (r *OrgTeamUserService) Delete(ctx context.Context, orgName string, teamNam
 	return
 }
 
-// Add User Role in team.
-func (r *OrgTeamUserService) AddRole(ctx context.Context, orgName string, teamName string, id string, body OrgTeamUserAddRoleParams, opts ...option.RequestOption) (res *shared.User, err error) {
+// Invite if user does not exist, otherwise add role in team
+func (r *OrgTeamUserService) AddRole(ctx context.Context, orgName string, teamName string, userEmailOrID string, params OrgTeamUserAddRoleParams, opts ...option.RequestOption) (res *shared.UserResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if orgName == "" {
 		err = errors.New("missing required org-name parameter")
@@ -87,33 +67,17 @@ func (r *OrgTeamUserService) AddRole(ctx context.Context, orgName string, teamNa
 		err = errors.New("missing required team-name parameter")
 		return
 	}
-	if id == "" {
-		err = errors.New("missing required id parameter")
+	if userEmailOrID == "" {
+		err = errors.New("missing required user-email-or-id parameter")
 		return
 	}
-	path := fmt.Sprintf("v2/org/%s/team/%s/users/%s/add-role", orgName, teamName, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
-}
-
-// Invites and creates a User in team
-func (r *OrgTeamUserService) NcaInvitations(ctx context.Context, orgName string, teamName string, body OrgTeamUserNcaInvitationsParams, opts ...option.RequestOption) (res *shared.User, err error) {
-	opts = append(r.Options[:], opts...)
-	if orgName == "" {
-		err = errors.New("missing required org-name parameter")
-		return
-	}
-	if teamName == "" {
-		err = errors.New("missing required team-name parameter")
-		return
-	}
-	path := fmt.Sprintf("v3/orgs/%s/teams/%s/users/nca-invitations", orgName, teamName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	path := fmt.Sprintf("v3/orgs/%s/teams/%s/users/%s/add-role", orgName, teamName, userEmailOrID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return
 }
 
 // Remove role in team if user exists, otherwise remove invitation
-func (r *OrgTeamUserService) RemoveRole(ctx context.Context, orgName string, teamName string, userEmailOrID string, body OrgTeamUserRemoveRoleParams, opts ...option.RequestOption) (res *shared.User, err error) {
+func (r *OrgTeamUserService) RemoveRole(ctx context.Context, orgName string, teamName string, userEmailOrID string, body OrgTeamUserRemoveRoleParams, opts ...option.RequestOption) (res *shared.UserResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if orgName == "" {
 		err = errors.New("missing required org-name parameter")
@@ -129,26 +93,6 @@ func (r *OrgTeamUserService) RemoveRole(ctx context.Context, orgName string, tea
 	}
 	path := fmt.Sprintf("v3/orgs/%s/teams/%s/users/%s/remove-role", orgName, teamName, userEmailOrID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
-}
-
-// Update User Role in team
-func (r *OrgTeamUserService) UpdateRole(ctx context.Context, orgName string, teamName string, id string, body OrgTeamUserUpdateRoleParams, opts ...option.RequestOption) (res *shared.User, err error) {
-	opts = append(r.Options[:], opts...)
-	if orgName == "" {
-		err = errors.New("missing required org-name parameter")
-		return
-	}
-	if teamName == "" {
-		err = errors.New("missing required team-name parameter")
-		return
-	}
-	if id == "" {
-		err = errors.New("missing required id parameter")
-		return
-	}
-	path := fmt.Sprintf("v2/org/%s/team/%s/users/%s/update-role", orgName, teamName, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
@@ -252,7 +196,9 @@ func (r OrgTeamUserDeleteParams) URLQuery() (v url.Values) {
 }
 
 type OrgTeamUserAddRoleParams struct {
-	Roles param.Field[[]string] `query:"roles"`
+	Roles     param.Field[[]string] `query:"roles,required"`
+	Ncid      param.Field[string]   `cookie:"ncid"`
+	VisitorID param.Field[string]   `cookie:"VisitorID"`
 }
 
 // URLQuery serializes [OrgTeamUserAddRoleParams]'s query parameters as
@@ -264,37 +210,6 @@ func (r OrgTeamUserAddRoleParams) URLQuery() (v url.Values) {
 	})
 }
 
-type OrgTeamUserNcaInvitationsParams struct {
-	// Is the user email
-	Email param.Field[string] `json:"email"`
-	// Is the numbers of days the invitation will expire
-	InvitationExpirationIn param.Field[int64] `json:"invitationExpirationIn"`
-	// Nca allow users to be invited as Admin and as Member
-	InviteAs param.Field[OrgTeamUserNcaInvitationsParamsInviteAs] `json:"inviteAs"`
-	// Is a message to the new user
-	Message param.Field[string] `json:"message"`
-}
-
-func (r OrgTeamUserNcaInvitationsParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Nca allow users to be invited as Admin and as Member
-type OrgTeamUserNcaInvitationsParamsInviteAs string
-
-const (
-	OrgTeamUserNcaInvitationsParamsInviteAsAdmin  OrgTeamUserNcaInvitationsParamsInviteAs = "ADMIN"
-	OrgTeamUserNcaInvitationsParamsInviteAsMember OrgTeamUserNcaInvitationsParamsInviteAs = "MEMBER"
-)
-
-func (r OrgTeamUserNcaInvitationsParamsInviteAs) IsKnown() bool {
-	switch r {
-	case OrgTeamUserNcaInvitationsParamsInviteAsAdmin, OrgTeamUserNcaInvitationsParamsInviteAsMember:
-		return true
-	}
-	return false
-}
-
 type OrgTeamUserRemoveRoleParams struct {
 	Roles param.Field[[]string] `query:"roles"`
 }
@@ -302,19 +217,6 @@ type OrgTeamUserRemoveRoleParams struct {
 // URLQuery serializes [OrgTeamUserRemoveRoleParams]'s query parameters as
 // `url.Values`.
 func (r OrgTeamUserRemoveRoleParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type OrgTeamUserUpdateRoleParams struct {
-	Roles param.Field[[]string] `query:"roles"`
-}
-
-// URLQuery serializes [OrgTeamUserUpdateRoleParams]'s query parameters as
-// `url.Values`.
-func (r OrgTeamUserUpdateRoleParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

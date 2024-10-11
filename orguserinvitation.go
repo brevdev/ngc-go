@@ -1,23 +1,14 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-	"net/url"
-
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apiquery"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/param"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/shared"
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // OrgUserInvitationService contains methods and other services that help with
-// interacting with the nvidia-gpu-cloud API.
+// interacting with the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -35,129 +26,194 @@ func NewOrgUserInvitationService(opts ...option.RequestOption) (r *OrgUserInvita
 	return
 }
 
-// List invitations in an org. (Org User Admin privileges required)
-func (r *OrgUserInvitationService) List(ctx context.Context, orgName string, query OrgUserInvitationListParams, opts ...option.RequestOption) (res *shared.UserInvitationList, err error) {
-	opts = append(r.Options[:], opts...)
-	if orgName == "" {
-		err = errors.New("missing required org-name parameter")
-		return
-	}
-	path := fmt.Sprintf("v2/org/%s/users/invitations", orgName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+// Response for a list of user invitations.
+type UserInvitationList struct {
+	// List of invitations.
+	Invitations []UserInvitationListInvitation `json:"invitations"`
+	// object that describes the pagination information
+	PaginationInfo UserInvitationListPaginationInfo `json:"paginationInfo"`
+	RequestStatus  UserInvitationListRequestStatus  `json:"requestStatus"`
+	JSON           userInvitationListJSON           `json:"-"`
 }
 
-// Resend email of a specific invitation in an org (Org User Admin privileges
-// required).
-func (r *OrgUserInvitationService) ResendInvitationEmail(ctx context.Context, orgName string, id string, opts ...option.RequestOption) (res *shared.User, err error) {
-	opts = append(r.Options[:], opts...)
-	if orgName == "" {
-		err = errors.New("missing required org-name parameter")
-		return
-	}
-	if id == "" {
-		err = errors.New("missing required id parameter")
-		return
-	}
-	path := fmt.Sprintf("v2/org/%s/users/invitations/%s/resend-invitation-email", orgName, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+// userInvitationListJSON contains the JSON metadata for the struct
+// [UserInvitationList]
+type userInvitationListJSON struct {
+	Invitations    apijson.Field
+	PaginationInfo apijson.Field
+	RequestStatus  apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
-type OrgUserInvitationListParams struct {
-	OrderBy param.Field[OrgUserInvitationListParamsOrderBy] `query:"orderBy"`
-	// The page number of result
-	PageNumber param.Field[int64] `query:"page-number"`
-	// The page size of result
-	PageSize param.Field[int64] `query:"page-size"`
-	// User Search Parameters
-	Q param.Field[OrgUserInvitationListParamsQ] `query:"q"`
+func (r *UserInvitationList) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-// URLQuery serializes [OrgUserInvitationListParams]'s query parameters as
-// `url.Values`.
-func (r OrgUserInvitationListParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
+func (r userInvitationListJSON) RawJSON() string {
+	return r.raw
 }
 
-type OrgUserInvitationListParamsOrderBy string
+// User invitation to an NGC org or team
+type UserInvitationListInvitation struct {
+	// Unique invitation ID
+	ID string `json:"id"`
+	// Date on which the invitation was created. (ISO-8601 format)
+	CreatedDate string `json:"createdDate"`
+	// Email address of the user.
+	Email string `json:"email"`
+	// Flag indicating if the invitation has already been accepted by the user.
+	IsProcessed bool `json:"isProcessed"`
+	// user name
+	Name string `json:"name"`
+	// Org to which a user was invited.
+	Org string `json:"org"`
+	// List of roles that the user have.
+	Roles []string `json:"roles"`
+	// Team to which a user was invited.
+	Team string `json:"team"`
+	// Type of invitation. The invitation is either to an organization or to a team
+	// within organization.
+	Type UserInvitationListInvitationsType `json:"type"`
+	JSON userInvitationListInvitationJSON  `json:"-"`
+}
+
+// userInvitationListInvitationJSON contains the JSON metadata for the struct
+// [UserInvitationListInvitation]
+type userInvitationListInvitationJSON struct {
+	ID          apijson.Field
+	CreatedDate apijson.Field
+	Email       apijson.Field
+	IsProcessed apijson.Field
+	Name        apijson.Field
+	Org         apijson.Field
+	Roles       apijson.Field
+	Team        apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserInvitationListInvitation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userInvitationListInvitationJSON) RawJSON() string {
+	return r.raw
+}
+
+// Type of invitation. The invitation is either to an organization or to a team
+// within organization.
+type UserInvitationListInvitationsType string
 
 const (
-	OrgUserInvitationListParamsOrderByNameAsc  OrgUserInvitationListParamsOrderBy = "NAME_ASC"
-	OrgUserInvitationListParamsOrderByNameDesc OrgUserInvitationListParamsOrderBy = "NAME_DESC"
+	UserInvitationListInvitationsTypeOrganization UserInvitationListInvitationsType = "ORGANIZATION"
+	UserInvitationListInvitationsTypeTeam         UserInvitationListInvitationsType = "TEAM"
 )
 
-func (r OrgUserInvitationListParamsOrderBy) IsKnown() bool {
+func (r UserInvitationListInvitationsType) IsKnown() bool {
 	switch r {
-	case OrgUserInvitationListParamsOrderByNameAsc, OrgUserInvitationListParamsOrderByNameDesc:
+	case UserInvitationListInvitationsTypeOrganization, UserInvitationListInvitationsTypeTeam:
 		return true
 	}
 	return false
 }
 
-// User Search Parameters
-type OrgUserInvitationListParamsQ struct {
-	Fields      param.Field[[]string]                              `query:"fields"`
-	Filters     param.Field[[]OrgUserInvitationListParamsQFilter]  `query:"filters"`
-	GroupBy     param.Field[string]                                `query:"groupBy"`
-	OrderBy     param.Field[[]OrgUserInvitationListParamsQOrderBy] `query:"orderBy"`
-	Page        param.Field[int64]                                 `query:"page"`
-	PageSize    param.Field[int64]                                 `query:"pageSize"`
-	Query       param.Field[string]                                `query:"query"`
-	QueryFields param.Field[[]string]                              `query:"queryFields"`
-	ScoredSize  param.Field[int64]                                 `query:"scoredSize"`
+// object that describes the pagination information
+type UserInvitationListPaginationInfo struct {
+	// Page index of results
+	Index int64 `json:"index"`
+	// Serialized pointer to the next results page. Should be used for fetching next
+	// page. Can be empty
+	NextPage string `json:"nextPage"`
+	// Number of results in page
+	Size int64 `json:"size"`
+	// Total number of pages available
+	TotalPages int64 `json:"totalPages"`
+	// Total number of results available
+	TotalResults int64                                `json:"totalResults"`
+	JSON         userInvitationListPaginationInfoJSON `json:"-"`
 }
 
-// URLQuery serializes [OrgUserInvitationListParamsQ]'s query parameters as
-// `url.Values`.
-func (r OrgUserInvitationListParamsQ) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
+// userInvitationListPaginationInfoJSON contains the JSON metadata for the struct
+// [UserInvitationListPaginationInfo]
+type userInvitationListPaginationInfoJSON struct {
+	Index        apijson.Field
+	NextPage     apijson.Field
+	Size         apijson.Field
+	TotalPages   apijson.Field
+	TotalResults apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
 }
 
-type OrgUserInvitationListParamsQFilter struct {
-	Field param.Field[string] `query:"field"`
-	Value param.Field[string] `query:"value"`
+func (r *UserInvitationListPaginationInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-// URLQuery serializes [OrgUserInvitationListParamsQFilter]'s query parameters as
-// `url.Values`.
-func (r OrgUserInvitationListParamsQFilter) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
+func (r userInvitationListPaginationInfoJSON) RawJSON() string {
+	return r.raw
 }
 
-type OrgUserInvitationListParamsQOrderBy struct {
-	Field param.Field[string]                                   `query:"field"`
-	Value param.Field[OrgUserInvitationListParamsQOrderByValue] `query:"value"`
+type UserInvitationListRequestStatus struct {
+	RequestID string `json:"requestId"`
+	ServerID  string `json:"serverId"`
+	// Describes response status reported by the server.
+	StatusCode        UserInvitationListRequestStatusStatusCode `json:"statusCode"`
+	StatusDescription string                                    `json:"statusDescription"`
+	JSON              userInvitationListRequestStatusJSON       `json:"-"`
 }
 
-// URLQuery serializes [OrgUserInvitationListParamsQOrderBy]'s query parameters as
-// `url.Values`.
-func (r OrgUserInvitationListParamsQOrderBy) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
+// userInvitationListRequestStatusJSON contains the JSON metadata for the struct
+// [UserInvitationListRequestStatus]
+type userInvitationListRequestStatusJSON struct {
+	RequestID         apijson.Field
+	ServerID          apijson.Field
+	StatusCode        apijson.Field
+	StatusDescription apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
 }
 
-type OrgUserInvitationListParamsQOrderByValue string
+func (r *UserInvitationListRequestStatus) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userInvitationListRequestStatusJSON) RawJSON() string {
+	return r.raw
+}
+
+// Describes response status reported by the server.
+type UserInvitationListRequestStatusStatusCode string
 
 const (
-	OrgUserInvitationListParamsQOrderByValueAsc  OrgUserInvitationListParamsQOrderByValue = "ASC"
-	OrgUserInvitationListParamsQOrderByValueDesc OrgUserInvitationListParamsQOrderByValue = "DESC"
+	UserInvitationListRequestStatusStatusCodeUnknown                    UserInvitationListRequestStatusStatusCode = "UNKNOWN"
+	UserInvitationListRequestStatusStatusCodeSuccess                    UserInvitationListRequestStatusStatusCode = "SUCCESS"
+	UserInvitationListRequestStatusStatusCodeUnauthorized               UserInvitationListRequestStatusStatusCode = "UNAUTHORIZED"
+	UserInvitationListRequestStatusStatusCodePaymentRequired            UserInvitationListRequestStatusStatusCode = "PAYMENT_REQUIRED"
+	UserInvitationListRequestStatusStatusCodeForbidden                  UserInvitationListRequestStatusStatusCode = "FORBIDDEN"
+	UserInvitationListRequestStatusStatusCodeTimeout                    UserInvitationListRequestStatusStatusCode = "TIMEOUT"
+	UserInvitationListRequestStatusStatusCodeExists                     UserInvitationListRequestStatusStatusCode = "EXISTS"
+	UserInvitationListRequestStatusStatusCodeNotFound                   UserInvitationListRequestStatusStatusCode = "NOT_FOUND"
+	UserInvitationListRequestStatusStatusCodeInternalError              UserInvitationListRequestStatusStatusCode = "INTERNAL_ERROR"
+	UserInvitationListRequestStatusStatusCodeInvalidRequest             UserInvitationListRequestStatusStatusCode = "INVALID_REQUEST"
+	UserInvitationListRequestStatusStatusCodeInvalidRequestVersion      UserInvitationListRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
+	UserInvitationListRequestStatusStatusCodeInvalidRequestData         UserInvitationListRequestStatusStatusCode = "INVALID_REQUEST_DATA"
+	UserInvitationListRequestStatusStatusCodeMethodNotAllowed           UserInvitationListRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
+	UserInvitationListRequestStatusStatusCodeConflict                   UserInvitationListRequestStatusStatusCode = "CONFLICT"
+	UserInvitationListRequestStatusStatusCodeUnprocessableEntity        UserInvitationListRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
+	UserInvitationListRequestStatusStatusCodeTooManyRequests            UserInvitationListRequestStatusStatusCode = "TOO_MANY_REQUESTS"
+	UserInvitationListRequestStatusStatusCodeInsufficientStorage        UserInvitationListRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
+	UserInvitationListRequestStatusStatusCodeServiceUnavailable         UserInvitationListRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
+	UserInvitationListRequestStatusStatusCodePayloadTooLarge            UserInvitationListRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
+	UserInvitationListRequestStatusStatusCodeNotAcceptable              UserInvitationListRequestStatusStatusCode = "NOT_ACCEPTABLE"
+	UserInvitationListRequestStatusStatusCodeUnavailableForLegalReasons UserInvitationListRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
+	UserInvitationListRequestStatusStatusCodeBadGateway                 UserInvitationListRequestStatusStatusCode = "BAD_GATEWAY"
 )
 
-func (r OrgUserInvitationListParamsQOrderByValue) IsKnown() bool {
+func (r UserInvitationListRequestStatusStatusCode) IsKnown() bool {
 	switch r {
-	case OrgUserInvitationListParamsQOrderByValueAsc, OrgUserInvitationListParamsQOrderByValueDesc:
+	case UserInvitationListRequestStatusStatusCodeUnknown, UserInvitationListRequestStatusStatusCodeSuccess, UserInvitationListRequestStatusStatusCodeUnauthorized, UserInvitationListRequestStatusStatusCodePaymentRequired, UserInvitationListRequestStatusStatusCodeForbidden, UserInvitationListRequestStatusStatusCodeTimeout, UserInvitationListRequestStatusStatusCodeExists, UserInvitationListRequestStatusStatusCodeNotFound, UserInvitationListRequestStatusStatusCodeInternalError, UserInvitationListRequestStatusStatusCodeInvalidRequest, UserInvitationListRequestStatusStatusCodeInvalidRequestVersion, UserInvitationListRequestStatusStatusCodeInvalidRequestData, UserInvitationListRequestStatusStatusCodeMethodNotAllowed, UserInvitationListRequestStatusStatusCodeConflict, UserInvitationListRequestStatusStatusCodeUnprocessableEntity, UserInvitationListRequestStatusStatusCodeTooManyRequests, UserInvitationListRequestStatusStatusCodeInsufficientStorage, UserInvitationListRequestStatusStatusCodeServiceUnavailable, UserInvitationListRequestStatusStatusCodePayloadTooLarge, UserInvitationListRequestStatusStatusCodeNotAcceptable, UserInvitationListRequestStatusStatusCodeUnavailableForLegalReasons, UserInvitationListRequestStatusStatusCodeBadGateway:
 		return true
 	}
 	return false

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/testutil"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal/testutil"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestRoleListWithOptionalParams(t *testing.T) {
@@ -21,16 +21,15 @@ func TestRoleListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Roles.List(context.TODO(), nvidiagpucloud.RoleListParams{
-		ShowHidden: nvidiagpucloud.F(true),
+	_, err := client.Roles.List(context.TODO(), ngc.RoleListParams{
+		ShowHidden: ngc.F(true),
 	})
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
