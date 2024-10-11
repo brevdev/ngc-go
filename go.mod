@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/nvidia-gpu-cloud-go
+module github.com/brevdev/ngc-go
 
 go 1.21
 

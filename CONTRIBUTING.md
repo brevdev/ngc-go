@@ -41,7 +41,7 @@ To use a local version of this library from source in another project, edit the 
 directive. This can be done through the CLI with the following:
 
 ```sh
-$ go mod edit -replace github.com/stainless-sdks/nvidia-gpu-cloud-go=/path/to/nvidia-gpu-cloud-go
+$ go mod edit -replace github.com/brevdev/ngc-go=/path/to/ngc-go
 ```
 
 ## Running tests

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/testutil"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal/testutil"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestOrgNewWithOptionalParams(t *testing.T) {
@@ -21,102 +21,101 @@ func TestOrgNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Orgs.New(context.TODO(), nvidiagpucloud.OrgNewParams{
-		Country:     nvidiagpucloud.F("country"),
-		Description: nvidiagpucloud.F("description"),
-		DisplayName: nvidiagpucloud.F("x"),
-		Initiator:   nvidiagpucloud.F("initiator"),
-		IsInternal:  nvidiagpucloud.F(true),
-		Name:        nvidiagpucloud.F("xx"),
-		NcaID:       nvidiagpucloud.F("ncaId"),
-		NcaNumber:   nvidiagpucloud.F("ncaNumber"),
-		OrgOwner: nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsOrgOwner{
-			Email:       nvidiagpucloud.F("email"),
-			FullName:    nvidiagpucloud.F("x"),
-			IdpID:       nvidiagpucloud.F("idpId"),
-			StarfleetID: nvidiagpucloud.F("starfleetId"),
+	_, err := client.Orgs.New(context.TODO(), ngc.OrgNewParams{
+		Country:     ngc.F("country"),
+		Description: ngc.F("description"),
+		DisplayName: ngc.F("x"),
+		Initiator:   ngc.F("initiator"),
+		IsInternal:  ngc.F(true),
+		Name:        ngc.F("xx"),
+		NcaID:       ngc.F("ncaId"),
+		NcaNumber:   ngc.F("ncaNumber"),
+		OrgOwner: ngc.F(ngc.OrgNewParamsOrgOwner{
+			Email:       ngc.F("email"),
+			FullName:    ngc.F("x"),
+			IdpID:       ngc.F("idpId"),
+			StarfleetID: ngc.F("starfleetId"),
 		}),
-		PecName:   nvidiagpucloud.F("pecName"),
-		PecSfdcID: nvidiagpucloud.F("pecSfdcId"),
-		ProductEnablements: nvidiagpucloud.F([]nvidiagpucloud.OrgNewParamsProductEnablement{{
-			ProductName:    nvidiagpucloud.F("productName"),
-			Type:           nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsProductEnablementsTypeNgcAdminEval),
-			ExpirationDate: nvidiagpucloud.F("expirationDate"),
-			PoDetails: nvidiagpucloud.F([]nvidiagpucloud.OrgNewParamsProductEnablementsPoDetail{{
-				EntitlementID: nvidiagpucloud.F("entitlementId"),
-				PkID:          nvidiagpucloud.F("pkId"),
+		PecName:   ngc.F("pecName"),
+		PecSfdcID: ngc.F("pecSfdcId"),
+		ProductEnablements: ngc.F([]ngc.OrgNewParamsProductEnablement{{
+			ProductName:    ngc.F("productName"),
+			Type:           ngc.F(ngc.OrgNewParamsProductEnablementsTypeNgcAdminEval),
+			ExpirationDate: ngc.F("expirationDate"),
+			PoDetails: ngc.F([]ngc.OrgNewParamsProductEnablementsPoDetail{{
+				EntitlementID: ngc.F("entitlementId"),
+				PkID:          ngc.F("pkId"),
 			}, {
-				EntitlementID: nvidiagpucloud.F("entitlementId"),
-				PkID:          nvidiagpucloud.F("pkId"),
+				EntitlementID: ngc.F("entitlementId"),
+				PkID:          ngc.F("pkId"),
 			}, {
-				EntitlementID: nvidiagpucloud.F("entitlementId"),
-				PkID:          nvidiagpucloud.F("pkId"),
+				EntitlementID: ngc.F("entitlementId"),
+				PkID:          ngc.F("pkId"),
 			}}),
 		}, {
-			ProductName:    nvidiagpucloud.F("productName"),
-			Type:           nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsProductEnablementsTypeNgcAdminEval),
-			ExpirationDate: nvidiagpucloud.F("expirationDate"),
-			PoDetails: nvidiagpucloud.F([]nvidiagpucloud.OrgNewParamsProductEnablementsPoDetail{{
-				EntitlementID: nvidiagpucloud.F("entitlementId"),
-				PkID:          nvidiagpucloud.F("pkId"),
+			ProductName:    ngc.F("productName"),
+			Type:           ngc.F(ngc.OrgNewParamsProductEnablementsTypeNgcAdminEval),
+			ExpirationDate: ngc.F("expirationDate"),
+			PoDetails: ngc.F([]ngc.OrgNewParamsProductEnablementsPoDetail{{
+				EntitlementID: ngc.F("entitlementId"),
+				PkID:          ngc.F("pkId"),
 			}, {
-				EntitlementID: nvidiagpucloud.F("entitlementId"),
-				PkID:          nvidiagpucloud.F("pkId"),
+				EntitlementID: ngc.F("entitlementId"),
+				PkID:          ngc.F("pkId"),
 			}, {
-				EntitlementID: nvidiagpucloud.F("entitlementId"),
-				PkID:          nvidiagpucloud.F("pkId"),
+				EntitlementID: ngc.F("entitlementId"),
+				PkID:          ngc.F("pkId"),
 			}}),
 		}, {
-			ProductName:    nvidiagpucloud.F("productName"),
-			Type:           nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsProductEnablementsTypeNgcAdminEval),
-			ExpirationDate: nvidiagpucloud.F("expirationDate"),
-			PoDetails: nvidiagpucloud.F([]nvidiagpucloud.OrgNewParamsProductEnablementsPoDetail{{
-				EntitlementID: nvidiagpucloud.F("entitlementId"),
-				PkID:          nvidiagpucloud.F("pkId"),
+			ProductName:    ngc.F("productName"),
+			Type:           ngc.F(ngc.OrgNewParamsProductEnablementsTypeNgcAdminEval),
+			ExpirationDate: ngc.F("expirationDate"),
+			PoDetails: ngc.F([]ngc.OrgNewParamsProductEnablementsPoDetail{{
+				EntitlementID: ngc.F("entitlementId"),
+				PkID:          ngc.F("pkId"),
 			}, {
-				EntitlementID: nvidiagpucloud.F("entitlementId"),
-				PkID:          nvidiagpucloud.F("pkId"),
+				EntitlementID: ngc.F("entitlementId"),
+				PkID:          ngc.F("pkId"),
 			}, {
-				EntitlementID: nvidiagpucloud.F("entitlementId"),
-				PkID:          nvidiagpucloud.F("pkId"),
+				EntitlementID: ngc.F("entitlementId"),
+				PkID:          ngc.F("pkId"),
 			}}),
 		}}),
-		ProductSubscriptions: nvidiagpucloud.F([]nvidiagpucloud.OrgNewParamsProductSubscription{{
-			ProductName:        nvidiagpucloud.F("productName"),
-			ID:                 nvidiagpucloud.F("id"),
-			EmsEntitlementType: nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsProductSubscriptionsEmsEntitlementTypeEmsEval),
-			ExpirationDate:     nvidiagpucloud.F("expirationDate"),
-			StartDate:          nvidiagpucloud.F("startDate"),
-			Type:               nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsProductSubscriptionsTypeNgcAdminEval),
+		ProductSubscriptions: ngc.F([]ngc.OrgNewParamsProductSubscription{{
+			ProductName:        ngc.F("productName"),
+			ID:                 ngc.F("id"),
+			EmsEntitlementType: ngc.F(ngc.OrgNewParamsProductSubscriptionsEmsEntitlementTypeEmsEval),
+			ExpirationDate:     ngc.F("expirationDate"),
+			StartDate:          ngc.F("startDate"),
+			Type:               ngc.F(ngc.OrgNewParamsProductSubscriptionsTypeNgcAdminEval),
 		}, {
-			ProductName:        nvidiagpucloud.F("productName"),
-			ID:                 nvidiagpucloud.F("id"),
-			EmsEntitlementType: nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsProductSubscriptionsEmsEntitlementTypeEmsEval),
-			ExpirationDate:     nvidiagpucloud.F("expirationDate"),
-			StartDate:          nvidiagpucloud.F("startDate"),
-			Type:               nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsProductSubscriptionsTypeNgcAdminEval),
+			ProductName:        ngc.F("productName"),
+			ID:                 ngc.F("id"),
+			EmsEntitlementType: ngc.F(ngc.OrgNewParamsProductSubscriptionsEmsEntitlementTypeEmsEval),
+			ExpirationDate:     ngc.F("expirationDate"),
+			StartDate:          ngc.F("startDate"),
+			Type:               ngc.F(ngc.OrgNewParamsProductSubscriptionsTypeNgcAdminEval),
 		}, {
-			ProductName:        nvidiagpucloud.F("productName"),
-			ID:                 nvidiagpucloud.F("id"),
-			EmsEntitlementType: nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsProductSubscriptionsEmsEntitlementTypeEmsEval),
-			ExpirationDate:     nvidiagpucloud.F("expirationDate"),
-			StartDate:          nvidiagpucloud.F("startDate"),
-			Type:               nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsProductSubscriptionsTypeNgcAdminEval),
+			ProductName:        ngc.F("productName"),
+			ID:                 ngc.F("id"),
+			EmsEntitlementType: ngc.F(ngc.OrgNewParamsProductSubscriptionsEmsEntitlementTypeEmsEval),
+			ExpirationDate:     ngc.F("expirationDate"),
+			StartDate:          ngc.F("startDate"),
+			Type:               ngc.F(ngc.OrgNewParamsProductSubscriptionsTypeNgcAdminEval),
 		}}),
-		ProtoOrgID:                nvidiagpucloud.F("protoOrgId"),
-		SalesforceAccountIndustry: nvidiagpucloud.F("salesforceAccountIndustry"),
-		SendEmail:                 nvidiagpucloud.F(true),
-		Type:                      nvidiagpucloud.F(nvidiagpucloud.OrgNewParamsTypeUnknown),
-		Ncid:                      nvidiagpucloud.F("ncid"),
-		VisitorID:                 nvidiagpucloud.F("VisitorID"),
+		ProtoOrgID:                ngc.F("protoOrgId"),
+		SalesforceAccountIndustry: ngc.F("salesforceAccountIndustry"),
+		SendEmail:                 ngc.F(true),
+		Type:                      ngc.F(ngc.OrgNewParamsTypeUnknown),
+		Ncid:                      ngc.F("ncid"),
+		VisitorID:                 ngc.F("VisitorID"),
 	})
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -132,14 +131,13 @@ func TestOrgGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Orgs.Get(context.TODO(), "org-name")
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -155,21 +153,20 @@ func TestOrgUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Orgs.Update(
 		context.TODO(),
 		"org-name",
-		nvidiagpucloud.OrgUpdateParams{
-			Description: nvidiagpucloud.F("description"),
-			DisplayName: nvidiagpucloud.F("x"),
+		ngc.OrgUpdateParams{
+			Description: ngc.F("description"),
+			DisplayName: ngc.F("x"),
 		},
 	)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -185,22 +182,21 @@ func TestOrgListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Orgs.List(context.TODO(), nvidiagpucloud.OrgListParams{
-		FilterUsingOrgDisplayName: nvidiagpucloud.F("Filter using org display name"),
-		FilterUsingOrgName:        nvidiagpucloud.F("Filter using org name"),
-		FilterUsingOrgOwnerEmail:  nvidiagpucloud.F("Filter using org owner email"),
-		FilterUsingOrgOwnerName:   nvidiagpucloud.F("Filter using org owner name"),
-		FilterUsingPecID:          nvidiagpucloud.F("Filter using PEC ID"),
-		PageNumber:                nvidiagpucloud.F(int64(0)),
-		PageSize:                  nvidiagpucloud.F(int64(0)),
+	_, err := client.Orgs.List(context.TODO(), ngc.OrgListParams{
+		FilterUsingOrgDisplayName: ngc.F("Filter using org display name"),
+		FilterUsingOrgName:        ngc.F("Filter using org name"),
+		FilterUsingOrgOwnerEmail:  ngc.F("Filter using org owner email"),
+		FilterUsingOrgOwnerName:   ngc.F("Filter using org owner name"),
+		FilterUsingPecID:          ngc.F("Filter using PEC ID"),
+		PageNumber:                ngc.F(int64(0)),
+		PageSize:                  ngc.F(int64(0)),
 	})
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

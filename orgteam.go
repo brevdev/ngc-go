@@ -1,30 +1,22 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-	"net/url"
-
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apijson"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apiquery"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/param"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // OrgTeamService contains methods and other services that help with interacting
-// with the nvidia-gpu-cloud API.
+// with the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewOrgTeamService] method instead.
 type OrgTeamService struct {
-	Options []option.RequestOption
-	Users   *OrgTeamUserService
+	Options      []option.RequestOption
+	Users        *OrgTeamUserService
+	StarfleetIDs *OrgTeamStarfleetIDService
 }
 
 // NewOrgTeamService generates a new service that applies the given options to each
@@ -34,102 +26,46 @@ func NewOrgTeamService(opts ...option.RequestOption) (r *OrgTeamService) {
 	r = &OrgTeamService{}
 	r.Options = opts
 	r.Users = NewOrgTeamUserService(opts...)
+	r.StarfleetIDs = NewOrgTeamStarfleetIDService(opts...)
 	return
 }
 
-// Get Team by name
-func (r *OrgTeamService) Get(ctx context.Context, orgName string, teamName string, opts ...option.RequestOption) (res *Team, err error) {
-	opts = append(r.Options[:], opts...)
-	if orgName == "" {
-		err = errors.New("missing required org-name parameter")
-		return
-	}
-	if teamName == "" {
-		err = errors.New("missing required team-name parameter")
-		return
-	}
-	path := fmt.Sprintf("v2/org/%s/teams/%s", orgName, teamName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+// details about one team
+type TeamResponse struct {
+	RequestStatus TeamResponseRequestStatus `json:"requestStatus"`
+	// Information about the team
+	Team TeamResponseTeam `json:"team"`
+	JSON teamResponseJSON `json:"-"`
 }
 
-// Edit a Team
-func (r *OrgTeamService) Update(ctx context.Context, orgName string, teamName string, body OrgTeamUpdateParams, opts ...option.RequestOption) (res *Team, err error) {
-	opts = append(r.Options[:], opts...)
-	if orgName == "" {
-		err = errors.New("missing required org-name parameter")
-		return
-	}
-	if teamName == "" {
-		err = errors.New("missing required team-name parameter")
-		return
-	}
-	path := fmt.Sprintf("v2/org/%s/teams/%s", orgName, teamName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
-}
-
-// List all Teams
-func (r *OrgTeamService) List(ctx context.Context, orgName string, query OrgTeamListParams, opts ...option.RequestOption) (res *TeamList, err error) {
-	opts = append(r.Options[:], opts...)
-	if orgName == "" {
-		err = errors.New("missing required org-name parameter")
-		return
-	}
-	path := fmt.Sprintf("v2/org/%s/teams", orgName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
-// Delete a Team
-func (r *OrgTeamService) Delete(ctx context.Context, orgName string, teamName string, opts ...option.RequestOption) (res *OrgTeamDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if orgName == "" {
-		err = errors.New("missing required org-name parameter")
-		return
-	}
-	if teamName == "" {
-		err = errors.New("missing required team-name parameter")
-		return
-	}
-	path := fmt.Sprintf("v2/org/%s/teams/%s", orgName, teamName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
-}
-
-type OrgTeamDeleteResponse struct {
-	RequestStatus OrgTeamDeleteResponseRequestStatus `json:"requestStatus"`
-	JSON          orgTeamDeleteResponseJSON          `json:"-"`
-}
-
-// orgTeamDeleteResponseJSON contains the JSON metadata for the struct
-// [OrgTeamDeleteResponse]
-type orgTeamDeleteResponseJSON struct {
+// teamResponseJSON contains the JSON metadata for the struct [TeamResponse]
+type teamResponseJSON struct {
 	RequestStatus apijson.Field
+	Team          apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
 }
 
-func (r *OrgTeamDeleteResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *TeamResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r orgTeamDeleteResponseJSON) RawJSON() string {
+func (r teamResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type OrgTeamDeleteResponseRequestStatus struct {
+type TeamResponseRequestStatus struct {
 	RequestID string `json:"requestId"`
 	ServerID  string `json:"serverId"`
 	// Describes response status reported by the server.
-	StatusCode        OrgTeamDeleteResponseRequestStatusStatusCode `json:"statusCode"`
-	StatusDescription string                                       `json:"statusDescription"`
-	JSON              orgTeamDeleteResponseRequestStatusJSON       `json:"-"`
+	StatusCode        TeamResponseRequestStatusStatusCode `json:"statusCode"`
+	StatusDescription string                              `json:"statusDescription"`
+	JSON              teamResponseRequestStatusJSON       `json:"-"`
 }
 
-// orgTeamDeleteResponseRequestStatusJSON contains the JSON metadata for the struct
-// [OrgTeamDeleteResponseRequestStatus]
-type orgTeamDeleteResponseRequestStatusJSON struct {
+// teamResponseRequestStatusJSON contains the JSON metadata for the struct
+// [TeamResponseRequestStatus]
+type teamResponseRequestStatusJSON struct {
 	RequestID         apijson.Field
 	ServerID          apijson.Field
 	StatusCode        apijson.Field
@@ -138,106 +74,148 @@ type orgTeamDeleteResponseRequestStatusJSON struct {
 	ExtraFields       map[string]apijson.Field
 }
 
-func (r *OrgTeamDeleteResponseRequestStatus) UnmarshalJSON(data []byte) (err error) {
+func (r *TeamResponseRequestStatus) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r orgTeamDeleteResponseRequestStatusJSON) RawJSON() string {
+func (r teamResponseRequestStatusJSON) RawJSON() string {
 	return r.raw
 }
 
 // Describes response status reported by the server.
-type OrgTeamDeleteResponseRequestStatusStatusCode string
+type TeamResponseRequestStatusStatusCode string
 
 const (
-	OrgTeamDeleteResponseRequestStatusStatusCodeUnknown                    OrgTeamDeleteResponseRequestStatusStatusCode = "UNKNOWN"
-	OrgTeamDeleteResponseRequestStatusStatusCodeSuccess                    OrgTeamDeleteResponseRequestStatusStatusCode = "SUCCESS"
-	OrgTeamDeleteResponseRequestStatusStatusCodeUnauthorized               OrgTeamDeleteResponseRequestStatusStatusCode = "UNAUTHORIZED"
-	OrgTeamDeleteResponseRequestStatusStatusCodePaymentRequired            OrgTeamDeleteResponseRequestStatusStatusCode = "PAYMENT_REQUIRED"
-	OrgTeamDeleteResponseRequestStatusStatusCodeForbidden                  OrgTeamDeleteResponseRequestStatusStatusCode = "FORBIDDEN"
-	OrgTeamDeleteResponseRequestStatusStatusCodeTimeout                    OrgTeamDeleteResponseRequestStatusStatusCode = "TIMEOUT"
-	OrgTeamDeleteResponseRequestStatusStatusCodeExists                     OrgTeamDeleteResponseRequestStatusStatusCode = "EXISTS"
-	OrgTeamDeleteResponseRequestStatusStatusCodeNotFound                   OrgTeamDeleteResponseRequestStatusStatusCode = "NOT_FOUND"
-	OrgTeamDeleteResponseRequestStatusStatusCodeInternalError              OrgTeamDeleteResponseRequestStatusStatusCode = "INTERNAL_ERROR"
-	OrgTeamDeleteResponseRequestStatusStatusCodeInvalidRequest             OrgTeamDeleteResponseRequestStatusStatusCode = "INVALID_REQUEST"
-	OrgTeamDeleteResponseRequestStatusStatusCodeInvalidRequestVersion      OrgTeamDeleteResponseRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
-	OrgTeamDeleteResponseRequestStatusStatusCodeInvalidRequestData         OrgTeamDeleteResponseRequestStatusStatusCode = "INVALID_REQUEST_DATA"
-	OrgTeamDeleteResponseRequestStatusStatusCodeMethodNotAllowed           OrgTeamDeleteResponseRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
-	OrgTeamDeleteResponseRequestStatusStatusCodeConflict                   OrgTeamDeleteResponseRequestStatusStatusCode = "CONFLICT"
-	OrgTeamDeleteResponseRequestStatusStatusCodeUnprocessableEntity        OrgTeamDeleteResponseRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
-	OrgTeamDeleteResponseRequestStatusStatusCodeTooManyRequests            OrgTeamDeleteResponseRequestStatusStatusCode = "TOO_MANY_REQUESTS"
-	OrgTeamDeleteResponseRequestStatusStatusCodeInsufficientStorage        OrgTeamDeleteResponseRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
-	OrgTeamDeleteResponseRequestStatusStatusCodeServiceUnavailable         OrgTeamDeleteResponseRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
-	OrgTeamDeleteResponseRequestStatusStatusCodePayloadTooLarge            OrgTeamDeleteResponseRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
-	OrgTeamDeleteResponseRequestStatusStatusCodeNotAcceptable              OrgTeamDeleteResponseRequestStatusStatusCode = "NOT_ACCEPTABLE"
-	OrgTeamDeleteResponseRequestStatusStatusCodeUnavailableForLegalReasons OrgTeamDeleteResponseRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
-	OrgTeamDeleteResponseRequestStatusStatusCodeBadGateway                 OrgTeamDeleteResponseRequestStatusStatusCode = "BAD_GATEWAY"
+	TeamResponseRequestStatusStatusCodeUnknown                    TeamResponseRequestStatusStatusCode = "UNKNOWN"
+	TeamResponseRequestStatusStatusCodeSuccess                    TeamResponseRequestStatusStatusCode = "SUCCESS"
+	TeamResponseRequestStatusStatusCodeUnauthorized               TeamResponseRequestStatusStatusCode = "UNAUTHORIZED"
+	TeamResponseRequestStatusStatusCodePaymentRequired            TeamResponseRequestStatusStatusCode = "PAYMENT_REQUIRED"
+	TeamResponseRequestStatusStatusCodeForbidden                  TeamResponseRequestStatusStatusCode = "FORBIDDEN"
+	TeamResponseRequestStatusStatusCodeTimeout                    TeamResponseRequestStatusStatusCode = "TIMEOUT"
+	TeamResponseRequestStatusStatusCodeExists                     TeamResponseRequestStatusStatusCode = "EXISTS"
+	TeamResponseRequestStatusStatusCodeNotFound                   TeamResponseRequestStatusStatusCode = "NOT_FOUND"
+	TeamResponseRequestStatusStatusCodeInternalError              TeamResponseRequestStatusStatusCode = "INTERNAL_ERROR"
+	TeamResponseRequestStatusStatusCodeInvalidRequest             TeamResponseRequestStatusStatusCode = "INVALID_REQUEST"
+	TeamResponseRequestStatusStatusCodeInvalidRequestVersion      TeamResponseRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
+	TeamResponseRequestStatusStatusCodeInvalidRequestData         TeamResponseRequestStatusStatusCode = "INVALID_REQUEST_DATA"
+	TeamResponseRequestStatusStatusCodeMethodNotAllowed           TeamResponseRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
+	TeamResponseRequestStatusStatusCodeConflict                   TeamResponseRequestStatusStatusCode = "CONFLICT"
+	TeamResponseRequestStatusStatusCodeUnprocessableEntity        TeamResponseRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
+	TeamResponseRequestStatusStatusCodeTooManyRequests            TeamResponseRequestStatusStatusCode = "TOO_MANY_REQUESTS"
+	TeamResponseRequestStatusStatusCodeInsufficientStorage        TeamResponseRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
+	TeamResponseRequestStatusStatusCodeServiceUnavailable         TeamResponseRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
+	TeamResponseRequestStatusStatusCodePayloadTooLarge            TeamResponseRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
+	TeamResponseRequestStatusStatusCodeNotAcceptable              TeamResponseRequestStatusStatusCode = "NOT_ACCEPTABLE"
+	TeamResponseRequestStatusStatusCodeUnavailableForLegalReasons TeamResponseRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
+	TeamResponseRequestStatusStatusCodeBadGateway                 TeamResponseRequestStatusStatusCode = "BAD_GATEWAY"
 )
 
-func (r OrgTeamDeleteResponseRequestStatusStatusCode) IsKnown() bool {
+func (r TeamResponseRequestStatusStatusCode) IsKnown() bool {
 	switch r {
-	case OrgTeamDeleteResponseRequestStatusStatusCodeUnknown, OrgTeamDeleteResponseRequestStatusStatusCodeSuccess, OrgTeamDeleteResponseRequestStatusStatusCodeUnauthorized, OrgTeamDeleteResponseRequestStatusStatusCodePaymentRequired, OrgTeamDeleteResponseRequestStatusStatusCodeForbidden, OrgTeamDeleteResponseRequestStatusStatusCodeTimeout, OrgTeamDeleteResponseRequestStatusStatusCodeExists, OrgTeamDeleteResponseRequestStatusStatusCodeNotFound, OrgTeamDeleteResponseRequestStatusStatusCodeInternalError, OrgTeamDeleteResponseRequestStatusStatusCodeInvalidRequest, OrgTeamDeleteResponseRequestStatusStatusCodeInvalidRequestVersion, OrgTeamDeleteResponseRequestStatusStatusCodeInvalidRequestData, OrgTeamDeleteResponseRequestStatusStatusCodeMethodNotAllowed, OrgTeamDeleteResponseRequestStatusStatusCodeConflict, OrgTeamDeleteResponseRequestStatusStatusCodeUnprocessableEntity, OrgTeamDeleteResponseRequestStatusStatusCodeTooManyRequests, OrgTeamDeleteResponseRequestStatusStatusCodeInsufficientStorage, OrgTeamDeleteResponseRequestStatusStatusCodeServiceUnavailable, OrgTeamDeleteResponseRequestStatusStatusCodePayloadTooLarge, OrgTeamDeleteResponseRequestStatusStatusCodeNotAcceptable, OrgTeamDeleteResponseRequestStatusStatusCodeUnavailableForLegalReasons, OrgTeamDeleteResponseRequestStatusStatusCodeBadGateway:
+	case TeamResponseRequestStatusStatusCodeUnknown, TeamResponseRequestStatusStatusCodeSuccess, TeamResponseRequestStatusStatusCodeUnauthorized, TeamResponseRequestStatusStatusCodePaymentRequired, TeamResponseRequestStatusStatusCodeForbidden, TeamResponseRequestStatusStatusCodeTimeout, TeamResponseRequestStatusStatusCodeExists, TeamResponseRequestStatusStatusCodeNotFound, TeamResponseRequestStatusStatusCodeInternalError, TeamResponseRequestStatusStatusCodeInvalidRequest, TeamResponseRequestStatusStatusCodeInvalidRequestVersion, TeamResponseRequestStatusStatusCodeInvalidRequestData, TeamResponseRequestStatusStatusCodeMethodNotAllowed, TeamResponseRequestStatusStatusCodeConflict, TeamResponseRequestStatusStatusCodeUnprocessableEntity, TeamResponseRequestStatusStatusCodeTooManyRequests, TeamResponseRequestStatusStatusCodeInsufficientStorage, TeamResponseRequestStatusStatusCodeServiceUnavailable, TeamResponseRequestStatusStatusCodePayloadTooLarge, TeamResponseRequestStatusStatusCodeNotAcceptable, TeamResponseRequestStatusStatusCodeUnavailableForLegalReasons, TeamResponseRequestStatusStatusCodeBadGateway:
 		return true
 	}
 	return false
 }
 
-type OrgTeamUpdateParams struct {
+// Information about the team
+type TeamResponseTeam struct {
+	// unique Id of this team.
+	ID int64 `json:"id"`
 	// description of the team
-	Description param.Field[string] `json:"description"`
+	Description string `json:"description"`
 	// Infinity manager setting definition
-	InfinityManagerSettings param.Field[OrgTeamUpdateParamsInfinityManagerSettings] `json:"infinityManagerSettings"`
+	InfinityManagerSettings TeamResponseTeamInfinityManagerSettings `json:"infinityManagerSettings"`
+	// indicates if the team is deleted or not
+	IsDeleted bool `json:"isDeleted"`
+	// team name
+	Name string `json:"name"`
 	// Repo scan setting definition
-	RepoScanSettings param.Field[OrgTeamUpdateParamsRepoScanSettings] `json:"repoScanSettings"`
+	RepoScanSettings TeamResponseTeamRepoScanSettings `json:"repoScanSettings"`
+	JSON             teamResponseTeamJSON             `json:"-"`
 }
 
-func (r OrgTeamUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+// teamResponseTeamJSON contains the JSON metadata for the struct
+// [TeamResponseTeam]
+type teamResponseTeamJSON struct {
+	ID                      apijson.Field
+	Description             apijson.Field
+	InfinityManagerSettings apijson.Field
+	IsDeleted               apijson.Field
+	Name                    apijson.Field
+	RepoScanSettings        apijson.Field
+	raw                     string
+	ExtraFields             map[string]apijson.Field
+}
+
+func (r *TeamResponseTeam) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r teamResponseTeamJSON) RawJSON() string {
+	return r.raw
 }
 
 // Infinity manager setting definition
-type OrgTeamUpdateParamsInfinityManagerSettings struct {
+type TeamResponseTeamInfinityManagerSettings struct {
 	// Enable the infinity manager or not. Used both in org and team level object
-	InfinityManagerEnabled param.Field[bool] `json:"infinityManagerEnabled"`
+	InfinityManagerEnabled bool `json:"infinityManagerEnabled"`
 	// Allow override settings at team level. Only used in org level object
-	InfinityManagerEnableTeamOverride param.Field[bool] `json:"infinityManagerEnableTeamOverride"`
+	InfinityManagerEnableTeamOverride bool                                        `json:"infinityManagerEnableTeamOverride"`
+	JSON                              teamResponseTeamInfinityManagerSettingsJSON `json:"-"`
 }
 
-func (r OrgTeamUpdateParamsInfinityManagerSettings) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+// teamResponseTeamInfinityManagerSettingsJSON contains the JSON metadata for the
+// struct [TeamResponseTeamInfinityManagerSettings]
+type teamResponseTeamInfinityManagerSettingsJSON struct {
+	InfinityManagerEnabled            apijson.Field
+	InfinityManagerEnableTeamOverride apijson.Field
+	raw                               string
+	ExtraFields                       map[string]apijson.Field
+}
+
+func (r *TeamResponseTeamInfinityManagerSettings) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r teamResponseTeamInfinityManagerSettingsJSON) RawJSON() string {
+	return r.raw
 }
 
 // Repo scan setting definition
-type OrgTeamUpdateParamsRepoScanSettings struct {
+type TeamResponseTeamRepoScanSettings struct {
 	// Allow org admin to override the org level repo scan settings
-	RepoScanAllowOverride param.Field[bool] `json:"repoScanAllowOverride"`
+	RepoScanAllowOverride bool `json:"repoScanAllowOverride"`
 	// Allow repository scanning by default
-	RepoScanByDefault param.Field[bool] `json:"repoScanByDefault"`
+	RepoScanByDefault bool `json:"repoScanByDefault"`
 	// Enable the repository scan or not. Only used in org level object
-	RepoScanEnabled param.Field[bool] `json:"repoScanEnabled"`
+	RepoScanEnabled bool `json:"repoScanEnabled"`
 	// Sends notification to end user after scanning is done
-	RepoScanEnableNotifications param.Field[bool] `json:"repoScanEnableNotifications"`
+	RepoScanEnableNotifications bool `json:"repoScanEnableNotifications"`
 	// Allow override settings at team level. Only used in org level object
-	RepoScanEnableTeamOverride param.Field[bool] `json:"repoScanEnableTeamOverride"`
+	RepoScanEnableTeamOverride bool `json:"repoScanEnableTeamOverride"`
 	// Allow showing scan results to CLI or UI
-	RepoScanShowResults param.Field[bool] `json:"repoScanShowResults"`
+	RepoScanShowResults bool                                 `json:"repoScanShowResults"`
+	JSON                teamResponseTeamRepoScanSettingsJSON `json:"-"`
 }
 
-func (r OrgTeamUpdateParamsRepoScanSettings) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+// teamResponseTeamRepoScanSettingsJSON contains the JSON metadata for the struct
+// [TeamResponseTeamRepoScanSettings]
+type teamResponseTeamRepoScanSettingsJSON struct {
+	RepoScanAllowOverride       apijson.Field
+	RepoScanByDefault           apijson.Field
+	RepoScanEnabled             apijson.Field
+	RepoScanEnableNotifications apijson.Field
+	RepoScanEnableTeamOverride  apijson.Field
+	RepoScanShowResults         apijson.Field
+	raw                         string
+	ExtraFields                 map[string]apijson.Field
 }
 
-type OrgTeamListParams struct {
-	// The page number of result
-	PageNumber param.Field[int64] `query:"page-number"`
-	// The page size of result
-	PageSize param.Field[int64] `query:"page-size"`
+func (r *TeamResponseTeamRepoScanSettings) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-// URLQuery serializes [OrgTeamListParams]'s query parameters as `url.Values`.
-func (r OrgTeamListParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
+func (r teamResponseTeamRepoScanSettingsJSON) RawJSON() string {
+	return r.raw
 }

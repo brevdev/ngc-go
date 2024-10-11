@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/testutil"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal/testutil"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestOrgStarfleetIDGet(t *testing.T) {
@@ -21,18 +21,17 @@ func TestOrgStarfleetIDGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Org.StarfleetIDs.Get(
+	_, err := client.Orgs.StarfleetIDs.Get(
 		context.TODO(),
 		"org-name",
 		"starfleet-id",
 	)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

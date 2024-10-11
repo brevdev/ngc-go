@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"context"
@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/testutil"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal/testutil"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestOrgMeteringGpupeakListWithOptionalParams(t *testing.T) {
@@ -22,22 +22,21 @@ func TestOrgMeteringGpupeakListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Org.Meterings.Gpupeak.List(
+	_, err := client.Orgs.Metering.Gpupeak.List(
 		context.TODO(),
 		"org-name",
-		nvidiagpucloud.OrgMeteringGpupeakListParams{
-			TheToDateInISO8601FormatIncludingTimeZoneInformationYyyyMmDdTHhMmSS: nvidiagpucloud.F(nvidiagpucloud.OrgMeteringGpupeakListParamsTheToDateInISO8601FormatIncludingTimeZoneInformationYyyyMmDdTHhMmSS{
-				Sssz: nvidiagpucloud.F(time.Now()),
+		ngc.OrgMeteringGpupeakListParams{
+			TheToDateInISO8601FormatIncludingTimeZoneInformationYyyyMmDdTHhMmSS: ngc.F(ngc.OrgMeteringGpupeakListParamsTheToDateInISO8601FormatIncludingTimeZoneInformationYyyyMmDdTHhMmSS{
+				Sssz: ngc.F(time.Now()),
 			}),
 		},
 	)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

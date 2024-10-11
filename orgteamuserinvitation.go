@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
 	"context"
@@ -9,15 +9,16 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apiquery"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/param"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/shared"
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/internal/apiquery"
+	"github.com/brevdev/ngc-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
+	"github.com/brevdev/ngc-go/shared"
 )
 
 // OrgTeamUserInvitationService contains methods and other services that help with
-// interacting with the nvidia-gpu-cloud API.
+// interacting with the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -36,7 +37,7 @@ func NewOrgTeamUserInvitationService(opts ...option.RequestOption) (r *OrgTeamUs
 }
 
 // List invitations in a team. (Team User Admin privileges required)
-func (r *OrgTeamUserInvitationService) List(ctx context.Context, orgName string, teamName string, query OrgTeamUserInvitationListParams, opts ...option.RequestOption) (res *shared.UserInvitationList, err error) {
+func (r *OrgTeamUserInvitationService) List(ctx context.Context, orgName string, teamName string, query OrgTeamUserInvitationListParams, opts ...option.RequestOption) (res *UserInvitationList, err error) {
 	opts = append(r.Options[:], opts...)
 	if orgName == "" {
 		err = errors.New("missing required org-name parameter")
@@ -51,9 +52,30 @@ func (r *OrgTeamUserInvitationService) List(ctx context.Context, orgName string,
 	return
 }
 
+// Delete a specific invitation in an team. (Org Admin or Team User Admin
+// privileges required)
+func (r *OrgTeamUserInvitationService) Delete(ctx context.Context, orgName string, teamName string, id string, opts ...option.RequestOption) (res *OrgTeamUserInvitationDeleteResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if orgName == "" {
+		err = errors.New("missing required org-name parameter")
+		return
+	}
+	if teamName == "" {
+		err = errors.New("missing required team-name parameter")
+		return
+	}
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("v2/org/%s/team/%s/users/invitations/%s", orgName, teamName, id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
 // Resend email of a specific invitation in a team (Org or Team User Admin
 // privileges required).
-func (r *OrgTeamUserInvitationService) ResendInvitationEmail(ctx context.Context, orgName string, teamName string, id string, opts ...option.RequestOption) (res *shared.User, err error) {
+func (r *OrgTeamUserInvitationService) InviteResend(ctx context.Context, orgName string, teamName string, id string, opts ...option.RequestOption) (res *shared.UserResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if orgName == "" {
 		err = errors.New("missing required org-name parameter")
@@ -70,6 +92,91 @@ func (r *OrgTeamUserInvitationService) ResendInvitationEmail(ctx context.Context
 	path := fmt.Sprintf("v2/org/%s/team/%s/users/invitations/%s/resend-invitation-email", orgName, teamName, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
+}
+
+type OrgTeamUserInvitationDeleteResponse struct {
+	RequestStatus OrgTeamUserInvitationDeleteResponseRequestStatus `json:"requestStatus"`
+	JSON          orgTeamUserInvitationDeleteResponseJSON          `json:"-"`
+}
+
+// orgTeamUserInvitationDeleteResponseJSON contains the JSON metadata for the
+// struct [OrgTeamUserInvitationDeleteResponse]
+type orgTeamUserInvitationDeleteResponseJSON struct {
+	RequestStatus apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *OrgTeamUserInvitationDeleteResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r orgTeamUserInvitationDeleteResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type OrgTeamUserInvitationDeleteResponseRequestStatus struct {
+	RequestID string `json:"requestId"`
+	ServerID  string `json:"serverId"`
+	// Describes response status reported by the server.
+	StatusCode        OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode `json:"statusCode"`
+	StatusDescription string                                                     `json:"statusDescription"`
+	JSON              orgTeamUserInvitationDeleteResponseRequestStatusJSON       `json:"-"`
+}
+
+// orgTeamUserInvitationDeleteResponseRequestStatusJSON contains the JSON metadata
+// for the struct [OrgTeamUserInvitationDeleteResponseRequestStatus]
+type orgTeamUserInvitationDeleteResponseRequestStatusJSON struct {
+	RequestID         apijson.Field
+	ServerID          apijson.Field
+	StatusCode        apijson.Field
+	StatusDescription apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
+}
+
+func (r *OrgTeamUserInvitationDeleteResponseRequestStatus) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r orgTeamUserInvitationDeleteResponseRequestStatusJSON) RawJSON() string {
+	return r.raw
+}
+
+// Describes response status reported by the server.
+type OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode string
+
+const (
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeUnknown                    OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "UNKNOWN"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeSuccess                    OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "SUCCESS"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeUnauthorized               OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "UNAUTHORIZED"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodePaymentRequired            OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "PAYMENT_REQUIRED"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeForbidden                  OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "FORBIDDEN"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeTimeout                    OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "TIMEOUT"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeExists                     OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "EXISTS"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeNotFound                   OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "NOT_FOUND"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInternalError              OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "INTERNAL_ERROR"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInvalidRequest             OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "INVALID_REQUEST"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInvalidRequestVersion      OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInvalidRequestData         OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "INVALID_REQUEST_DATA"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeMethodNotAllowed           OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeConflict                   OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "CONFLICT"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeUnprocessableEntity        OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeTooManyRequests            OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "TOO_MANY_REQUESTS"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInsufficientStorage        OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeServiceUnavailable         OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodePayloadTooLarge            OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeNotAcceptable              OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "NOT_ACCEPTABLE"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeUnavailableForLegalReasons OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
+	OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeBadGateway                 OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode = "BAD_GATEWAY"
+)
+
+func (r OrgTeamUserInvitationDeleteResponseRequestStatusStatusCode) IsKnown() bool {
+	switch r {
+	case OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeUnknown, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeSuccess, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeUnauthorized, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodePaymentRequired, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeForbidden, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeTimeout, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeExists, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeNotFound, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInternalError, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInvalidRequest, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInvalidRequestVersion, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInvalidRequestData, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeMethodNotAllowed, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeConflict, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeUnprocessableEntity, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeTooManyRequests, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeInsufficientStorage, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeServiceUnavailable, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodePayloadTooLarge, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeNotAcceptable, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeUnavailableForLegalReasons, OrgTeamUserInvitationDeleteResponseRequestStatusStatusCodeBadGateway:
+		return true
+	}
+	return false
 }
 
 type OrgTeamUserInvitationListParams struct {

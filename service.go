@@ -1,28 +1,27 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
 	"context"
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apijson"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apiquery"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/param"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/internal/apiquery"
+	"github.com/brevdev/ngc-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // ServiceService contains methods and other services that help with interacting
-// with the nvidia-gpu-cloud API.
+// with the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewServiceService] method instead.
 type ServiceService struct {
 	Options []option.RequestOption
-	Version *ServiceVersionService
 }
 
 // NewServiceService generates a new service that applies the given options to each
@@ -31,132 +30,53 @@ type ServiceService struct {
 func NewServiceService(opts ...option.RequestOption) (r *ServiceService) {
 	r = &ServiceService{}
 	r.Options = opts
-	r.Version = NewServiceVersionService(opts...)
 	return
 }
 
-// Used to check the health status of the web service only
-func (r *ServiceService) Health(ctx context.Context, opts ...option.RequestOption) (res *Health, err error) {
+// Used to get the latest version number of a given package.
+func (r *ServiceService) Version(ctx context.Context, query ServiceVersionParams, opts ...option.RequestOption) (res *ServiceVersionResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := "health"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Used to get health status of all services
-func (r *ServiceService) HealthAll(ctx context.Context, query ServiceHealthAllParams, opts ...option.RequestOption) (res *Health, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "health/all"
+	path := "version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
-// This API is invoked by monitoring tools, other services and infrastructure to
-// retrieve health status the targeted service, this is unprotected method
-type Health struct {
-	// object that describes health of the service
-	Health        HealthHealth        `json:"health"`
-	RequestStatus HealthRequestStatus `json:"requestStatus"`
-	JSON          healthJSON          `json:"-"`
+// an array of versions
+type ServiceVersionResponse struct {
+	RequestStatus ServiceVersionResponseRequestStatus `json:"requestStatus"`
+	Versions      []ServiceVersionResponseVersion     `json:"versions"`
+	JSON          serviceVersionResponseJSON          `json:"-"`
 }
 
-// healthJSON contains the JSON metadata for the struct [Health]
-type healthJSON struct {
-	Health        apijson.Field
+// serviceVersionResponseJSON contains the JSON metadata for the struct
+// [ServiceVersionResponse]
+type serviceVersionResponseJSON struct {
 	RequestStatus apijson.Field
+	Versions      apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
 }
 
-func (r *Health) UnmarshalJSON(data []byte) (err error) {
+func (r *ServiceVersionResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r healthJSON) RawJSON() string {
+func (r serviceVersionResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// object that describes health of the service
-type HealthHealth struct {
-	// Enum that describes health of the service
-	HealthCode HealthHealthHealthCode `json:"healthCode"`
-	// Human readable description
-	HealthCodeDescription string                 `json:"healthCodeDescription"`
-	MetaData              []HealthHealthMetaData `json:"metaData"`
-	JSON                  healthHealthJSON       `json:"-"`
-}
-
-// healthHealthJSON contains the JSON metadata for the struct [HealthHealth]
-type healthHealthJSON struct {
-	HealthCode            apijson.Field
-	HealthCodeDescription apijson.Field
-	MetaData              apijson.Field
-	raw                   string
-	ExtraFields           map[string]apijson.Field
-}
-
-func (r *HealthHealth) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r healthHealthJSON) RawJSON() string {
-	return r.raw
-}
-
-// Enum that describes health of the service
-type HealthHealthHealthCode string
-
-const (
-	HealthHealthHealthCodeUnknown          HealthHealthHealthCode = "UNKNOWN"
-	HealthHealthHealthCodeOk               HealthHealthHealthCode = "OK"
-	HealthHealthHealthCodeUnderMaintenance HealthHealthHealthCode = "UNDER_MAINTENANCE"
-	HealthHealthHealthCodeWarning          HealthHealthHealthCode = "WARNING"
-	HealthHealthHealthCodeFailed           HealthHealthHealthCode = "FAILED"
-)
-
-func (r HealthHealthHealthCode) IsKnown() bool {
-	switch r {
-	case HealthHealthHealthCodeUnknown, HealthHealthHealthCodeOk, HealthHealthHealthCodeUnderMaintenance, HealthHealthHealthCodeWarning, HealthHealthHealthCodeFailed:
-		return true
-	}
-	return false
-}
-
-type HealthHealthMetaData struct {
-	Key   string                   `json:"key"`
-	Value string                   `json:"value"`
-	JSON  healthHealthMetaDataJSON `json:"-"`
-}
-
-// healthHealthMetaDataJSON contains the JSON metadata for the struct
-// [HealthHealthMetaData]
-type healthHealthMetaDataJSON struct {
-	Key         apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *HealthHealthMetaData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r healthHealthMetaDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type HealthRequestStatus struct {
+type ServiceVersionResponseRequestStatus struct {
 	RequestID string `json:"requestId"`
 	ServerID  string `json:"serverId"`
 	// Describes response status reported by the server.
-	StatusCode        HealthRequestStatusStatusCode `json:"statusCode"`
-	StatusDescription string                        `json:"statusDescription"`
-	JSON              healthRequestStatusJSON       `json:"-"`
+	StatusCode        ServiceVersionResponseRequestStatusStatusCode `json:"statusCode"`
+	StatusDescription string                                        `json:"statusDescription"`
+	JSON              serviceVersionResponseRequestStatusJSON       `json:"-"`
 }
 
-// healthRequestStatusJSON contains the JSON metadata for the struct
-// [HealthRequestStatus]
-type healthRequestStatusJSON struct {
+// serviceVersionResponseRequestStatusJSON contains the JSON metadata for the
+// struct [ServiceVersionResponseRequestStatus]
+type serviceVersionResponseRequestStatusJSON struct {
 	RequestID         apijson.Field
 	ServerID          apijson.Field
 	StatusCode        apijson.Field
@@ -165,59 +85,91 @@ type healthRequestStatusJSON struct {
 	ExtraFields       map[string]apijson.Field
 }
 
-func (r *HealthRequestStatus) UnmarshalJSON(data []byte) (err error) {
+func (r *ServiceVersionResponseRequestStatus) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r healthRequestStatusJSON) RawJSON() string {
+func (r serviceVersionResponseRequestStatusJSON) RawJSON() string {
 	return r.raw
 }
 
 // Describes response status reported by the server.
-type HealthRequestStatusStatusCode string
+type ServiceVersionResponseRequestStatusStatusCode string
 
 const (
-	HealthRequestStatusStatusCodeUnknown                    HealthRequestStatusStatusCode = "UNKNOWN"
-	HealthRequestStatusStatusCodeSuccess                    HealthRequestStatusStatusCode = "SUCCESS"
-	HealthRequestStatusStatusCodeUnauthorized               HealthRequestStatusStatusCode = "UNAUTHORIZED"
-	HealthRequestStatusStatusCodePaymentRequired            HealthRequestStatusStatusCode = "PAYMENT_REQUIRED"
-	HealthRequestStatusStatusCodeForbidden                  HealthRequestStatusStatusCode = "FORBIDDEN"
-	HealthRequestStatusStatusCodeTimeout                    HealthRequestStatusStatusCode = "TIMEOUT"
-	HealthRequestStatusStatusCodeExists                     HealthRequestStatusStatusCode = "EXISTS"
-	HealthRequestStatusStatusCodeNotFound                   HealthRequestStatusStatusCode = "NOT_FOUND"
-	HealthRequestStatusStatusCodeInternalError              HealthRequestStatusStatusCode = "INTERNAL_ERROR"
-	HealthRequestStatusStatusCodeInvalidRequest             HealthRequestStatusStatusCode = "INVALID_REQUEST"
-	HealthRequestStatusStatusCodeInvalidRequestVersion      HealthRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
-	HealthRequestStatusStatusCodeInvalidRequestData         HealthRequestStatusStatusCode = "INVALID_REQUEST_DATA"
-	HealthRequestStatusStatusCodeMethodNotAllowed           HealthRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
-	HealthRequestStatusStatusCodeConflict                   HealthRequestStatusStatusCode = "CONFLICT"
-	HealthRequestStatusStatusCodeUnprocessableEntity        HealthRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
-	HealthRequestStatusStatusCodeTooManyRequests            HealthRequestStatusStatusCode = "TOO_MANY_REQUESTS"
-	HealthRequestStatusStatusCodeInsufficientStorage        HealthRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
-	HealthRequestStatusStatusCodeServiceUnavailable         HealthRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
-	HealthRequestStatusStatusCodePayloadTooLarge            HealthRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
-	HealthRequestStatusStatusCodeNotAcceptable              HealthRequestStatusStatusCode = "NOT_ACCEPTABLE"
-	HealthRequestStatusStatusCodeUnavailableForLegalReasons HealthRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
-	HealthRequestStatusStatusCodeBadGateway                 HealthRequestStatusStatusCode = "BAD_GATEWAY"
+	ServiceVersionResponseRequestStatusStatusCodeUnknown                    ServiceVersionResponseRequestStatusStatusCode = "UNKNOWN"
+	ServiceVersionResponseRequestStatusStatusCodeSuccess                    ServiceVersionResponseRequestStatusStatusCode = "SUCCESS"
+	ServiceVersionResponseRequestStatusStatusCodeUnauthorized               ServiceVersionResponseRequestStatusStatusCode = "UNAUTHORIZED"
+	ServiceVersionResponseRequestStatusStatusCodePaymentRequired            ServiceVersionResponseRequestStatusStatusCode = "PAYMENT_REQUIRED"
+	ServiceVersionResponseRequestStatusStatusCodeForbidden                  ServiceVersionResponseRequestStatusStatusCode = "FORBIDDEN"
+	ServiceVersionResponseRequestStatusStatusCodeTimeout                    ServiceVersionResponseRequestStatusStatusCode = "TIMEOUT"
+	ServiceVersionResponseRequestStatusStatusCodeExists                     ServiceVersionResponseRequestStatusStatusCode = "EXISTS"
+	ServiceVersionResponseRequestStatusStatusCodeNotFound                   ServiceVersionResponseRequestStatusStatusCode = "NOT_FOUND"
+	ServiceVersionResponseRequestStatusStatusCodeInternalError              ServiceVersionResponseRequestStatusStatusCode = "INTERNAL_ERROR"
+	ServiceVersionResponseRequestStatusStatusCodeInvalidRequest             ServiceVersionResponseRequestStatusStatusCode = "INVALID_REQUEST"
+	ServiceVersionResponseRequestStatusStatusCodeInvalidRequestVersion      ServiceVersionResponseRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
+	ServiceVersionResponseRequestStatusStatusCodeInvalidRequestData         ServiceVersionResponseRequestStatusStatusCode = "INVALID_REQUEST_DATA"
+	ServiceVersionResponseRequestStatusStatusCodeMethodNotAllowed           ServiceVersionResponseRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
+	ServiceVersionResponseRequestStatusStatusCodeConflict                   ServiceVersionResponseRequestStatusStatusCode = "CONFLICT"
+	ServiceVersionResponseRequestStatusStatusCodeUnprocessableEntity        ServiceVersionResponseRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
+	ServiceVersionResponseRequestStatusStatusCodeTooManyRequests            ServiceVersionResponseRequestStatusStatusCode = "TOO_MANY_REQUESTS"
+	ServiceVersionResponseRequestStatusStatusCodeInsufficientStorage        ServiceVersionResponseRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
+	ServiceVersionResponseRequestStatusStatusCodeServiceUnavailable         ServiceVersionResponseRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
+	ServiceVersionResponseRequestStatusStatusCodePayloadTooLarge            ServiceVersionResponseRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
+	ServiceVersionResponseRequestStatusStatusCodeNotAcceptable              ServiceVersionResponseRequestStatusStatusCode = "NOT_ACCEPTABLE"
+	ServiceVersionResponseRequestStatusStatusCodeUnavailableForLegalReasons ServiceVersionResponseRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
+	ServiceVersionResponseRequestStatusStatusCodeBadGateway                 ServiceVersionResponseRequestStatusStatusCode = "BAD_GATEWAY"
 )
 
-func (r HealthRequestStatusStatusCode) IsKnown() bool {
+func (r ServiceVersionResponseRequestStatusStatusCode) IsKnown() bool {
 	switch r {
-	case HealthRequestStatusStatusCodeUnknown, HealthRequestStatusStatusCodeSuccess, HealthRequestStatusStatusCodeUnauthorized, HealthRequestStatusStatusCodePaymentRequired, HealthRequestStatusStatusCodeForbidden, HealthRequestStatusStatusCodeTimeout, HealthRequestStatusStatusCodeExists, HealthRequestStatusStatusCodeNotFound, HealthRequestStatusStatusCodeInternalError, HealthRequestStatusStatusCodeInvalidRequest, HealthRequestStatusStatusCodeInvalidRequestVersion, HealthRequestStatusStatusCodeInvalidRequestData, HealthRequestStatusStatusCodeMethodNotAllowed, HealthRequestStatusStatusCodeConflict, HealthRequestStatusStatusCodeUnprocessableEntity, HealthRequestStatusStatusCodeTooManyRequests, HealthRequestStatusStatusCodeInsufficientStorage, HealthRequestStatusStatusCodeServiceUnavailable, HealthRequestStatusStatusCodePayloadTooLarge, HealthRequestStatusStatusCodeNotAcceptable, HealthRequestStatusStatusCodeUnavailableForLegalReasons, HealthRequestStatusStatusCodeBadGateway:
+	case ServiceVersionResponseRequestStatusStatusCodeUnknown, ServiceVersionResponseRequestStatusStatusCodeSuccess, ServiceVersionResponseRequestStatusStatusCodeUnauthorized, ServiceVersionResponseRequestStatusStatusCodePaymentRequired, ServiceVersionResponseRequestStatusStatusCodeForbidden, ServiceVersionResponseRequestStatusStatusCodeTimeout, ServiceVersionResponseRequestStatusStatusCodeExists, ServiceVersionResponseRequestStatusStatusCodeNotFound, ServiceVersionResponseRequestStatusStatusCodeInternalError, ServiceVersionResponseRequestStatusStatusCodeInvalidRequest, ServiceVersionResponseRequestStatusStatusCodeInvalidRequestVersion, ServiceVersionResponseRequestStatusStatusCodeInvalidRequestData, ServiceVersionResponseRequestStatusStatusCodeMethodNotAllowed, ServiceVersionResponseRequestStatusStatusCodeConflict, ServiceVersionResponseRequestStatusStatusCodeUnprocessableEntity, ServiceVersionResponseRequestStatusStatusCodeTooManyRequests, ServiceVersionResponseRequestStatusStatusCodeInsufficientStorage, ServiceVersionResponseRequestStatusStatusCodeServiceUnavailable, ServiceVersionResponseRequestStatusStatusCodePayloadTooLarge, ServiceVersionResponseRequestStatusStatusCodeNotAcceptable, ServiceVersionResponseRequestStatusStatusCodeUnavailableForLegalReasons, ServiceVersionResponseRequestStatusStatusCodeBadGateway:
 		return true
 	}
 	return false
 }
 
-type ServiceHealthAllParams struct {
-	// secret value that validates the call in order to show details
-	Secret param.Field[string] `query:"secret"`
-	// boolean value to indicating to show details or not
-	ShowDetails param.Field[bool] `query:"showDetails"`
+// Latest version information for a specific package
+type ServiceVersionResponseVersion struct {
+	// The creation date of the version
+	CreatedAt string `json:"createdAt"`
+	// Human readable description of the package
+	Description string `json:"description"`
+	// The name of the package
+	Name string `json:"name"`
+	// The version number
+	Version string                            `json:"version"`
+	JSON    serviceVersionResponseVersionJSON `json:"-"`
 }
 
-// URLQuery serializes [ServiceHealthAllParams]'s query parameters as `url.Values`.
-func (r ServiceHealthAllParams) URLQuery() (v url.Values) {
+// serviceVersionResponseVersionJSON contains the JSON metadata for the struct
+// [ServiceVersionResponseVersion]
+type serviceVersionResponseVersionJSON struct {
+	CreatedAt   apijson.Field
+	Description apijson.Field
+	Name        apijson.Field
+	Version     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ServiceVersionResponseVersion) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r serviceVersionResponseVersionJSON) RawJSON() string {
+	return r.raw
+}
+
+type ServiceVersionParams struct {
+	// name of package
+	Package param.Field[string] `query:"package"`
+	// repository of package
+	Repo param.Field[string] `query:"repo"`
+}
+
+// URLQuery serializes [ServiceVersionParams]'s query parameters as `url.Values`.
+func (r ServiceVersionParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

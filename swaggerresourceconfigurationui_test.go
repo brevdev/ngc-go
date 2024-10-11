@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"bytes"
@@ -11,8 +11,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestSwaggerResourceConfigurationUiNew(t *testing.T) {
@@ -22,14 +22,13 @@ func TestSwaggerResourceConfigurationUiNew(t *testing.T) {
 	}))
 	defer server.Close()
 	baseURL := server.URL
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	resp, err := client.SwaggerResources.Configuration.Ui.New(context.TODO())
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -39,7 +38,7 @@ func TestSwaggerResourceConfigurationUiNew(t *testing.T) {
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -57,14 +56,13 @@ func TestSwaggerResourceConfigurationUiGet(t *testing.T) {
 	}))
 	defer server.Close()
 	baseURL := server.URL
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	resp, err := client.SwaggerResources.Configuration.Ui.Get(context.TODO())
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -74,7 +72,7 @@ func TestSwaggerResourceConfigurationUiGet(t *testing.T) {
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -92,14 +90,13 @@ func TestSwaggerResourceConfigurationUiUpdate(t *testing.T) {
 	}))
 	defer server.Close()
 	baseURL := server.URL
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	resp, err := client.SwaggerResources.Configuration.Ui.Update(context.TODO())
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -109,7 +106,7 @@ func TestSwaggerResourceConfigurationUiUpdate(t *testing.T) {
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -127,14 +124,13 @@ func TestSwaggerResourceConfigurationUiDelete(t *testing.T) {
 	}))
 	defer server.Close()
 	baseURL := server.URL
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	resp, err := client.SwaggerResources.Configuration.Ui.Delete(context.TODO())
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -144,7 +140,7 @@ func TestSwaggerResourceConfigurationUiDelete(t *testing.T) {
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

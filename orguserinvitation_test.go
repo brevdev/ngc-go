@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/testutil"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal/testutil"
+	"github.com/brevdev/ngc-go/option"
 )
 
 func TestOrgUserInvitationListWithOptionalParams(t *testing.T) {
@@ -21,51 +21,50 @@ func TestOrgUserInvitationListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Org.Users.Invitations.List(
 		context.TODO(),
 		"org-name",
-		nvidiagpucloud.OrgUserInvitationListParams{
-			OrderBy:    nvidiagpucloud.F(nvidiagpucloud.OrgUserInvitationListParamsOrderByNameAsc),
-			PageNumber: nvidiagpucloud.F(int64(0)),
-			PageSize:   nvidiagpucloud.F(int64(0)),
-			Q: nvidiagpucloud.F(nvidiagpucloud.OrgUserInvitationListParamsQ{
-				Fields: nvidiagpucloud.F([]string{"string", "string", "string"}),
-				Filters: nvidiagpucloud.F([]nvidiagpucloud.OrgUserInvitationListParamsQFilter{{
-					Field: nvidiagpucloud.F("field"),
-					Value: nvidiagpucloud.F("value"),
+		ngc.OrgUserInvitationListParams{
+			OrderBy:    ngc.F(ngc.OrgUserInvitationListParamsOrderByNameAsc),
+			PageNumber: ngc.F(int64(0)),
+			PageSize:   ngc.F(int64(0)),
+			Q: ngc.F(ngc.OrgUserInvitationListParamsQ{
+				Fields: ngc.F([]string{"string", "string", "string"}),
+				Filters: ngc.F([]ngc.OrgUserInvitationListParamsQFilter{{
+					Field: ngc.F("field"),
+					Value: ngc.F("value"),
 				}, {
-					Field: nvidiagpucloud.F("field"),
-					Value: nvidiagpucloud.F("value"),
+					Field: ngc.F("field"),
+					Value: ngc.F("value"),
 				}, {
-					Field: nvidiagpucloud.F("field"),
-					Value: nvidiagpucloud.F("value"),
+					Field: ngc.F("field"),
+					Value: ngc.F("value"),
 				}}),
-				GroupBy: nvidiagpucloud.F("groupBy"),
-				OrderBy: nvidiagpucloud.F([]nvidiagpucloud.OrgUserInvitationListParamsQOrderBy{{
-					Field: nvidiagpucloud.F("field"),
-					Value: nvidiagpucloud.F(nvidiagpucloud.OrgUserInvitationListParamsQOrderByValueAsc),
+				GroupBy: ngc.F("groupBy"),
+				OrderBy: ngc.F([]ngc.OrgUserInvitationListParamsQOrderBy{{
+					Field: ngc.F("field"),
+					Value: ngc.F(ngc.OrgUserInvitationListParamsQOrderByValueAsc),
 				}, {
-					Field: nvidiagpucloud.F("field"),
-					Value: nvidiagpucloud.F(nvidiagpucloud.OrgUserInvitationListParamsQOrderByValueAsc),
+					Field: ngc.F("field"),
+					Value: ngc.F(ngc.OrgUserInvitationListParamsQOrderByValueAsc),
 				}, {
-					Field: nvidiagpucloud.F("field"),
-					Value: nvidiagpucloud.F(nvidiagpucloud.OrgUserInvitationListParamsQOrderByValueAsc),
+					Field: ngc.F("field"),
+					Value: ngc.F(ngc.OrgUserInvitationListParamsQOrderByValueAsc),
 				}}),
-				Page:        nvidiagpucloud.F(int64(0)),
-				PageSize:    nvidiagpucloud.F(int64(0)),
-				Query:       nvidiagpucloud.F("query"),
-				QueryFields: nvidiagpucloud.F([]string{"string", "string", "string"}),
-				ScoredSize:  nvidiagpucloud.F(int64(0)),
+				Page:        ngc.F(int64(0)),
+				PageSize:    ngc.F(int64(0)),
+				Query:       ngc.F("query"),
+				QueryFields: ngc.F([]string{"string", "string", "string"}),
+				ScoredSize:  ngc.F(int64(0)),
 			}),
 		},
 	)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -73,7 +72,7 @@ func TestOrgUserInvitationListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestOrgUserInvitationResendInvitationEmail(t *testing.T) {
+func TestOrgUserInvitationDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -81,18 +80,43 @@ func TestOrgUserInvitationResendInvitationEmail(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Org.Users.Invitations.ResendInvitationEmail(
+	_, err := client.Org.Users.Invitations.Delete(
 		context.TODO(),
 		"org-name",
 		"id",
 	)
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestOrgUserInvitationInviteResend(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := ngc.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Org.Users.Invitations.InviteResend(
+		context.TODO(),
+		"org-name",
+		"id",
+	)
+	if err != nil {
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
