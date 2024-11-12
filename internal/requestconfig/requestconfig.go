@@ -17,15 +17,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apierror"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apiform"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apiquery"
+	"github.com/brevdev/ngc-go/internal"
+	"github.com/brevdev/ngc-go/internal/apierror"
+	"github.com/brevdev/ngc-go/internal/apiform"
+	"github.com/brevdev/ngc-go/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {
 	return map[string]string{
-		"User-Agent": fmt.Sprintf("NvidiaGPUCloud/Go %s", internal.PackageVersion),
+		"User-Agent": fmt.Sprintf("Ngc/Go %s", internal.PackageVersion),
 	}
 }
 
@@ -173,7 +173,6 @@ type RequestConfig struct {
 	HTTPClient     *http.Client
 	Middlewares    []middleware
 	APIKey         string
-	BearerToken    string
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -300,6 +299,10 @@ func retryDelay(res *http.Response, retryCount int) time.Duration {
 }
 
 func (cfg *RequestConfig) Execute() (err error) {
+	if cfg.BaseURL == nil {
+		return fmt.Errorf("requestconfig: base url is not set")
+	}
+
 	cfg.Request.URL, err = cfg.BaseURL.Parse(strings.TrimLeft(cfg.Request.URL.String(), "/"))
 	if err != nil {
 		return err
@@ -483,7 +486,6 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		HTTPClient:     cfg.HTTPClient,
 		Middlewares:    cfg.Middlewares,
 		APIKey:         cfg.APIKey,
-		BearerToken:    cfg.BearerToken,
 	}
 
 	return new

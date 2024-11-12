@@ -1,17 +1,17 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
 	"context"
 	"net/http"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // PublicKeyService contains methods and other services that help with interacting
-// with the nvidia-gpu-cloud API.
+// with the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -30,7 +30,7 @@ func NewPublicKeyService(opts ...option.RequestOption) (r *PublicKeyService) {
 }
 
 // Used to check the health status of the web service only
-func (r *PublicKeyService) Health(ctx context.Context, opts ...option.RequestOption) (res *[]string, err error) {
+func (r *PublicKeyService) List(ctx context.Context, opts ...option.RequestOption) (res *[]string, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "public-keys"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)

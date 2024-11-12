@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"context"
@@ -8,12 +8,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/testutil"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal/testutil"
+	"github.com/brevdev/ngc-go/option"
 )
 
-func TestPublicKeyHealth(t *testing.T) {
+func TestPublicKeyList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -21,14 +21,13 @@ func TestPublicKeyHealth(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
-		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.PublicKeys.Health(context.TODO())
+	_, err := client.PublicKeys.List(context.TODO())
 	if err != nil {
-		var apierr *nvidiagpucloud.Error
+		var apierr *ngc.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

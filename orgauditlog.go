@@ -1,14 +1,20 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apijson"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"context"
+	"errors"
+	"fmt"
+	"net/http"
+
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // OrgAuditLogService contains methods and other services that help with
-// interacting with the nvidia-gpu-cloud API.
+// interacting with the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -26,106 +32,59 @@ func NewOrgAuditLogService(opts ...option.RequestOption) (r *OrgAuditLogService)
 	return
 }
 
-// List of audit logs object
-type AuditLogs struct {
-	// Array of auditLogs object
-	AuditLogsList []AuditLogsAuditLogsList `json:"auditLogsList"`
-	RequestStatus AuditLogsRequestStatus   `json:"requestStatus"`
-	JSON          auditLogsJSON            `json:"-"`
-}
-
-// auditLogsJSON contains the JSON metadata for the struct [AuditLogs]
-type auditLogsJSON struct {
-	AuditLogsList apijson.Field
-	RequestStatus apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *AuditLogs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r auditLogsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Object of audit logs
-type AuditLogsAuditLogsList struct {
-	// Audit logs from date
-	AuditLogsFrom string `json:"auditLogsFrom"`
-	// Unique Id of audit logs
-	AuditLogsID string `json:"auditLogsId"`
-	// Status of audit logs
-	AuditLogsStatus AuditLogsAuditLogsListAuditLogsStatus `json:"auditLogsStatus"`
-	// Audit logs to date
-	AuditLogsTo string `json:"auditLogsTo"`
-	// Audit logs requested date
-	RequestedDate string `json:"requestedDate"`
-	// Audit logs requester email
-	RequesterEmail string `json:"requesterEmail"`
-	// Audit logs requester name
-	RequesterName string `json:"requesterName"`
-	// [DEPRECATED] Audit logs requester email
-	RequsterEmail string `json:"requsterEmail"`
-	// [DEPRECATED] Audit logs requester name
-	RequsterName string                     `json:"requsterName"`
-	JSON         auditLogsAuditLogsListJSON `json:"-"`
-}
-
-// auditLogsAuditLogsListJSON contains the JSON metadata for the struct
-// [AuditLogsAuditLogsList]
-type auditLogsAuditLogsListJSON struct {
-	AuditLogsFrom   apijson.Field
-	AuditLogsID     apijson.Field
-	AuditLogsStatus apijson.Field
-	AuditLogsTo     apijson.Field
-	RequestedDate   apijson.Field
-	RequesterEmail  apijson.Field
-	RequesterName   apijson.Field
-	RequsterEmail   apijson.Field
-	RequsterName    apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *AuditLogsAuditLogsList) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r auditLogsAuditLogsListJSON) RawJSON() string {
-	return r.raw
-}
-
-// Status of audit logs
-type AuditLogsAuditLogsListAuditLogsStatus string
-
-const (
-	AuditLogsAuditLogsListAuditLogsStatusUnknown   AuditLogsAuditLogsListAuditLogsStatus = "UNKNOWN"
-	AuditLogsAuditLogsListAuditLogsStatusRequested AuditLogsAuditLogsListAuditLogsStatus = "REQUESTED"
-	AuditLogsAuditLogsListAuditLogsStatusReady     AuditLogsAuditLogsListAuditLogsStatus = "READY"
-)
-
-func (r AuditLogsAuditLogsListAuditLogsStatus) IsKnown() bool {
-	switch r {
-	case AuditLogsAuditLogsListAuditLogsStatusUnknown, AuditLogsAuditLogsListAuditLogsStatusRequested, AuditLogsAuditLogsListAuditLogsStatusReady:
-		return true
+// Get downloable link for audit logs
+func (r *OrgAuditLogService) Get(ctx context.Context, orgName string, logID string, opts ...option.RequestOption) (res *AuditLogsPresignedURL, err error) {
+	opts = append(r.Options[:], opts...)
+	if orgName == "" {
+		err = errors.New("missing required org-name parameter")
+		return
 	}
-	return false
+	if logID == "" {
+		err = errors.New("missing required log-id parameter")
+		return
+	}
+	path := fmt.Sprintf("v2/org/%s/auditLogs/%s", orgName, logID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
 }
 
-type AuditLogsRequestStatus struct {
+// List of audit logs object
+type AuditLogsPresignedURL struct {
+	// Presign url for user to download audit logs
+	AuditLogsPresignedURL string                             `json:"auditLogsPresignedUrl"`
+	RequestStatus         AuditLogsPresignedURLRequestStatus `json:"requestStatus"`
+	JSON                  auditLogsPresignedURLJSON          `json:"-"`
+}
+
+// auditLogsPresignedURLJSON contains the JSON metadata for the struct
+// [AuditLogsPresignedURL]
+type auditLogsPresignedURLJSON struct {
+	AuditLogsPresignedURL apijson.Field
+	RequestStatus         apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
+}
+
+func (r *AuditLogsPresignedURL) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r auditLogsPresignedURLJSON) RawJSON() string {
+	return r.raw
+}
+
+type AuditLogsPresignedURLRequestStatus struct {
 	RequestID string `json:"requestId"`
 	ServerID  string `json:"serverId"`
 	// Describes response status reported by the server.
-	StatusCode        AuditLogsRequestStatusStatusCode `json:"statusCode"`
-	StatusDescription string                           `json:"statusDescription"`
-	JSON              auditLogsRequestStatusJSON       `json:"-"`
+	StatusCode        AuditLogsPresignedURLRequestStatusStatusCode `json:"statusCode"`
+	StatusDescription string                                       `json:"statusDescription"`
+	JSON              auditLogsPresignedURLRequestStatusJSON       `json:"-"`
 }
 
-// auditLogsRequestStatusJSON contains the JSON metadata for the struct
-// [AuditLogsRequestStatus]
-type auditLogsRequestStatusJSON struct {
+// auditLogsPresignedURLRequestStatusJSON contains the JSON metadata for the struct
+// [AuditLogsPresignedURLRequestStatus]
+type auditLogsPresignedURLRequestStatusJSON struct {
 	RequestID         apijson.Field
 	ServerID          apijson.Field
 	StatusCode        apijson.Field
@@ -134,45 +93,45 @@ type auditLogsRequestStatusJSON struct {
 	ExtraFields       map[string]apijson.Field
 }
 
-func (r *AuditLogsRequestStatus) UnmarshalJSON(data []byte) (err error) {
+func (r *AuditLogsPresignedURLRequestStatus) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r auditLogsRequestStatusJSON) RawJSON() string {
+func (r auditLogsPresignedURLRequestStatusJSON) RawJSON() string {
 	return r.raw
 }
 
 // Describes response status reported by the server.
-type AuditLogsRequestStatusStatusCode string
+type AuditLogsPresignedURLRequestStatusStatusCode string
 
 const (
-	AuditLogsRequestStatusStatusCodeUnknown                    AuditLogsRequestStatusStatusCode = "UNKNOWN"
-	AuditLogsRequestStatusStatusCodeSuccess                    AuditLogsRequestStatusStatusCode = "SUCCESS"
-	AuditLogsRequestStatusStatusCodeUnauthorized               AuditLogsRequestStatusStatusCode = "UNAUTHORIZED"
-	AuditLogsRequestStatusStatusCodePaymentRequired            AuditLogsRequestStatusStatusCode = "PAYMENT_REQUIRED"
-	AuditLogsRequestStatusStatusCodeForbidden                  AuditLogsRequestStatusStatusCode = "FORBIDDEN"
-	AuditLogsRequestStatusStatusCodeTimeout                    AuditLogsRequestStatusStatusCode = "TIMEOUT"
-	AuditLogsRequestStatusStatusCodeExists                     AuditLogsRequestStatusStatusCode = "EXISTS"
-	AuditLogsRequestStatusStatusCodeNotFound                   AuditLogsRequestStatusStatusCode = "NOT_FOUND"
-	AuditLogsRequestStatusStatusCodeInternalError              AuditLogsRequestStatusStatusCode = "INTERNAL_ERROR"
-	AuditLogsRequestStatusStatusCodeInvalidRequest             AuditLogsRequestStatusStatusCode = "INVALID_REQUEST"
-	AuditLogsRequestStatusStatusCodeInvalidRequestVersion      AuditLogsRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
-	AuditLogsRequestStatusStatusCodeInvalidRequestData         AuditLogsRequestStatusStatusCode = "INVALID_REQUEST_DATA"
-	AuditLogsRequestStatusStatusCodeMethodNotAllowed           AuditLogsRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
-	AuditLogsRequestStatusStatusCodeConflict                   AuditLogsRequestStatusStatusCode = "CONFLICT"
-	AuditLogsRequestStatusStatusCodeUnprocessableEntity        AuditLogsRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
-	AuditLogsRequestStatusStatusCodeTooManyRequests            AuditLogsRequestStatusStatusCode = "TOO_MANY_REQUESTS"
-	AuditLogsRequestStatusStatusCodeInsufficientStorage        AuditLogsRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
-	AuditLogsRequestStatusStatusCodeServiceUnavailable         AuditLogsRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
-	AuditLogsRequestStatusStatusCodePayloadTooLarge            AuditLogsRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
-	AuditLogsRequestStatusStatusCodeNotAcceptable              AuditLogsRequestStatusStatusCode = "NOT_ACCEPTABLE"
-	AuditLogsRequestStatusStatusCodeUnavailableForLegalReasons AuditLogsRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
-	AuditLogsRequestStatusStatusCodeBadGateway                 AuditLogsRequestStatusStatusCode = "BAD_GATEWAY"
+	AuditLogsPresignedURLRequestStatusStatusCodeUnknown                    AuditLogsPresignedURLRequestStatusStatusCode = "UNKNOWN"
+	AuditLogsPresignedURLRequestStatusStatusCodeSuccess                    AuditLogsPresignedURLRequestStatusStatusCode = "SUCCESS"
+	AuditLogsPresignedURLRequestStatusStatusCodeUnauthorized               AuditLogsPresignedURLRequestStatusStatusCode = "UNAUTHORIZED"
+	AuditLogsPresignedURLRequestStatusStatusCodePaymentRequired            AuditLogsPresignedURLRequestStatusStatusCode = "PAYMENT_REQUIRED"
+	AuditLogsPresignedURLRequestStatusStatusCodeForbidden                  AuditLogsPresignedURLRequestStatusStatusCode = "FORBIDDEN"
+	AuditLogsPresignedURLRequestStatusStatusCodeTimeout                    AuditLogsPresignedURLRequestStatusStatusCode = "TIMEOUT"
+	AuditLogsPresignedURLRequestStatusStatusCodeExists                     AuditLogsPresignedURLRequestStatusStatusCode = "EXISTS"
+	AuditLogsPresignedURLRequestStatusStatusCodeNotFound                   AuditLogsPresignedURLRequestStatusStatusCode = "NOT_FOUND"
+	AuditLogsPresignedURLRequestStatusStatusCodeInternalError              AuditLogsPresignedURLRequestStatusStatusCode = "INTERNAL_ERROR"
+	AuditLogsPresignedURLRequestStatusStatusCodeInvalidRequest             AuditLogsPresignedURLRequestStatusStatusCode = "INVALID_REQUEST"
+	AuditLogsPresignedURLRequestStatusStatusCodeInvalidRequestVersion      AuditLogsPresignedURLRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
+	AuditLogsPresignedURLRequestStatusStatusCodeInvalidRequestData         AuditLogsPresignedURLRequestStatusStatusCode = "INVALID_REQUEST_DATA"
+	AuditLogsPresignedURLRequestStatusStatusCodeMethodNotAllowed           AuditLogsPresignedURLRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
+	AuditLogsPresignedURLRequestStatusStatusCodeConflict                   AuditLogsPresignedURLRequestStatusStatusCode = "CONFLICT"
+	AuditLogsPresignedURLRequestStatusStatusCodeUnprocessableEntity        AuditLogsPresignedURLRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
+	AuditLogsPresignedURLRequestStatusStatusCodeTooManyRequests            AuditLogsPresignedURLRequestStatusStatusCode = "TOO_MANY_REQUESTS"
+	AuditLogsPresignedURLRequestStatusStatusCodeInsufficientStorage        AuditLogsPresignedURLRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
+	AuditLogsPresignedURLRequestStatusStatusCodeServiceUnavailable         AuditLogsPresignedURLRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
+	AuditLogsPresignedURLRequestStatusStatusCodePayloadTooLarge            AuditLogsPresignedURLRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
+	AuditLogsPresignedURLRequestStatusStatusCodeNotAcceptable              AuditLogsPresignedURLRequestStatusStatusCode = "NOT_ACCEPTABLE"
+	AuditLogsPresignedURLRequestStatusStatusCodeUnavailableForLegalReasons AuditLogsPresignedURLRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
+	AuditLogsPresignedURLRequestStatusStatusCodeBadGateway                 AuditLogsPresignedURLRequestStatusStatusCode = "BAD_GATEWAY"
 )
 
-func (r AuditLogsRequestStatusStatusCode) IsKnown() bool {
+func (r AuditLogsPresignedURLRequestStatusStatusCode) IsKnown() bool {
 	switch r {
-	case AuditLogsRequestStatusStatusCodeUnknown, AuditLogsRequestStatusStatusCodeSuccess, AuditLogsRequestStatusStatusCodeUnauthorized, AuditLogsRequestStatusStatusCodePaymentRequired, AuditLogsRequestStatusStatusCodeForbidden, AuditLogsRequestStatusStatusCodeTimeout, AuditLogsRequestStatusStatusCodeExists, AuditLogsRequestStatusStatusCodeNotFound, AuditLogsRequestStatusStatusCodeInternalError, AuditLogsRequestStatusStatusCodeInvalidRequest, AuditLogsRequestStatusStatusCodeInvalidRequestVersion, AuditLogsRequestStatusStatusCodeInvalidRequestData, AuditLogsRequestStatusStatusCodeMethodNotAllowed, AuditLogsRequestStatusStatusCodeConflict, AuditLogsRequestStatusStatusCodeUnprocessableEntity, AuditLogsRequestStatusStatusCodeTooManyRequests, AuditLogsRequestStatusStatusCodeInsufficientStorage, AuditLogsRequestStatusStatusCodeServiceUnavailable, AuditLogsRequestStatusStatusCodePayloadTooLarge, AuditLogsRequestStatusStatusCodeNotAcceptable, AuditLogsRequestStatusStatusCodeUnavailableForLegalReasons, AuditLogsRequestStatusStatusCodeBadGateway:
+	case AuditLogsPresignedURLRequestStatusStatusCodeUnknown, AuditLogsPresignedURLRequestStatusStatusCodeSuccess, AuditLogsPresignedURLRequestStatusStatusCodeUnauthorized, AuditLogsPresignedURLRequestStatusStatusCodePaymentRequired, AuditLogsPresignedURLRequestStatusStatusCodeForbidden, AuditLogsPresignedURLRequestStatusStatusCodeTimeout, AuditLogsPresignedURLRequestStatusStatusCodeExists, AuditLogsPresignedURLRequestStatusStatusCodeNotFound, AuditLogsPresignedURLRequestStatusStatusCodeInternalError, AuditLogsPresignedURLRequestStatusStatusCodeInvalidRequest, AuditLogsPresignedURLRequestStatusStatusCodeInvalidRequestVersion, AuditLogsPresignedURLRequestStatusStatusCodeInvalidRequestData, AuditLogsPresignedURLRequestStatusStatusCodeMethodNotAllowed, AuditLogsPresignedURLRequestStatusStatusCodeConflict, AuditLogsPresignedURLRequestStatusStatusCodeUnprocessableEntity, AuditLogsPresignedURLRequestStatusStatusCodeTooManyRequests, AuditLogsPresignedURLRequestStatusStatusCodeInsufficientStorage, AuditLogsPresignedURLRequestStatusStatusCodeServiceUnavailable, AuditLogsPresignedURLRequestStatusStatusCodePayloadTooLarge, AuditLogsPresignedURLRequestStatusStatusCodeNotAcceptable, AuditLogsPresignedURLRequestStatusStatusCodeUnavailableForLegalReasons, AuditLogsPresignedURLRequestStatusStatusCodeBadGateway:
 		return true
 	}
 	return false

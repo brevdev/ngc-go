@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud_test
+package ngc_test
 
 import (
 	"context"
@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go"
+	"github.com/brevdev/ngc-go/internal"
+	"github.com/brevdev/ngc-go/option"
 )
 
 type closureTransport struct {
@@ -25,7 +25,7 @@ func (t *closureTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 func TestUserAgentHeader(t *testing.T) {
 	var userAgent string
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -37,15 +37,15 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Orgs.New(context.Background(), nvidiagpucloud.OrgNewParams{})
-	if userAgent != fmt.Sprintf("NvidiaGPUCloud/Go %s", internal.PackageVersion) {
+	client.Orgs.New(context.Background(), ngc.OrgNewParams{})
+	if userAgent != fmt.Sprintf("Ngc/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
 	}
 }
 
 func TestRetryAfter(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -60,7 +60,7 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	res, err := client.Orgs.New(context.Background(), nvidiagpucloud.OrgNewParams{})
+	res, err := client.Orgs.New(context.Background(), ngc.OrgNewParams{})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
 	}
@@ -78,7 +78,7 @@ func TestRetryAfter(t *testing.T) {
 
 func TestDeleteRetryCountHeader(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -94,7 +94,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	res, err := client.Orgs.New(context.Background(), nvidiagpucloud.OrgNewParams{})
+	res, err := client.Orgs.New(context.Background(), ngc.OrgNewParams{})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
 	}
@@ -107,7 +107,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 
 func TestOverwriteRetryCountHeader(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -123,7 +123,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	res, err := client.Orgs.New(context.Background(), nvidiagpucloud.OrgNewParams{})
+	res, err := client.Orgs.New(context.Background(), ngc.OrgNewParams{})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
 	}
@@ -136,7 +136,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 
 func TestRetryAfterMs(t *testing.T) {
 	attempts := 0
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -151,7 +151,7 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	res, err := client.Orgs.New(context.Background(), nvidiagpucloud.OrgNewParams{})
+	res, err := client.Orgs.New(context.Background(), ngc.OrgNewParams{})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
 	}
@@ -161,7 +161,7 @@ func TestRetryAfterMs(t *testing.T) {
 }
 
 func TestContextCancel(t *testing.T) {
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -173,14 +173,14 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	res, err := client.Orgs.New(cancelCtx, nvidiagpucloud.OrgNewParams{})
+	res, err := client.Orgs.New(cancelCtx, ngc.OrgNewParams{})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
 	}
 }
 
 func TestContextCancelDelay(t *testing.T) {
-	client := nvidiagpucloud.NewClient(
+	client := ngc.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -192,7 +192,7 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	res, err := client.Orgs.New(cancelCtx, nvidiagpucloud.OrgNewParams{})
+	res, err := client.Orgs.New(cancelCtx, ngc.OrgNewParams{})
 	if err == nil || res != nil {
 		t.Error("expected there to be a cancel error and for the response to be nil")
 	}
@@ -207,7 +207,7 @@ func TestContextDeadline(t *testing.T) {
 	defer cancel()
 
 	go func() {
-		client := nvidiagpucloud.NewClient(
+		client := ngc.NewClient(
 			option.WithHTTPClient(&http.Client{
 				Transport: &closureTransport{
 					fn: func(req *http.Request) (*http.Response, error) {
@@ -217,7 +217,7 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		res, err := client.Orgs.New(deadlineCtx, nvidiagpucloud.OrgNewParams{})
+		res, err := client.Orgs.New(deadlineCtx, ngc.OrgNewParams{})
 		if err == nil || res != nil {
 			t.Error("expected there to be a deadline error and for the response to be nil")
 		}

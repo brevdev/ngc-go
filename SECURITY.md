@@ -16,11 +16,11 @@ before making any information public.
 ## Reporting Non-SDK Related Security Issues
 
 If you encounter security issues that are not directly related to SDKs but pertain to the services
-or products provided by Nvidia GPU Cloud please follow the respective company's security reporting guidelines.
+or products provided by Ngc please follow the respective company's security reporting guidelines.
 
-### Nvidia GPU Cloud Terms and Policies
+### Ngc Terms and Policies
 
-Please contact dev-feedback@nvidia-gpu-cloud.com for any questions or concerns regarding security of our services.
+Please contact dev-feedback@ngc.com for any questions or concerns regarding security of our services.
 
 ---
 

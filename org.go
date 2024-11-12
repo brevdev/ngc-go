@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package nvidiagpucloud
+package ngc
 
 import (
 	"context"
@@ -9,26 +9,30 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apijson"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/apiquery"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/param"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/internal/requestconfig"
-	"github.com/stainless-sdks/nvidia-gpu-cloud-go/option"
+	"github.com/brevdev/ngc-go/internal/apijson"
+	"github.com/brevdev/ngc-go/internal/apiquery"
+	"github.com/brevdev/ngc-go/internal/param"
+	"github.com/brevdev/ngc-go/internal/requestconfig"
+	"github.com/brevdev/ngc-go/option"
 )
 
 // OrgService contains methods and other services that help with interacting with
-// the nvidia-gpu-cloud API.
+// the ngc API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewOrgService] method instead.
 type OrgService struct {
-	Options   []option.RequestOption
-	Users     *OrgUserService
-	Teams     *OrgTeamService
-	ProtoOrg  *OrgProtoOrgService
-	Credits   *OrgCreditService
-	AuditLogs *OrgAuditLogService
+	Options      []option.RequestOption
+	V3           *OrgV3Service
+	ProtoOrg     *OrgProtoOrgService
+	V2           *OrgV2Service
+	Users        *OrgUserService
+	Teams        *OrgTeamService
+	Credits      *OrgCreditService
+	StarfleetIDs *OrgStarfleetIDService
+	Metering     *OrgMeteringService
+	AuditLogs    *OrgAuditLogService
 }
 
 // NewOrgService generates a new service that applies the given options to each
@@ -37,16 +41,20 @@ type OrgService struct {
 func NewOrgService(opts ...option.RequestOption) (r *OrgService) {
 	r = &OrgService{}
 	r.Options = opts
+	r.V3 = NewOrgV3Service(opts...)
+	r.ProtoOrg = NewOrgProtoOrgService(opts...)
+	r.V2 = NewOrgV2Service(opts...)
 	r.Users = NewOrgUserService(opts...)
 	r.Teams = NewOrgTeamService(opts...)
-	r.ProtoOrg = NewOrgProtoOrgService(opts...)
 	r.Credits = NewOrgCreditService(opts...)
+	r.StarfleetIDs = NewOrgStarfleetIDService(opts...)
+	r.Metering = NewOrgMeteringService(opts...)
 	r.AuditLogs = NewOrgAuditLogService(opts...)
 	return
 }
 
 // Create a new organization based on the org info provided in the request.
-func (r *OrgService) New(ctx context.Context, params OrgNewParams, opts ...option.RequestOption) (res *Org, err error) {
+func (r *OrgService) New(ctx context.Context, params OrgNewParams, opts ...option.RequestOption) (res *OrgResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v3/orgs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
@@ -54,7 +62,7 @@ func (r *OrgService) New(ctx context.Context, params OrgNewParams, opts ...optio
 }
 
 // Get organization information
-func (r *OrgService) Get(ctx context.Context, orgName string, opts ...option.RequestOption) (res *Org, err error) {
+func (r *OrgService) Get(ctx context.Context, orgName string, opts ...option.RequestOption) (res *OrgResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if orgName == "" {
 		err = errors.New("missing required org-name parameter")
@@ -66,7 +74,7 @@ func (r *OrgService) Get(ctx context.Context, orgName string, opts ...option.Req
 }
 
 // Update organization information
-func (r *OrgService) Update(ctx context.Context, orgName string, body OrgUpdateParams, opts ...option.RequestOption) (res *Org, err error) {
+func (r *OrgService) Update(ctx context.Context, orgName string, body OrgUpdateParams, opts ...option.RequestOption) (res *OrgResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if orgName == "" {
 		err = errors.New("missing required org-name parameter")
@@ -83,510 +91,6 @@ func (r *OrgService) List(ctx context.Context, query OrgListParams, opts ...opti
 	path := "v2/orgs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
-}
-
-// info about an organizations
-type Org struct {
-	// Information about the Organization
-	Organizations OrgOrganizations `json:"organizations"`
-	RequestStatus OrgRequestStatus `json:"requestStatus"`
-	JSON          orgJSON          `json:"-"`
-}
-
-// orgJSON contains the JSON metadata for the struct [Org]
-type orgJSON struct {
-	Organizations apijson.Field
-	RequestStatus apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *Org) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgJSON) RawJSON() string {
-	return r.raw
-}
-
-// Information about the Organization
-type OrgOrganizations struct {
-	// Unique Id of this team.
-	ID int64 `json:"id"`
-	// Org Owner Alternate Contact
-	AlternateContact OrgOrganizationsAlternateContact `json:"alternateContact"`
-	// Billing account ID.
-	BillingAccountID string `json:"billingAccountId"`
-	// Identifies if the org can be reused.
-	CanAddOn bool `json:"canAddOn"`
-	// ISO country code of the organization.
-	Country string `json:"country"`
-	// Optional description of the organization.
-	Description string `json:"description"`
-	// Name of the organization that will be shown to users.
-	DisplayName string `json:"displayName"`
-	// Identity Provider ID.
-	IdpID string `json:"idpId"`
-	// Industry of the organization.
-	Industry string `json:"industry"`
-	// Infinity manager setting definition
-	InfinityManagerSettings OrgOrganizationsInfinityManagerSettings `json:"infinityManagerSettings"`
-	// Dataset Service enable flag for an organization
-	IsDatasetServiceEnabled bool `json:"isDatasetServiceEnabled"`
-	// Is NVIDIA internal org or not
-	IsInternal bool `json:"isInternal"`
-	// Indicates when the org is a proto org
-	IsProto bool `json:"isProto"`
-	// Quick Start enable flag for an organization
-	IsQuickStartEnabled bool `json:"isQuickStartEnabled"`
-	// If a server side encryption is enabled for private registry (models, resources)
-	IsRegistrySseEnabled bool `json:"isRegistrySSEEnabled"`
-	// Secrets Manager Service enable flag for an organization
-	IsSecretsManagerServiceEnabled bool `json:"isSecretsManagerServiceEnabled"`
-	// Secure Credential Sharing Service enable flag for an organization
-	IsSecureCredentialSharingServiceEnabled bool `json:"isSecureCredentialSharingServiceEnabled"`
-	// If a separate influx db used for an organization in BCP for job telemetry
-	IsSeparateInfluxDBUsed bool `json:"isSeparateInfluxDbUsed"`
-	// Organization name.
-	Name string `json:"name"`
-	// NVIDIA Cloud Account Number.
-	Nan string `json:"nan"`
-	// Org owner.
-	OrgOwner OrgOrganizationsOrgOwner `json:"orgOwner"`
-	// Org owners
-	OrgOwners []OrgOrganizationsOrgOwner `json:"orgOwners"`
-	// Product end customer salesforce.com Id (external customer Id). pecSfdcId is for
-	// EMS (entitlement management service) to track external paid customer.
-	PecSfdcID            string                                `json:"pecSfdcId"`
-	ProductEnablements   []OrgOrganizationsProductEnablement   `json:"productEnablements"`
-	ProductSubscriptions []OrgOrganizationsProductSubscription `json:"productSubscriptions"`
-	// Repo scan setting definition
-	RepoScanSettings OrgOrganizationsRepoScanSettings `json:"repoScanSettings"`
-	Type             OrgOrganizationsType             `json:"type"`
-	// Users information.
-	UsersInfo OrgOrganizationsUsersInfo `json:"usersInfo"`
-	JSON      orgOrganizationsJSON      `json:"-"`
-}
-
-// orgOrganizationsJSON contains the JSON metadata for the struct
-// [OrgOrganizations]
-type orgOrganizationsJSON struct {
-	ID                                      apijson.Field
-	AlternateContact                        apijson.Field
-	BillingAccountID                        apijson.Field
-	CanAddOn                                apijson.Field
-	Country                                 apijson.Field
-	Description                             apijson.Field
-	DisplayName                             apijson.Field
-	IdpID                                   apijson.Field
-	Industry                                apijson.Field
-	InfinityManagerSettings                 apijson.Field
-	IsDatasetServiceEnabled                 apijson.Field
-	IsInternal                              apijson.Field
-	IsProto                                 apijson.Field
-	IsQuickStartEnabled                     apijson.Field
-	IsRegistrySseEnabled                    apijson.Field
-	IsSecretsManagerServiceEnabled          apijson.Field
-	IsSecureCredentialSharingServiceEnabled apijson.Field
-	IsSeparateInfluxDBUsed                  apijson.Field
-	Name                                    apijson.Field
-	Nan                                     apijson.Field
-	OrgOwner                                apijson.Field
-	OrgOwners                               apijson.Field
-	PecSfdcID                               apijson.Field
-	ProductEnablements                      apijson.Field
-	ProductSubscriptions                    apijson.Field
-	RepoScanSettings                        apijson.Field
-	Type                                    apijson.Field
-	UsersInfo                               apijson.Field
-	raw                                     string
-	ExtraFields                             map[string]apijson.Field
-}
-
-func (r *OrgOrganizations) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgOrganizationsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Org Owner Alternate Contact
-type OrgOrganizationsAlternateContact struct {
-	// Alternate contact's email.
-	Email string `json:"email"`
-	// Full name of the alternate contact.
-	FullName string                               `json:"fullName"`
-	JSON     orgOrganizationsAlternateContactJSON `json:"-"`
-}
-
-// orgOrganizationsAlternateContactJSON contains the JSON metadata for the struct
-// [OrgOrganizationsAlternateContact]
-type orgOrganizationsAlternateContactJSON struct {
-	Email       apijson.Field
-	FullName    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *OrgOrganizationsAlternateContact) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgOrganizationsAlternateContactJSON) RawJSON() string {
-	return r.raw
-}
-
-// Infinity manager setting definition
-type OrgOrganizationsInfinityManagerSettings struct {
-	// Enable the infinity manager or not. Used both in org and team level object
-	InfinityManagerEnabled bool `json:"infinityManagerEnabled"`
-	// Allow override settings at team level. Only used in org level object
-	InfinityManagerEnableTeamOverride bool                                        `json:"infinityManagerEnableTeamOverride"`
-	JSON                              orgOrganizationsInfinityManagerSettingsJSON `json:"-"`
-}
-
-// orgOrganizationsInfinityManagerSettingsJSON contains the JSON metadata for the
-// struct [OrgOrganizationsInfinityManagerSettings]
-type orgOrganizationsInfinityManagerSettingsJSON struct {
-	InfinityManagerEnabled            apijson.Field
-	InfinityManagerEnableTeamOverride apijson.Field
-	raw                               string
-	ExtraFields                       map[string]apijson.Field
-}
-
-func (r *OrgOrganizationsInfinityManagerSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgOrganizationsInfinityManagerSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Org owner.
-type OrgOrganizationsOrgOwner struct {
-	// Email address of the org owner.
-	Email string `json:"email,required"`
-	// Org owner name.
-	FullName string `json:"fullName,required"`
-	// Last time the org owner logged in.
-	LastLoginDate string                       `json:"lastLoginDate"`
-	JSON          orgOrganizationsOrgOwnerJSON `json:"-"`
-}
-
-// orgOrganizationsOrgOwnerJSON contains the JSON metadata for the struct
-// [OrgOrganizationsOrgOwner]
-type orgOrganizationsOrgOwnerJSON struct {
-	Email         apijson.Field
-	FullName      apijson.Field
-	LastLoginDate apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *OrgOrganizationsOrgOwner) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgOrganizationsOrgOwnerJSON) RawJSON() string {
-	return r.raw
-}
-
-// Product Enablement
-type OrgOrganizationsProductEnablement struct {
-	// Product Name (NVAIE, BASE_COMMAND, REGISTRY, etc)
-	ProductName string `json:"productName,required"`
-	// Product Enablement Types
-	Type OrgOrganizationsProductEnablementsType `json:"type,required"`
-	// Date on which the subscription expires. The subscription is invalid after this
-	// date. (yyyy-MM-dd)
-	ExpirationDate string                                       `json:"expirationDate"`
-	PoDetails      []OrgOrganizationsProductEnablementsPoDetail `json:"poDetails"`
-	JSON           orgOrganizationsProductEnablementJSON        `json:"-"`
-}
-
-// orgOrganizationsProductEnablementJSON contains the JSON metadata for the struct
-// [OrgOrganizationsProductEnablement]
-type orgOrganizationsProductEnablementJSON struct {
-	ProductName    apijson.Field
-	Type           apijson.Field
-	ExpirationDate apijson.Field
-	PoDetails      apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *OrgOrganizationsProductEnablement) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgOrganizationsProductEnablementJSON) RawJSON() string {
-	return r.raw
-}
-
-// Product Enablement Types
-type OrgOrganizationsProductEnablementsType string
-
-const (
-	OrgOrganizationsProductEnablementsTypeNgcAdminEval       OrgOrganizationsProductEnablementsType = "NGC_ADMIN_EVAL"
-	OrgOrganizationsProductEnablementsTypeNgcAdminNfr        OrgOrganizationsProductEnablementsType = "NGC_ADMIN_NFR"
-	OrgOrganizationsProductEnablementsTypeNgcAdminCommercial OrgOrganizationsProductEnablementsType = "NGC_ADMIN_COMMERCIAL"
-	OrgOrganizationsProductEnablementsTypeEmsEval            OrgOrganizationsProductEnablementsType = "EMS_EVAL"
-	OrgOrganizationsProductEnablementsTypeEmsNfr             OrgOrganizationsProductEnablementsType = "EMS_NFR"
-	OrgOrganizationsProductEnablementsTypeEmsCommercial      OrgOrganizationsProductEnablementsType = "EMS_COMMERCIAL"
-	OrgOrganizationsProductEnablementsTypeNgcAdminDeveloper  OrgOrganizationsProductEnablementsType = "NGC_ADMIN_DEVELOPER"
-)
-
-func (r OrgOrganizationsProductEnablementsType) IsKnown() bool {
-	switch r {
-	case OrgOrganizationsProductEnablementsTypeNgcAdminEval, OrgOrganizationsProductEnablementsTypeNgcAdminNfr, OrgOrganizationsProductEnablementsTypeNgcAdminCommercial, OrgOrganizationsProductEnablementsTypeEmsEval, OrgOrganizationsProductEnablementsTypeEmsNfr, OrgOrganizationsProductEnablementsTypeEmsCommercial, OrgOrganizationsProductEnablementsTypeNgcAdminDeveloper:
-		return true
-	}
-	return false
-}
-
-// Purchase Order.
-type OrgOrganizationsProductEnablementsPoDetail struct {
-	// Entitlement identifier.
-	EntitlementID string `json:"entitlementId"`
-	// PAK (Product Activation Key) identifier.
-	PkID string                                         `json:"pkId"`
-	JSON orgOrganizationsProductEnablementsPoDetailJSON `json:"-"`
-}
-
-// orgOrganizationsProductEnablementsPoDetailJSON contains the JSON metadata for
-// the struct [OrgOrganizationsProductEnablementsPoDetail]
-type orgOrganizationsProductEnablementsPoDetailJSON struct {
-	EntitlementID apijson.Field
-	PkID          apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *OrgOrganizationsProductEnablementsPoDetail) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgOrganizationsProductEnablementsPoDetailJSON) RawJSON() string {
-	return r.raw
-}
-
-// Product Subscription
-type OrgOrganizationsProductSubscription struct {
-	// Product Name (NVAIE, BASE_COMMAND, FleetCommand, REGISTRY, etc).
-	ProductName string `json:"productName,required"`
-	// Unique entitlement identifier
-	ID string `json:"id"`
-	// EMS Subscription type. (options: EMS_EVAL, EMS_NFR and EMS_COMMERCIAL)
-	EmsEntitlementType OrgOrganizationsProductSubscriptionsEmsEntitlementType `json:"emsEntitlementType"`
-	// Date on which the subscription expires. The subscription is invalid after this
-	// date. (yyyy-MM-dd)
-	ExpirationDate string `json:"expirationDate"`
-	// Date on which the subscription becomes active. (yyyy-MM-dd)
-	StartDate string `json:"startDate"`
-	// Subscription type. (options: NGC_ADMIN_EVAL, NGC_ADMIN_NFR,
-	// NGC_ADMIN_COMMERCIAL)
-	Type OrgOrganizationsProductSubscriptionsType `json:"type"`
-	JSON orgOrganizationsProductSubscriptionJSON  `json:"-"`
-}
-
-// orgOrganizationsProductSubscriptionJSON contains the JSON metadata for the
-// struct [OrgOrganizationsProductSubscription]
-type orgOrganizationsProductSubscriptionJSON struct {
-	ProductName        apijson.Field
-	ID                 apijson.Field
-	EmsEntitlementType apijson.Field
-	ExpirationDate     apijson.Field
-	StartDate          apijson.Field
-	Type               apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *OrgOrganizationsProductSubscription) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgOrganizationsProductSubscriptionJSON) RawJSON() string {
-	return r.raw
-}
-
-// EMS Subscription type. (options: EMS_EVAL, EMS_NFR and EMS_COMMERCIAL)
-type OrgOrganizationsProductSubscriptionsEmsEntitlementType string
-
-const (
-	OrgOrganizationsProductSubscriptionsEmsEntitlementTypeEmsEval       OrgOrganizationsProductSubscriptionsEmsEntitlementType = "EMS_EVAL"
-	OrgOrganizationsProductSubscriptionsEmsEntitlementTypeEmsNfr        OrgOrganizationsProductSubscriptionsEmsEntitlementType = "EMS_NFR"
-	OrgOrganizationsProductSubscriptionsEmsEntitlementTypeEmsCommerical OrgOrganizationsProductSubscriptionsEmsEntitlementType = "EMS_COMMERICAL"
-	OrgOrganizationsProductSubscriptionsEmsEntitlementTypeEmsCommercial OrgOrganizationsProductSubscriptionsEmsEntitlementType = "EMS_COMMERCIAL"
-)
-
-func (r OrgOrganizationsProductSubscriptionsEmsEntitlementType) IsKnown() bool {
-	switch r {
-	case OrgOrganizationsProductSubscriptionsEmsEntitlementTypeEmsEval, OrgOrganizationsProductSubscriptionsEmsEntitlementTypeEmsNfr, OrgOrganizationsProductSubscriptionsEmsEntitlementTypeEmsCommerical, OrgOrganizationsProductSubscriptionsEmsEntitlementTypeEmsCommercial:
-		return true
-	}
-	return false
-}
-
-// Subscription type. (options: NGC_ADMIN_EVAL, NGC_ADMIN_NFR,
-// NGC_ADMIN_COMMERCIAL)
-type OrgOrganizationsProductSubscriptionsType string
-
-const (
-	OrgOrganizationsProductSubscriptionsTypeNgcAdminEval       OrgOrganizationsProductSubscriptionsType = "NGC_ADMIN_EVAL"
-	OrgOrganizationsProductSubscriptionsTypeNgcAdminNfr        OrgOrganizationsProductSubscriptionsType = "NGC_ADMIN_NFR"
-	OrgOrganizationsProductSubscriptionsTypeNgcAdminCommercial OrgOrganizationsProductSubscriptionsType = "NGC_ADMIN_COMMERCIAL"
-)
-
-func (r OrgOrganizationsProductSubscriptionsType) IsKnown() bool {
-	switch r {
-	case OrgOrganizationsProductSubscriptionsTypeNgcAdminEval, OrgOrganizationsProductSubscriptionsTypeNgcAdminNfr, OrgOrganizationsProductSubscriptionsTypeNgcAdminCommercial:
-		return true
-	}
-	return false
-}
-
-// Repo scan setting definition
-type OrgOrganizationsRepoScanSettings struct {
-	// Allow org admin to override the org level repo scan settings
-	RepoScanAllowOverride bool `json:"repoScanAllowOverride"`
-	// Allow repository scanning by default
-	RepoScanByDefault bool `json:"repoScanByDefault"`
-	// Enable the repository scan or not. Only used in org level object
-	RepoScanEnabled bool `json:"repoScanEnabled"`
-	// Sends notification to end user after scanning is done
-	RepoScanEnableNotifications bool `json:"repoScanEnableNotifications"`
-	// Allow override settings at team level. Only used in org level object
-	RepoScanEnableTeamOverride bool `json:"repoScanEnableTeamOverride"`
-	// Allow showing scan results to CLI or UI
-	RepoScanShowResults bool                                 `json:"repoScanShowResults"`
-	JSON                orgOrganizationsRepoScanSettingsJSON `json:"-"`
-}
-
-// orgOrganizationsRepoScanSettingsJSON contains the JSON metadata for the struct
-// [OrgOrganizationsRepoScanSettings]
-type orgOrganizationsRepoScanSettingsJSON struct {
-	RepoScanAllowOverride       apijson.Field
-	RepoScanByDefault           apijson.Field
-	RepoScanEnabled             apijson.Field
-	RepoScanEnableNotifications apijson.Field
-	RepoScanEnableTeamOverride  apijson.Field
-	RepoScanShowResults         apijson.Field
-	raw                         string
-	ExtraFields                 map[string]apijson.Field
-}
-
-func (r *OrgOrganizationsRepoScanSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgOrganizationsRepoScanSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-type OrgOrganizationsType string
-
-const (
-	OrgOrganizationsTypeUnknown    OrgOrganizationsType = "UNKNOWN"
-	OrgOrganizationsTypeCloud      OrgOrganizationsType = "CLOUD"
-	OrgOrganizationsTypeEnterprise OrgOrganizationsType = "ENTERPRISE"
-	OrgOrganizationsTypeIndividual OrgOrganizationsType = "INDIVIDUAL"
-)
-
-func (r OrgOrganizationsType) IsKnown() bool {
-	switch r {
-	case OrgOrganizationsTypeUnknown, OrgOrganizationsTypeCloud, OrgOrganizationsTypeEnterprise, OrgOrganizationsTypeIndividual:
-		return true
-	}
-	return false
-}
-
-// Users information.
-type OrgOrganizationsUsersInfo struct {
-	// Total number of users.
-	TotalUsers int64                         `json:"totalUsers"`
-	JSON       orgOrganizationsUsersInfoJSON `json:"-"`
-}
-
-// orgOrganizationsUsersInfoJSON contains the JSON metadata for the struct
-// [OrgOrganizationsUsersInfo]
-type orgOrganizationsUsersInfoJSON struct {
-	TotalUsers  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *OrgOrganizationsUsersInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgOrganizationsUsersInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type OrgRequestStatus struct {
-	RequestID string `json:"requestId"`
-	ServerID  string `json:"serverId"`
-	// Describes response status reported by the server.
-	StatusCode        OrgRequestStatusStatusCode `json:"statusCode"`
-	StatusDescription string                     `json:"statusDescription"`
-	JSON              orgRequestStatusJSON       `json:"-"`
-}
-
-// orgRequestStatusJSON contains the JSON metadata for the struct
-// [OrgRequestStatus]
-type orgRequestStatusJSON struct {
-	RequestID         apijson.Field
-	ServerID          apijson.Field
-	StatusCode        apijson.Field
-	StatusDescription apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *OrgRequestStatus) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r orgRequestStatusJSON) RawJSON() string {
-	return r.raw
-}
-
-// Describes response status reported by the server.
-type OrgRequestStatusStatusCode string
-
-const (
-	OrgRequestStatusStatusCodeUnknown                    OrgRequestStatusStatusCode = "UNKNOWN"
-	OrgRequestStatusStatusCodeSuccess                    OrgRequestStatusStatusCode = "SUCCESS"
-	OrgRequestStatusStatusCodeUnauthorized               OrgRequestStatusStatusCode = "UNAUTHORIZED"
-	OrgRequestStatusStatusCodePaymentRequired            OrgRequestStatusStatusCode = "PAYMENT_REQUIRED"
-	OrgRequestStatusStatusCodeForbidden                  OrgRequestStatusStatusCode = "FORBIDDEN"
-	OrgRequestStatusStatusCodeTimeout                    OrgRequestStatusStatusCode = "TIMEOUT"
-	OrgRequestStatusStatusCodeExists                     OrgRequestStatusStatusCode = "EXISTS"
-	OrgRequestStatusStatusCodeNotFound                   OrgRequestStatusStatusCode = "NOT_FOUND"
-	OrgRequestStatusStatusCodeInternalError              OrgRequestStatusStatusCode = "INTERNAL_ERROR"
-	OrgRequestStatusStatusCodeInvalidRequest             OrgRequestStatusStatusCode = "INVALID_REQUEST"
-	OrgRequestStatusStatusCodeInvalidRequestVersion      OrgRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
-	OrgRequestStatusStatusCodeInvalidRequestData         OrgRequestStatusStatusCode = "INVALID_REQUEST_DATA"
-	OrgRequestStatusStatusCodeMethodNotAllowed           OrgRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
-	OrgRequestStatusStatusCodeConflict                   OrgRequestStatusStatusCode = "CONFLICT"
-	OrgRequestStatusStatusCodeUnprocessableEntity        OrgRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
-	OrgRequestStatusStatusCodeTooManyRequests            OrgRequestStatusStatusCode = "TOO_MANY_REQUESTS"
-	OrgRequestStatusStatusCodeInsufficientStorage        OrgRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
-	OrgRequestStatusStatusCodeServiceUnavailable         OrgRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
-	OrgRequestStatusStatusCodePayloadTooLarge            OrgRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
-	OrgRequestStatusStatusCodeNotAcceptable              OrgRequestStatusStatusCode = "NOT_ACCEPTABLE"
-	OrgRequestStatusStatusCodeUnavailableForLegalReasons OrgRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
-	OrgRequestStatusStatusCodeBadGateway                 OrgRequestStatusStatusCode = "BAD_GATEWAY"
-)
-
-func (r OrgRequestStatusStatusCode) IsKnown() bool {
-	switch r {
-	case OrgRequestStatusStatusCodeUnknown, OrgRequestStatusStatusCodeSuccess, OrgRequestStatusStatusCodeUnauthorized, OrgRequestStatusStatusCodePaymentRequired, OrgRequestStatusStatusCodeForbidden, OrgRequestStatusStatusCodeTimeout, OrgRequestStatusStatusCodeExists, OrgRequestStatusStatusCodeNotFound, OrgRequestStatusStatusCodeInternalError, OrgRequestStatusStatusCodeInvalidRequest, OrgRequestStatusStatusCodeInvalidRequestVersion, OrgRequestStatusStatusCodeInvalidRequestData, OrgRequestStatusStatusCodeMethodNotAllowed, OrgRequestStatusStatusCodeConflict, OrgRequestStatusStatusCodeUnprocessableEntity, OrgRequestStatusStatusCodeTooManyRequests, OrgRequestStatusStatusCodeInsufficientStorage, OrgRequestStatusStatusCodeServiceUnavailable, OrgRequestStatusStatusCodePayloadTooLarge, OrgRequestStatusStatusCodeNotAcceptable, OrgRequestStatusStatusCodeUnavailableForLegalReasons, OrgRequestStatusStatusCodeBadGateway:
-		return true
-	}
-	return false
 }
 
 // List of organizations.
@@ -1131,740 +635,36 @@ func (r OrgListRequestStatusStatusCode) IsKnown() bool {
 	return false
 }
 
-// details about one team
-type Team struct {
-	RequestStatus TeamRequestStatus `json:"requestStatus"`
-	// Information about the team
-	Team TeamTeam `json:"team"`
-	JSON teamJSON `json:"-"`
+// info about an organizations
+type OrgResponse struct {
+	// Information about the Organization
+	Organizations OrgResponseOrganizations `json:"organizations"`
+	RequestStatus OrgResponseRequestStatus `json:"requestStatus"`
+	JSON          orgResponseJSON          `json:"-"`
 }
 
-// teamJSON contains the JSON metadata for the struct [Team]
-type teamJSON struct {
+// orgResponseJSON contains the JSON metadata for the struct [OrgResponse]
+type orgResponseJSON struct {
+	Organizations apijson.Field
 	RequestStatus apijson.Field
-	Team          apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
 }
 
-func (r *Team) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r teamJSON) RawJSON() string {
-	return r.raw
-}
-
-type TeamRequestStatus struct {
-	RequestID string `json:"requestId"`
-	ServerID  string `json:"serverId"`
-	// Describes response status reported by the server.
-	StatusCode        TeamRequestStatusStatusCode `json:"statusCode"`
-	StatusDescription string                      `json:"statusDescription"`
-	JSON              teamRequestStatusJSON       `json:"-"`
-}
-
-// teamRequestStatusJSON contains the JSON metadata for the struct
-// [TeamRequestStatus]
-type teamRequestStatusJSON struct {
-	RequestID         apijson.Field
-	ServerID          apijson.Field
-	StatusCode        apijson.Field
-	StatusDescription apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *TeamRequestStatus) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamRequestStatusJSON) RawJSON() string {
-	return r.raw
-}
-
-// Describes response status reported by the server.
-type TeamRequestStatusStatusCode string
-
-const (
-	TeamRequestStatusStatusCodeUnknown                    TeamRequestStatusStatusCode = "UNKNOWN"
-	TeamRequestStatusStatusCodeSuccess                    TeamRequestStatusStatusCode = "SUCCESS"
-	TeamRequestStatusStatusCodeUnauthorized               TeamRequestStatusStatusCode = "UNAUTHORIZED"
-	TeamRequestStatusStatusCodePaymentRequired            TeamRequestStatusStatusCode = "PAYMENT_REQUIRED"
-	TeamRequestStatusStatusCodeForbidden                  TeamRequestStatusStatusCode = "FORBIDDEN"
-	TeamRequestStatusStatusCodeTimeout                    TeamRequestStatusStatusCode = "TIMEOUT"
-	TeamRequestStatusStatusCodeExists                     TeamRequestStatusStatusCode = "EXISTS"
-	TeamRequestStatusStatusCodeNotFound                   TeamRequestStatusStatusCode = "NOT_FOUND"
-	TeamRequestStatusStatusCodeInternalError              TeamRequestStatusStatusCode = "INTERNAL_ERROR"
-	TeamRequestStatusStatusCodeInvalidRequest             TeamRequestStatusStatusCode = "INVALID_REQUEST"
-	TeamRequestStatusStatusCodeInvalidRequestVersion      TeamRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
-	TeamRequestStatusStatusCodeInvalidRequestData         TeamRequestStatusStatusCode = "INVALID_REQUEST_DATA"
-	TeamRequestStatusStatusCodeMethodNotAllowed           TeamRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
-	TeamRequestStatusStatusCodeConflict                   TeamRequestStatusStatusCode = "CONFLICT"
-	TeamRequestStatusStatusCodeUnprocessableEntity        TeamRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
-	TeamRequestStatusStatusCodeTooManyRequests            TeamRequestStatusStatusCode = "TOO_MANY_REQUESTS"
-	TeamRequestStatusStatusCodeInsufficientStorage        TeamRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
-	TeamRequestStatusStatusCodeServiceUnavailable         TeamRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
-	TeamRequestStatusStatusCodePayloadTooLarge            TeamRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
-	TeamRequestStatusStatusCodeNotAcceptable              TeamRequestStatusStatusCode = "NOT_ACCEPTABLE"
-	TeamRequestStatusStatusCodeUnavailableForLegalReasons TeamRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
-	TeamRequestStatusStatusCodeBadGateway                 TeamRequestStatusStatusCode = "BAD_GATEWAY"
-)
-
-func (r TeamRequestStatusStatusCode) IsKnown() bool {
-	switch r {
-	case TeamRequestStatusStatusCodeUnknown, TeamRequestStatusStatusCodeSuccess, TeamRequestStatusStatusCodeUnauthorized, TeamRequestStatusStatusCodePaymentRequired, TeamRequestStatusStatusCodeForbidden, TeamRequestStatusStatusCodeTimeout, TeamRequestStatusStatusCodeExists, TeamRequestStatusStatusCodeNotFound, TeamRequestStatusStatusCodeInternalError, TeamRequestStatusStatusCodeInvalidRequest, TeamRequestStatusStatusCodeInvalidRequestVersion, TeamRequestStatusStatusCodeInvalidRequestData, TeamRequestStatusStatusCodeMethodNotAllowed, TeamRequestStatusStatusCodeConflict, TeamRequestStatusStatusCodeUnprocessableEntity, TeamRequestStatusStatusCodeTooManyRequests, TeamRequestStatusStatusCodeInsufficientStorage, TeamRequestStatusStatusCodeServiceUnavailable, TeamRequestStatusStatusCodePayloadTooLarge, TeamRequestStatusStatusCodeNotAcceptable, TeamRequestStatusStatusCodeUnavailableForLegalReasons, TeamRequestStatusStatusCodeBadGateway:
-		return true
-	}
-	return false
-}
-
-// Information about the team
-type TeamTeam struct {
-	// unique Id of this team.
-	ID int64 `json:"id"`
-	// description of the team
-	Description string `json:"description"`
-	// Infinity manager setting definition
-	InfinityManagerSettings TeamTeamInfinityManagerSettings `json:"infinityManagerSettings"`
-	// indicates if the team is deleted or not
-	IsDeleted bool `json:"isDeleted"`
-	// team name
-	Name string `json:"name"`
-	// Repo scan setting definition
-	RepoScanSettings TeamTeamRepoScanSettings `json:"repoScanSettings"`
-	JSON             teamTeamJSON             `json:"-"`
-}
-
-// teamTeamJSON contains the JSON metadata for the struct [TeamTeam]
-type teamTeamJSON struct {
-	ID                      apijson.Field
-	Description             apijson.Field
-	InfinityManagerSettings apijson.Field
-	IsDeleted               apijson.Field
-	Name                    apijson.Field
-	RepoScanSettings        apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *TeamTeam) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamTeamJSON) RawJSON() string {
-	return r.raw
-}
-
-// Infinity manager setting definition
-type TeamTeamInfinityManagerSettings struct {
-	// Enable the infinity manager or not. Used both in org and team level object
-	InfinityManagerEnabled bool `json:"infinityManagerEnabled"`
-	// Allow override settings at team level. Only used in org level object
-	InfinityManagerEnableTeamOverride bool                                `json:"infinityManagerEnableTeamOverride"`
-	JSON                              teamTeamInfinityManagerSettingsJSON `json:"-"`
-}
-
-// teamTeamInfinityManagerSettingsJSON contains the JSON metadata for the struct
-// [TeamTeamInfinityManagerSettings]
-type teamTeamInfinityManagerSettingsJSON struct {
-	InfinityManagerEnabled            apijson.Field
-	InfinityManagerEnableTeamOverride apijson.Field
-	raw                               string
-	ExtraFields                       map[string]apijson.Field
-}
-
-func (r *TeamTeamInfinityManagerSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamTeamInfinityManagerSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Repo scan setting definition
-type TeamTeamRepoScanSettings struct {
-	// Allow org admin to override the org level repo scan settings
-	RepoScanAllowOverride bool `json:"repoScanAllowOverride"`
-	// Allow repository scanning by default
-	RepoScanByDefault bool `json:"repoScanByDefault"`
-	// Enable the repository scan or not. Only used in org level object
-	RepoScanEnabled bool `json:"repoScanEnabled"`
-	// Sends notification to end user after scanning is done
-	RepoScanEnableNotifications bool `json:"repoScanEnableNotifications"`
-	// Allow override settings at team level. Only used in org level object
-	RepoScanEnableTeamOverride bool `json:"repoScanEnableTeamOverride"`
-	// Allow showing scan results to CLI or UI
-	RepoScanShowResults bool                         `json:"repoScanShowResults"`
-	JSON                teamTeamRepoScanSettingsJSON `json:"-"`
-}
-
-// teamTeamRepoScanSettingsJSON contains the JSON metadata for the struct
-// [TeamTeamRepoScanSettings]
-type teamTeamRepoScanSettingsJSON struct {
-	RepoScanAllowOverride       apijson.Field
-	RepoScanByDefault           apijson.Field
-	RepoScanEnabled             apijson.Field
-	RepoScanEnableNotifications apijson.Field
-	RepoScanEnableTeamOverride  apijson.Field
-	RepoScanShowResults         apijson.Field
-	raw                         string
-	ExtraFields                 map[string]apijson.Field
-}
-
-func (r *TeamTeamRepoScanSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamTeamRepoScanSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// listing of all teams
-type TeamList struct {
-	// object that describes the pagination information
-	PaginationInfo TeamListPaginationInfo `json:"paginationInfo"`
-	RequestStatus  TeamListRequestStatus  `json:"requestStatus"`
-	Teams          []TeamListTeam         `json:"teams"`
-	JSON           teamListJSON           `json:"-"`
-}
-
-// teamListJSON contains the JSON metadata for the struct [TeamList]
-type teamListJSON struct {
-	PaginationInfo apijson.Field
-	RequestStatus  apijson.Field
-	Teams          apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *TeamList) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamListJSON) RawJSON() string {
-	return r.raw
-}
-
-// object that describes the pagination information
-type TeamListPaginationInfo struct {
-	// Page index of results
-	Index int64 `json:"index"`
-	// Serialized pointer to the next results page. Should be used for fetching next
-	// page. Can be empty
-	NextPage string `json:"nextPage"`
-	// Number of results in page
-	Size int64 `json:"size"`
-	// Total number of pages available
-	TotalPages int64 `json:"totalPages"`
-	// Total number of results available
-	TotalResults int64                      `json:"totalResults"`
-	JSON         teamListPaginationInfoJSON `json:"-"`
-}
-
-// teamListPaginationInfoJSON contains the JSON metadata for the struct
-// [TeamListPaginationInfo]
-type teamListPaginationInfoJSON struct {
-	Index        apijson.Field
-	NextPage     apijson.Field
-	Size         apijson.Field
-	TotalPages   apijson.Field
-	TotalResults apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *TeamListPaginationInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamListPaginationInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type TeamListRequestStatus struct {
-	RequestID string `json:"requestId"`
-	ServerID  string `json:"serverId"`
-	// Describes response status reported by the server.
-	StatusCode        TeamListRequestStatusStatusCode `json:"statusCode"`
-	StatusDescription string                          `json:"statusDescription"`
-	JSON              teamListRequestStatusJSON       `json:"-"`
-}
-
-// teamListRequestStatusJSON contains the JSON metadata for the struct
-// [TeamListRequestStatus]
-type teamListRequestStatusJSON struct {
-	RequestID         apijson.Field
-	ServerID          apijson.Field
-	StatusCode        apijson.Field
-	StatusDescription apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *TeamListRequestStatus) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamListRequestStatusJSON) RawJSON() string {
-	return r.raw
-}
-
-// Describes response status reported by the server.
-type TeamListRequestStatusStatusCode string
-
-const (
-	TeamListRequestStatusStatusCodeUnknown                    TeamListRequestStatusStatusCode = "UNKNOWN"
-	TeamListRequestStatusStatusCodeSuccess                    TeamListRequestStatusStatusCode = "SUCCESS"
-	TeamListRequestStatusStatusCodeUnauthorized               TeamListRequestStatusStatusCode = "UNAUTHORIZED"
-	TeamListRequestStatusStatusCodePaymentRequired            TeamListRequestStatusStatusCode = "PAYMENT_REQUIRED"
-	TeamListRequestStatusStatusCodeForbidden                  TeamListRequestStatusStatusCode = "FORBIDDEN"
-	TeamListRequestStatusStatusCodeTimeout                    TeamListRequestStatusStatusCode = "TIMEOUT"
-	TeamListRequestStatusStatusCodeExists                     TeamListRequestStatusStatusCode = "EXISTS"
-	TeamListRequestStatusStatusCodeNotFound                   TeamListRequestStatusStatusCode = "NOT_FOUND"
-	TeamListRequestStatusStatusCodeInternalError              TeamListRequestStatusStatusCode = "INTERNAL_ERROR"
-	TeamListRequestStatusStatusCodeInvalidRequest             TeamListRequestStatusStatusCode = "INVALID_REQUEST"
-	TeamListRequestStatusStatusCodeInvalidRequestVersion      TeamListRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
-	TeamListRequestStatusStatusCodeInvalidRequestData         TeamListRequestStatusStatusCode = "INVALID_REQUEST_DATA"
-	TeamListRequestStatusStatusCodeMethodNotAllowed           TeamListRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
-	TeamListRequestStatusStatusCodeConflict                   TeamListRequestStatusStatusCode = "CONFLICT"
-	TeamListRequestStatusStatusCodeUnprocessableEntity        TeamListRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
-	TeamListRequestStatusStatusCodeTooManyRequests            TeamListRequestStatusStatusCode = "TOO_MANY_REQUESTS"
-	TeamListRequestStatusStatusCodeInsufficientStorage        TeamListRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
-	TeamListRequestStatusStatusCodeServiceUnavailable         TeamListRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
-	TeamListRequestStatusStatusCodePayloadTooLarge            TeamListRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
-	TeamListRequestStatusStatusCodeNotAcceptable              TeamListRequestStatusStatusCode = "NOT_ACCEPTABLE"
-	TeamListRequestStatusStatusCodeUnavailableForLegalReasons TeamListRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
-	TeamListRequestStatusStatusCodeBadGateway                 TeamListRequestStatusStatusCode = "BAD_GATEWAY"
-)
-
-func (r TeamListRequestStatusStatusCode) IsKnown() bool {
-	switch r {
-	case TeamListRequestStatusStatusCodeUnknown, TeamListRequestStatusStatusCodeSuccess, TeamListRequestStatusStatusCodeUnauthorized, TeamListRequestStatusStatusCodePaymentRequired, TeamListRequestStatusStatusCodeForbidden, TeamListRequestStatusStatusCodeTimeout, TeamListRequestStatusStatusCodeExists, TeamListRequestStatusStatusCodeNotFound, TeamListRequestStatusStatusCodeInternalError, TeamListRequestStatusStatusCodeInvalidRequest, TeamListRequestStatusStatusCodeInvalidRequestVersion, TeamListRequestStatusStatusCodeInvalidRequestData, TeamListRequestStatusStatusCodeMethodNotAllowed, TeamListRequestStatusStatusCodeConflict, TeamListRequestStatusStatusCodeUnprocessableEntity, TeamListRequestStatusStatusCodeTooManyRequests, TeamListRequestStatusStatusCodeInsufficientStorage, TeamListRequestStatusStatusCodeServiceUnavailable, TeamListRequestStatusStatusCodePayloadTooLarge, TeamListRequestStatusStatusCodeNotAcceptable, TeamListRequestStatusStatusCodeUnavailableForLegalReasons, TeamListRequestStatusStatusCodeBadGateway:
-		return true
-	}
-	return false
-}
-
-// Information about the team
-type TeamListTeam struct {
-	// unique Id of this team.
-	ID int64 `json:"id"`
-	// description of the team
-	Description string `json:"description"`
-	// Infinity manager setting definition
-	InfinityManagerSettings TeamListTeamsInfinityManagerSettings `json:"infinityManagerSettings"`
-	// indicates if the team is deleted or not
-	IsDeleted bool `json:"isDeleted"`
-	// team name
-	Name string `json:"name"`
-	// Repo scan setting definition
-	RepoScanSettings TeamListTeamsRepoScanSettings `json:"repoScanSettings"`
-	JSON             teamListTeamJSON              `json:"-"`
-}
-
-// teamListTeamJSON contains the JSON metadata for the struct [TeamListTeam]
-type teamListTeamJSON struct {
-	ID                      apijson.Field
-	Description             apijson.Field
-	InfinityManagerSettings apijson.Field
-	IsDeleted               apijson.Field
-	Name                    apijson.Field
-	RepoScanSettings        apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
-
-func (r *TeamListTeam) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamListTeamJSON) RawJSON() string {
-	return r.raw
-}
-
-// Infinity manager setting definition
-type TeamListTeamsInfinityManagerSettings struct {
-	// Enable the infinity manager or not. Used both in org and team level object
-	InfinityManagerEnabled bool `json:"infinityManagerEnabled"`
-	// Allow override settings at team level. Only used in org level object
-	InfinityManagerEnableTeamOverride bool                                     `json:"infinityManagerEnableTeamOverride"`
-	JSON                              teamListTeamsInfinityManagerSettingsJSON `json:"-"`
-}
-
-// teamListTeamsInfinityManagerSettingsJSON contains the JSON metadata for the
-// struct [TeamListTeamsInfinityManagerSettings]
-type teamListTeamsInfinityManagerSettingsJSON struct {
-	InfinityManagerEnabled            apijson.Field
-	InfinityManagerEnableTeamOverride apijson.Field
-	raw                               string
-	ExtraFields                       map[string]apijson.Field
-}
-
-func (r *TeamListTeamsInfinityManagerSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamListTeamsInfinityManagerSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Repo scan setting definition
-type TeamListTeamsRepoScanSettings struct {
-	// Allow org admin to override the org level repo scan settings
-	RepoScanAllowOverride bool `json:"repoScanAllowOverride"`
-	// Allow repository scanning by default
-	RepoScanByDefault bool `json:"repoScanByDefault"`
-	// Enable the repository scan or not. Only used in org level object
-	RepoScanEnabled bool `json:"repoScanEnabled"`
-	// Sends notification to end user after scanning is done
-	RepoScanEnableNotifications bool `json:"repoScanEnableNotifications"`
-	// Allow override settings at team level. Only used in org level object
-	RepoScanEnableTeamOverride bool `json:"repoScanEnableTeamOverride"`
-	// Allow showing scan results to CLI or UI
-	RepoScanShowResults bool                              `json:"repoScanShowResults"`
-	JSON                teamListTeamsRepoScanSettingsJSON `json:"-"`
-}
-
-// teamListTeamsRepoScanSettingsJSON contains the JSON metadata for the struct
-// [TeamListTeamsRepoScanSettings]
-type teamListTeamsRepoScanSettingsJSON struct {
-	RepoScanAllowOverride       apijson.Field
-	RepoScanByDefault           apijson.Field
-	RepoScanEnabled             apijson.Field
-	RepoScanEnableNotifications apijson.Field
-	RepoScanEnableTeamOverride  apijson.Field
-	RepoScanShowResults         apijson.Field
-	raw                         string
-	ExtraFields                 map[string]apijson.Field
-}
-
-func (r *TeamListTeamsRepoScanSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r teamListTeamsRepoScanSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Response for List User reponse
-type UserList struct {
-	// object that describes the pagination information
-	PaginationInfo UserListPaginationInfo `json:"paginationInfo"`
-	RequestStatus  UserListRequestStatus  `json:"requestStatus"`
-	// information about the user
-	Users []UserListUser `json:"users"`
-	JSON  userListJSON   `json:"-"`
-}
-
-// userListJSON contains the JSON metadata for the struct [UserList]
-type userListJSON struct {
-	PaginationInfo apijson.Field
-	RequestStatus  apijson.Field
-	Users          apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *UserList) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListJSON) RawJSON() string {
-	return r.raw
-}
-
-// object that describes the pagination information
-type UserListPaginationInfo struct {
-	// Page index of results
-	Index int64 `json:"index"`
-	// Serialized pointer to the next results page. Should be used for fetching next
-	// page. Can be empty
-	NextPage string `json:"nextPage"`
-	// Number of results in page
-	Size int64 `json:"size"`
-	// Total number of pages available
-	TotalPages int64 `json:"totalPages"`
-	// Total number of results available
-	TotalResults int64                      `json:"totalResults"`
-	JSON         userListPaginationInfoJSON `json:"-"`
-}
-
-// userListPaginationInfoJSON contains the JSON metadata for the struct
-// [UserListPaginationInfo]
-type userListPaginationInfoJSON struct {
-	Index        apijson.Field
-	NextPage     apijson.Field
-	Size         apijson.Field
-	TotalPages   apijson.Field
-	TotalResults apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *UserListPaginationInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListPaginationInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type UserListRequestStatus struct {
-	RequestID string `json:"requestId"`
-	ServerID  string `json:"serverId"`
-	// Describes response status reported by the server.
-	StatusCode        UserListRequestStatusStatusCode `json:"statusCode"`
-	StatusDescription string                          `json:"statusDescription"`
-	JSON              userListRequestStatusJSON       `json:"-"`
-}
-
-// userListRequestStatusJSON contains the JSON metadata for the struct
-// [UserListRequestStatus]
-type userListRequestStatusJSON struct {
-	RequestID         apijson.Field
-	ServerID          apijson.Field
-	StatusCode        apijson.Field
-	StatusDescription apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *UserListRequestStatus) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListRequestStatusJSON) RawJSON() string {
-	return r.raw
-}
-
-// Describes response status reported by the server.
-type UserListRequestStatusStatusCode string
-
-const (
-	UserListRequestStatusStatusCodeUnknown                    UserListRequestStatusStatusCode = "UNKNOWN"
-	UserListRequestStatusStatusCodeSuccess                    UserListRequestStatusStatusCode = "SUCCESS"
-	UserListRequestStatusStatusCodeUnauthorized               UserListRequestStatusStatusCode = "UNAUTHORIZED"
-	UserListRequestStatusStatusCodePaymentRequired            UserListRequestStatusStatusCode = "PAYMENT_REQUIRED"
-	UserListRequestStatusStatusCodeForbidden                  UserListRequestStatusStatusCode = "FORBIDDEN"
-	UserListRequestStatusStatusCodeTimeout                    UserListRequestStatusStatusCode = "TIMEOUT"
-	UserListRequestStatusStatusCodeExists                     UserListRequestStatusStatusCode = "EXISTS"
-	UserListRequestStatusStatusCodeNotFound                   UserListRequestStatusStatusCode = "NOT_FOUND"
-	UserListRequestStatusStatusCodeInternalError              UserListRequestStatusStatusCode = "INTERNAL_ERROR"
-	UserListRequestStatusStatusCodeInvalidRequest             UserListRequestStatusStatusCode = "INVALID_REQUEST"
-	UserListRequestStatusStatusCodeInvalidRequestVersion      UserListRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
-	UserListRequestStatusStatusCodeInvalidRequestData         UserListRequestStatusStatusCode = "INVALID_REQUEST_DATA"
-	UserListRequestStatusStatusCodeMethodNotAllowed           UserListRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
-	UserListRequestStatusStatusCodeConflict                   UserListRequestStatusStatusCode = "CONFLICT"
-	UserListRequestStatusStatusCodeUnprocessableEntity        UserListRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
-	UserListRequestStatusStatusCodeTooManyRequests            UserListRequestStatusStatusCode = "TOO_MANY_REQUESTS"
-	UserListRequestStatusStatusCodeInsufficientStorage        UserListRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
-	UserListRequestStatusStatusCodeServiceUnavailable         UserListRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
-	UserListRequestStatusStatusCodePayloadTooLarge            UserListRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
-	UserListRequestStatusStatusCodeNotAcceptable              UserListRequestStatusStatusCode = "NOT_ACCEPTABLE"
-	UserListRequestStatusStatusCodeUnavailableForLegalReasons UserListRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
-	UserListRequestStatusStatusCodeBadGateway                 UserListRequestStatusStatusCode = "BAD_GATEWAY"
-)
-
-func (r UserListRequestStatusStatusCode) IsKnown() bool {
-	switch r {
-	case UserListRequestStatusStatusCodeUnknown, UserListRequestStatusStatusCodeSuccess, UserListRequestStatusStatusCodeUnauthorized, UserListRequestStatusStatusCodePaymentRequired, UserListRequestStatusStatusCodeForbidden, UserListRequestStatusStatusCodeTimeout, UserListRequestStatusStatusCodeExists, UserListRequestStatusStatusCodeNotFound, UserListRequestStatusStatusCodeInternalError, UserListRequestStatusStatusCodeInvalidRequest, UserListRequestStatusStatusCodeInvalidRequestVersion, UserListRequestStatusStatusCodeInvalidRequestData, UserListRequestStatusStatusCodeMethodNotAllowed, UserListRequestStatusStatusCodeConflict, UserListRequestStatusStatusCodeUnprocessableEntity, UserListRequestStatusStatusCodeTooManyRequests, UserListRequestStatusStatusCodeInsufficientStorage, UserListRequestStatusStatusCodeServiceUnavailable, UserListRequestStatusStatusCodePayloadTooLarge, UserListRequestStatusStatusCodeNotAcceptable, UserListRequestStatusStatusCodeUnavailableForLegalReasons, UserListRequestStatusStatusCodeBadGateway:
-		return true
-	}
-	return false
-}
-
-// information about the user
-type UserListUser struct {
-	// unique Id of this user.
-	ID int64 `json:"id"`
-	// unique auth client id of this user.
-	ClientID string `json:"clientId"`
-	// Created date for this user
-	CreatedDate string `json:"createdDate"`
-	// Email address of the user. This should be unique.
-	Email string `json:"email"`
-	// Last time the user logged in
-	FirstLoginDate string `json:"firstLoginDate"`
-	// Determines if the user has beta access
-	HasBetaAccess bool `json:"hasBetaAccess"`
-	// indicate if user profile has been completed.
-	HasProfile bool `json:"hasProfile"`
-	// indicates if user has accepted AI Foundry Partnerships eula
-	HasSignedAIFoundryPartnershipsEula bool `json:"hasSignedAiFoundryPartnershipsEULA"`
-	// indicates if user has accepted Base Command End User License Agreement.
-	HasSignedBaseCommandEula bool `json:"hasSignedBaseCommandEULA"`
-	// indicates if user has accepted Base Command Manager End User License Agreement.
-	HasSignedBaseCommandManagerEula bool `json:"hasSignedBaseCommandManagerEULA"`
-	// indicates if user has accepted BioNeMo End User License Agreement.
-	HasSignedBioNeMoEula bool `json:"hasSignedBioNeMoEULA"`
-	// indicates if user has accepted container publishing eula
-	HasSignedContainerPublishingEula bool `json:"hasSignedContainerPublishingEULA"`
-	// indicates if user has accepted CuOpt eula
-	HasSignedCuOptEula bool `json:"hasSignedCuOptEULA"`
-	// indicates if user has accepted Earth-2 eula
-	HasSignedEarth2Eula bool `json:"hasSignedEarth2EULA"`
-	// [Deprecated] indicates if user has accepted EGX End User License Agreement.
-	HasSignedEgxEula bool `json:"hasSignedEgxEULA"`
-	// Determines if the user has signed the NGC End User License Agreement.
-	HasSignedEula bool `json:"hasSignedEULA"`
-	// indicates if user has accepted Fleet Command End User License Agreement.
-	HasSignedFleetCommandEula bool `json:"hasSignedFleetCommandEULA"`
-	// indicates if user has accepted LLM End User License Agreement.
-	HasSignedLlmEula bool `json:"hasSignedLlmEULA"`
-	// indicates if user has accepted Fleet Command End User License Agreement.
-	HasSignedNvaieeula bool `json:"hasSignedNVAIEEULA"`
-	// Determines if the user has signed the NVIDIA End User License Agreement.
-	HasSignedNvidiaEula bool `json:"hasSignedNvidiaEULA"`
-	// indicates if user has accepted Nvidia Quantum Cloud End User License Agreement.
-	HasSignedNvqceula bool `json:"hasSignedNVQCEULA"`
-	// indicates if user has accepted Omniverse End User License Agreement.
-	HasSignedOmniverseEula bool `json:"hasSignedOmniverseEULA"`
-	// Determines if the user has signed the Privacy Policy.
-	HasSignedPrivacyPolicy bool `json:"hasSignedPrivacyPolicy"`
-	// indicates if user has consented to share their registration info with other
-	// parties
-	HasSignedThirdPartyRegistryShareEula bool `json:"hasSignedThirdPartyRegistryShareEULA"`
-	// Determines if the user has opted in email subscription.
-	HasSubscribedToEmail bool `json:"hasSubscribedToEmail"`
-	// Type of IDP, Identity Provider. Used for login.
-	IdpType UserListUsersIdpType `json:"idpType"`
-	// Determines if the user is active or not.
-	IsActive bool `json:"isActive"`
-	// Indicates if user was deleted from the system.
-	IsDeleted bool `json:"isDeleted"`
-	// Determines if the user is a SAML account or not.
-	IsSAML bool `json:"isSAML"`
-	// Title of user's job position.
-	JobPositionTitle string `json:"jobPositionTitle"`
-	// Last time the user logged in
-	LastLoginDate string `json:"lastLoginDate"`
-	// user name
-	Name string `json:"name"`
-	// List of roles that the user have
-	Roles []UserListUsersRole `json:"roles"`
-	// unique starfleet id of this user.
-	StarfleetID string `json:"starfleetId"`
-	// Storage quota for this user.
-	StorageQuota []UserListUsersStorageQuota `json:"storageQuota"`
-	// Updated date for this user
-	UpdatedDate string `json:"updatedDate"`
-	// Metadata information about the user.
-	UserMetadata UserListUsersUserMetadata `json:"userMetadata"`
-	JSON         userListUserJSON          `json:"-"`
-}
-
-// userListUserJSON contains the JSON metadata for the struct [UserListUser]
-type userListUserJSON struct {
-	ID                                   apijson.Field
-	ClientID                             apijson.Field
-	CreatedDate                          apijson.Field
-	Email                                apijson.Field
-	FirstLoginDate                       apijson.Field
-	HasBetaAccess                        apijson.Field
-	HasProfile                           apijson.Field
-	HasSignedAIFoundryPartnershipsEula   apijson.Field
-	HasSignedBaseCommandEula             apijson.Field
-	HasSignedBaseCommandManagerEula      apijson.Field
-	HasSignedBioNeMoEula                 apijson.Field
-	HasSignedContainerPublishingEula     apijson.Field
-	HasSignedCuOptEula                   apijson.Field
-	HasSignedEarth2Eula                  apijson.Field
-	HasSignedEgxEula                     apijson.Field
-	HasSignedEula                        apijson.Field
-	HasSignedFleetCommandEula            apijson.Field
-	HasSignedLlmEula                     apijson.Field
-	HasSignedNvaieeula                   apijson.Field
-	HasSignedNvidiaEula                  apijson.Field
-	HasSignedNvqceula                    apijson.Field
-	HasSignedOmniverseEula               apijson.Field
-	HasSignedPrivacyPolicy               apijson.Field
-	HasSignedThirdPartyRegistryShareEula apijson.Field
-	HasSubscribedToEmail                 apijson.Field
-	IdpType                              apijson.Field
-	IsActive                             apijson.Field
-	IsDeleted                            apijson.Field
-	IsSAML                               apijson.Field
-	JobPositionTitle                     apijson.Field
-	LastLoginDate                        apijson.Field
-	Name                                 apijson.Field
-	Roles                                apijson.Field
-	StarfleetID                          apijson.Field
-	StorageQuota                         apijson.Field
-	UpdatedDate                          apijson.Field
-	UserMetadata                         apijson.Field
-	raw                                  string
-	ExtraFields                          map[string]apijson.Field
-}
-
-func (r *UserListUser) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListUserJSON) RawJSON() string {
-	return r.raw
-}
-
-// Type of IDP, Identity Provider. Used for login.
-type UserListUsersIdpType string
-
-const (
-	UserListUsersIdpTypeNvidia     UserListUsersIdpType = "NVIDIA"
-	UserListUsersIdpTypeEnterprise UserListUsersIdpType = "ENTERPRISE"
-)
-
-func (r UserListUsersIdpType) IsKnown() bool {
-	switch r {
-	case UserListUsersIdpTypeNvidia, UserListUsersIdpTypeEnterprise:
-		return true
-	}
-	return false
-}
-
-// List of roles that the user have
-type UserListUsersRole struct {
-	// Information about the Organization
-	Org UserListUsersRolesOrg `json:"org"`
-	// List of org role types that the user have
-	OrgRoles []string `json:"orgRoles"`
-	// DEPRECATED - List of role types that the user have
-	RoleTypes []string `json:"roleTypes"`
-	// Information about the user who is attempting to run the job
-	TargetSystemUserIdentifier UserListUsersRolesTargetSystemUserIdentifier `json:"targetSystemUserIdentifier"`
-	// Information about the team
-	Team UserListUsersRolesTeam `json:"team"`
-	// List of team role types that the user have
-	TeamRoles []string              `json:"teamRoles"`
-	JSON      userListUsersRoleJSON `json:"-"`
-}
-
-// userListUsersRoleJSON contains the JSON metadata for the struct
-// [UserListUsersRole]
-type userListUsersRoleJSON struct {
-	Org                        apijson.Field
-	OrgRoles                   apijson.Field
-	RoleTypes                  apijson.Field
-	TargetSystemUserIdentifier apijson.Field
-	Team                       apijson.Field
-	TeamRoles                  apijson.Field
-	raw                        string
-	ExtraFields                map[string]apijson.Field
-}
-
-func (r *UserListUsersRole) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListUsersRoleJSON) RawJSON() string {
+func (r orgResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Information about the Organization
-type UserListUsersRolesOrg struct {
+type OrgResponseOrganizations struct {
 	// Unique Id of this team.
 	ID int64 `json:"id"`
 	// Org Owner Alternate Contact
-	AlternateContact UserListUsersRolesOrgAlternateContact `json:"alternateContact"`
+	AlternateContact OrgResponseOrganizationsAlternateContact `json:"alternateContact"`
 	// Billing account ID.
 	BillingAccountID string `json:"billingAccountId"`
 	// Identifies if the org can be reused.
@@ -1880,7 +680,7 @@ type UserListUsersRolesOrg struct {
 	// Industry of the organization.
 	Industry string `json:"industry"`
 	// Infinity manager setting definition
-	InfinityManagerSettings UserListUsersRolesOrgInfinityManagerSettings `json:"infinityManagerSettings"`
+	InfinityManagerSettings OrgResponseOrganizationsInfinityManagerSettings `json:"infinityManagerSettings"`
 	// Dataset Service enable flag for an organization
 	IsDatasetServiceEnabled bool `json:"isDatasetServiceEnabled"`
 	// Is NVIDIA internal org or not
@@ -1902,25 +702,25 @@ type UserListUsersRolesOrg struct {
 	// NVIDIA Cloud Account Number.
 	Nan string `json:"nan"`
 	// Org owner.
-	OrgOwner UserListUsersRolesOrgOrgOwner `json:"orgOwner"`
+	OrgOwner OrgResponseOrganizationsOrgOwner `json:"orgOwner"`
 	// Org owners
-	OrgOwners []UserListUsersRolesOrgOrgOwner `json:"orgOwners"`
+	OrgOwners []OrgResponseOrganizationsOrgOwner `json:"orgOwners"`
 	// Product end customer salesforce.com Id (external customer Id). pecSfdcId is for
 	// EMS (entitlement management service) to track external paid customer.
-	PecSfdcID            string                                     `json:"pecSfdcId"`
-	ProductEnablements   []UserListUsersRolesOrgProductEnablement   `json:"productEnablements"`
-	ProductSubscriptions []UserListUsersRolesOrgProductSubscription `json:"productSubscriptions"`
+	PecSfdcID            string                                        `json:"pecSfdcId"`
+	ProductEnablements   []OrgResponseOrganizationsProductEnablement   `json:"productEnablements"`
+	ProductSubscriptions []OrgResponseOrganizationsProductSubscription `json:"productSubscriptions"`
 	// Repo scan setting definition
-	RepoScanSettings UserListUsersRolesOrgRepoScanSettings `json:"repoScanSettings"`
-	Type             UserListUsersRolesOrgType             `json:"type"`
+	RepoScanSettings OrgResponseOrganizationsRepoScanSettings `json:"repoScanSettings"`
+	Type             OrgResponseOrganizationsType             `json:"type"`
 	// Users information.
-	UsersInfo UserListUsersRolesOrgUsersInfo `json:"usersInfo"`
-	JSON      userListUsersRolesOrgJSON      `json:"-"`
+	UsersInfo OrgResponseOrganizationsUsersInfo `json:"usersInfo"`
+	JSON      orgResponseOrganizationsJSON      `json:"-"`
 }
 
-// userListUsersRolesOrgJSON contains the JSON metadata for the struct
-// [UserListUsersRolesOrg]
-type userListUsersRolesOrgJSON struct {
+// orgResponseOrganizationsJSON contains the JSON metadata for the struct
+// [OrgResponseOrganizations]
+type orgResponseOrganizationsJSON struct {
 	ID                                      apijson.Field
 	AlternateContact                        apijson.Field
 	BillingAccountID                        apijson.Field
@@ -1953,80 +753,80 @@ type userListUsersRolesOrgJSON struct {
 	ExtraFields                             map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesOrg) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseOrganizations) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesOrgJSON) RawJSON() string {
+func (r orgResponseOrganizationsJSON) RawJSON() string {
 	return r.raw
 }
 
 // Org Owner Alternate Contact
-type UserListUsersRolesOrgAlternateContact struct {
+type OrgResponseOrganizationsAlternateContact struct {
 	// Alternate contact's email.
 	Email string `json:"email"`
 	// Full name of the alternate contact.
-	FullName string                                    `json:"fullName"`
-	JSON     userListUsersRolesOrgAlternateContactJSON `json:"-"`
+	FullName string                                       `json:"fullName"`
+	JSON     orgResponseOrganizationsAlternateContactJSON `json:"-"`
 }
 
-// userListUsersRolesOrgAlternateContactJSON contains the JSON metadata for the
-// struct [UserListUsersRolesOrgAlternateContact]
-type userListUsersRolesOrgAlternateContactJSON struct {
+// orgResponseOrganizationsAlternateContactJSON contains the JSON metadata for the
+// struct [OrgResponseOrganizationsAlternateContact]
+type orgResponseOrganizationsAlternateContactJSON struct {
 	Email       apijson.Field
 	FullName    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesOrgAlternateContact) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseOrganizationsAlternateContact) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesOrgAlternateContactJSON) RawJSON() string {
+func (r orgResponseOrganizationsAlternateContactJSON) RawJSON() string {
 	return r.raw
 }
 
 // Infinity manager setting definition
-type UserListUsersRolesOrgInfinityManagerSettings struct {
+type OrgResponseOrganizationsInfinityManagerSettings struct {
 	// Enable the infinity manager or not. Used both in org and team level object
 	InfinityManagerEnabled bool `json:"infinityManagerEnabled"`
 	// Allow override settings at team level. Only used in org level object
-	InfinityManagerEnableTeamOverride bool                                             `json:"infinityManagerEnableTeamOverride"`
-	JSON                              userListUsersRolesOrgInfinityManagerSettingsJSON `json:"-"`
+	InfinityManagerEnableTeamOverride bool                                                `json:"infinityManagerEnableTeamOverride"`
+	JSON                              orgResponseOrganizationsInfinityManagerSettingsJSON `json:"-"`
 }
 
-// userListUsersRolesOrgInfinityManagerSettingsJSON contains the JSON metadata for
-// the struct [UserListUsersRolesOrgInfinityManagerSettings]
-type userListUsersRolesOrgInfinityManagerSettingsJSON struct {
+// orgResponseOrganizationsInfinityManagerSettingsJSON contains the JSON metadata
+// for the struct [OrgResponseOrganizationsInfinityManagerSettings]
+type orgResponseOrganizationsInfinityManagerSettingsJSON struct {
 	InfinityManagerEnabled            apijson.Field
 	InfinityManagerEnableTeamOverride apijson.Field
 	raw                               string
 	ExtraFields                       map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesOrgInfinityManagerSettings) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseOrganizationsInfinityManagerSettings) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesOrgInfinityManagerSettingsJSON) RawJSON() string {
+func (r orgResponseOrganizationsInfinityManagerSettingsJSON) RawJSON() string {
 	return r.raw
 }
 
 // Org owner.
-type UserListUsersRolesOrgOrgOwner struct {
+type OrgResponseOrganizationsOrgOwner struct {
 	// Email address of the org owner.
 	Email string `json:"email,required"`
 	// Org owner name.
 	FullName string `json:"fullName,required"`
 	// Last time the org owner logged in.
-	LastLoginDate string                            `json:"lastLoginDate"`
-	JSON          userListUsersRolesOrgOrgOwnerJSON `json:"-"`
+	LastLoginDate string                               `json:"lastLoginDate"`
+	JSON          orgResponseOrganizationsOrgOwnerJSON `json:"-"`
 }
 
-// userListUsersRolesOrgOrgOwnerJSON contains the JSON metadata for the struct
-// [UserListUsersRolesOrgOrgOwner]
-type userListUsersRolesOrgOrgOwnerJSON struct {
+// orgResponseOrganizationsOrgOwnerJSON contains the JSON metadata for the struct
+// [OrgResponseOrganizationsOrgOwner]
+type orgResponseOrganizationsOrgOwnerJSON struct {
 	Email         apijson.Field
 	FullName      apijson.Field
 	LastLoginDate apijson.Field
@@ -2034,30 +834,30 @@ type userListUsersRolesOrgOrgOwnerJSON struct {
 	ExtraFields   map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesOrgOrgOwner) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseOrganizationsOrgOwner) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesOrgOrgOwnerJSON) RawJSON() string {
+func (r orgResponseOrganizationsOrgOwnerJSON) RawJSON() string {
 	return r.raw
 }
 
 // Product Enablement
-type UserListUsersRolesOrgProductEnablement struct {
+type OrgResponseOrganizationsProductEnablement struct {
 	// Product Name (NVAIE, BASE_COMMAND, REGISTRY, etc)
 	ProductName string `json:"productName,required"`
 	// Product Enablement Types
-	Type UserListUsersRolesOrgProductEnablementsType `json:"type,required"`
+	Type OrgResponseOrganizationsProductEnablementsType `json:"type,required"`
 	// Date on which the subscription expires. The subscription is invalid after this
 	// date. (yyyy-MM-dd)
-	ExpirationDate string                                            `json:"expirationDate"`
-	PoDetails      []UserListUsersRolesOrgProductEnablementsPoDetail `json:"poDetails"`
-	JSON           userListUsersRolesOrgProductEnablementJSON        `json:"-"`
+	ExpirationDate string                                               `json:"expirationDate"`
+	PoDetails      []OrgResponseOrganizationsProductEnablementsPoDetail `json:"poDetails"`
+	JSON           orgResponseOrganizationsProductEnablementJSON        `json:"-"`
 }
 
-// userListUsersRolesOrgProductEnablementJSON contains the JSON metadata for the
-// struct [UserListUsersRolesOrgProductEnablement]
-type userListUsersRolesOrgProductEnablementJSON struct {
+// orgResponseOrganizationsProductEnablementJSON contains the JSON metadata for the
+// struct [OrgResponseOrganizationsProductEnablement]
+type orgResponseOrganizationsProductEnablementJSON struct {
 	ProductName    apijson.Field
 	Type           apijson.Field
 	ExpirationDate apijson.Field
@@ -2066,69 +866,69 @@ type userListUsersRolesOrgProductEnablementJSON struct {
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesOrgProductEnablement) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseOrganizationsProductEnablement) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesOrgProductEnablementJSON) RawJSON() string {
+func (r orgResponseOrganizationsProductEnablementJSON) RawJSON() string {
 	return r.raw
 }
 
 // Product Enablement Types
-type UserListUsersRolesOrgProductEnablementsType string
+type OrgResponseOrganizationsProductEnablementsType string
 
 const (
-	UserListUsersRolesOrgProductEnablementsTypeNgcAdminEval       UserListUsersRolesOrgProductEnablementsType = "NGC_ADMIN_EVAL"
-	UserListUsersRolesOrgProductEnablementsTypeNgcAdminNfr        UserListUsersRolesOrgProductEnablementsType = "NGC_ADMIN_NFR"
-	UserListUsersRolesOrgProductEnablementsTypeNgcAdminCommercial UserListUsersRolesOrgProductEnablementsType = "NGC_ADMIN_COMMERCIAL"
-	UserListUsersRolesOrgProductEnablementsTypeEmsEval            UserListUsersRolesOrgProductEnablementsType = "EMS_EVAL"
-	UserListUsersRolesOrgProductEnablementsTypeEmsNfr             UserListUsersRolesOrgProductEnablementsType = "EMS_NFR"
-	UserListUsersRolesOrgProductEnablementsTypeEmsCommercial      UserListUsersRolesOrgProductEnablementsType = "EMS_COMMERCIAL"
-	UserListUsersRolesOrgProductEnablementsTypeNgcAdminDeveloper  UserListUsersRolesOrgProductEnablementsType = "NGC_ADMIN_DEVELOPER"
+	OrgResponseOrganizationsProductEnablementsTypeNgcAdminEval       OrgResponseOrganizationsProductEnablementsType = "NGC_ADMIN_EVAL"
+	OrgResponseOrganizationsProductEnablementsTypeNgcAdminNfr        OrgResponseOrganizationsProductEnablementsType = "NGC_ADMIN_NFR"
+	OrgResponseOrganizationsProductEnablementsTypeNgcAdminCommercial OrgResponseOrganizationsProductEnablementsType = "NGC_ADMIN_COMMERCIAL"
+	OrgResponseOrganizationsProductEnablementsTypeEmsEval            OrgResponseOrganizationsProductEnablementsType = "EMS_EVAL"
+	OrgResponseOrganizationsProductEnablementsTypeEmsNfr             OrgResponseOrganizationsProductEnablementsType = "EMS_NFR"
+	OrgResponseOrganizationsProductEnablementsTypeEmsCommercial      OrgResponseOrganizationsProductEnablementsType = "EMS_COMMERCIAL"
+	OrgResponseOrganizationsProductEnablementsTypeNgcAdminDeveloper  OrgResponseOrganizationsProductEnablementsType = "NGC_ADMIN_DEVELOPER"
 )
 
-func (r UserListUsersRolesOrgProductEnablementsType) IsKnown() bool {
+func (r OrgResponseOrganizationsProductEnablementsType) IsKnown() bool {
 	switch r {
-	case UserListUsersRolesOrgProductEnablementsTypeNgcAdminEval, UserListUsersRolesOrgProductEnablementsTypeNgcAdminNfr, UserListUsersRolesOrgProductEnablementsTypeNgcAdminCommercial, UserListUsersRolesOrgProductEnablementsTypeEmsEval, UserListUsersRolesOrgProductEnablementsTypeEmsNfr, UserListUsersRolesOrgProductEnablementsTypeEmsCommercial, UserListUsersRolesOrgProductEnablementsTypeNgcAdminDeveloper:
+	case OrgResponseOrganizationsProductEnablementsTypeNgcAdminEval, OrgResponseOrganizationsProductEnablementsTypeNgcAdminNfr, OrgResponseOrganizationsProductEnablementsTypeNgcAdminCommercial, OrgResponseOrganizationsProductEnablementsTypeEmsEval, OrgResponseOrganizationsProductEnablementsTypeEmsNfr, OrgResponseOrganizationsProductEnablementsTypeEmsCommercial, OrgResponseOrganizationsProductEnablementsTypeNgcAdminDeveloper:
 		return true
 	}
 	return false
 }
 
 // Purchase Order.
-type UserListUsersRolesOrgProductEnablementsPoDetail struct {
+type OrgResponseOrganizationsProductEnablementsPoDetail struct {
 	// Entitlement identifier.
 	EntitlementID string `json:"entitlementId"`
 	// PAK (Product Activation Key) identifier.
-	PkID string                                              `json:"pkId"`
-	JSON userListUsersRolesOrgProductEnablementsPoDetailJSON `json:"-"`
+	PkID string                                                 `json:"pkId"`
+	JSON orgResponseOrganizationsProductEnablementsPoDetailJSON `json:"-"`
 }
 
-// userListUsersRolesOrgProductEnablementsPoDetailJSON contains the JSON metadata
-// for the struct [UserListUsersRolesOrgProductEnablementsPoDetail]
-type userListUsersRolesOrgProductEnablementsPoDetailJSON struct {
+// orgResponseOrganizationsProductEnablementsPoDetailJSON contains the JSON
+// metadata for the struct [OrgResponseOrganizationsProductEnablementsPoDetail]
+type orgResponseOrganizationsProductEnablementsPoDetailJSON struct {
 	EntitlementID apijson.Field
 	PkID          apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesOrgProductEnablementsPoDetail) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseOrganizationsProductEnablementsPoDetail) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesOrgProductEnablementsPoDetailJSON) RawJSON() string {
+func (r orgResponseOrganizationsProductEnablementsPoDetailJSON) RawJSON() string {
 	return r.raw
 }
 
 // Product Subscription
-type UserListUsersRolesOrgProductSubscription struct {
+type OrgResponseOrganizationsProductSubscription struct {
 	// Product Name (NVAIE, BASE_COMMAND, FleetCommand, REGISTRY, etc).
 	ProductName string `json:"productName,required"`
 	// Unique entitlement identifier
 	ID string `json:"id"`
 	// EMS Subscription type. (options: EMS_EVAL, EMS_NFR and EMS_COMMERCIAL)
-	EmsEntitlementType UserListUsersRolesOrgProductSubscriptionsEmsEntitlementType `json:"emsEntitlementType"`
+	EmsEntitlementType OrgResponseOrganizationsProductSubscriptionsEmsEntitlementType `json:"emsEntitlementType"`
 	// Date on which the subscription expires. The subscription is invalid after this
 	// date. (yyyy-MM-dd)
 	ExpirationDate string `json:"expirationDate"`
@@ -2136,13 +936,13 @@ type UserListUsersRolesOrgProductSubscription struct {
 	StartDate string `json:"startDate"`
 	// Subscription type. (options: NGC_ADMIN_EVAL, NGC_ADMIN_NFR,
 	// NGC_ADMIN_COMMERCIAL)
-	Type UserListUsersRolesOrgProductSubscriptionsType `json:"type"`
-	JSON userListUsersRolesOrgProductSubscriptionJSON  `json:"-"`
+	Type OrgResponseOrganizationsProductSubscriptionsType `json:"type"`
+	JSON orgResponseOrganizationsProductSubscriptionJSON  `json:"-"`
 }
 
-// userListUsersRolesOrgProductSubscriptionJSON contains the JSON metadata for the
-// struct [UserListUsersRolesOrgProductSubscription]
-type userListUsersRolesOrgProductSubscriptionJSON struct {
+// orgResponseOrganizationsProductSubscriptionJSON contains the JSON metadata for
+// the struct [OrgResponseOrganizationsProductSubscription]
+type orgResponseOrganizationsProductSubscriptionJSON struct {
 	ProductName        apijson.Field
 	ID                 apijson.Field
 	EmsEntitlementType apijson.Field
@@ -2153,27 +953,27 @@ type userListUsersRolesOrgProductSubscriptionJSON struct {
 	ExtraFields        map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesOrgProductSubscription) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseOrganizationsProductSubscription) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesOrgProductSubscriptionJSON) RawJSON() string {
+func (r orgResponseOrganizationsProductSubscriptionJSON) RawJSON() string {
 	return r.raw
 }
 
 // EMS Subscription type. (options: EMS_EVAL, EMS_NFR and EMS_COMMERCIAL)
-type UserListUsersRolesOrgProductSubscriptionsEmsEntitlementType string
+type OrgResponseOrganizationsProductSubscriptionsEmsEntitlementType string
 
 const (
-	UserListUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsEval       UserListUsersRolesOrgProductSubscriptionsEmsEntitlementType = "EMS_EVAL"
-	UserListUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsNfr        UserListUsersRolesOrgProductSubscriptionsEmsEntitlementType = "EMS_NFR"
-	UserListUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommerical UserListUsersRolesOrgProductSubscriptionsEmsEntitlementType = "EMS_COMMERICAL"
-	UserListUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommercial UserListUsersRolesOrgProductSubscriptionsEmsEntitlementType = "EMS_COMMERCIAL"
+	OrgResponseOrganizationsProductSubscriptionsEmsEntitlementTypeEmsEval       OrgResponseOrganizationsProductSubscriptionsEmsEntitlementType = "EMS_EVAL"
+	OrgResponseOrganizationsProductSubscriptionsEmsEntitlementTypeEmsNfr        OrgResponseOrganizationsProductSubscriptionsEmsEntitlementType = "EMS_NFR"
+	OrgResponseOrganizationsProductSubscriptionsEmsEntitlementTypeEmsCommerical OrgResponseOrganizationsProductSubscriptionsEmsEntitlementType = "EMS_COMMERICAL"
+	OrgResponseOrganizationsProductSubscriptionsEmsEntitlementTypeEmsCommercial OrgResponseOrganizationsProductSubscriptionsEmsEntitlementType = "EMS_COMMERCIAL"
 )
 
-func (r UserListUsersRolesOrgProductSubscriptionsEmsEntitlementType) IsKnown() bool {
+func (r OrgResponseOrganizationsProductSubscriptionsEmsEntitlementType) IsKnown() bool {
 	switch r {
-	case UserListUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsEval, UserListUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsNfr, UserListUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommerical, UserListUsersRolesOrgProductSubscriptionsEmsEntitlementTypeEmsCommercial:
+	case OrgResponseOrganizationsProductSubscriptionsEmsEntitlementTypeEmsEval, OrgResponseOrganizationsProductSubscriptionsEmsEntitlementTypeEmsNfr, OrgResponseOrganizationsProductSubscriptionsEmsEntitlementTypeEmsCommerical, OrgResponseOrganizationsProductSubscriptionsEmsEntitlementTypeEmsCommercial:
 		return true
 	}
 	return false
@@ -2181,24 +981,24 @@ func (r UserListUsersRolesOrgProductSubscriptionsEmsEntitlementType) IsKnown() b
 
 // Subscription type. (options: NGC_ADMIN_EVAL, NGC_ADMIN_NFR,
 // NGC_ADMIN_COMMERCIAL)
-type UserListUsersRolesOrgProductSubscriptionsType string
+type OrgResponseOrganizationsProductSubscriptionsType string
 
 const (
-	UserListUsersRolesOrgProductSubscriptionsTypeNgcAdminEval       UserListUsersRolesOrgProductSubscriptionsType = "NGC_ADMIN_EVAL"
-	UserListUsersRolesOrgProductSubscriptionsTypeNgcAdminNfr        UserListUsersRolesOrgProductSubscriptionsType = "NGC_ADMIN_NFR"
-	UserListUsersRolesOrgProductSubscriptionsTypeNgcAdminCommercial UserListUsersRolesOrgProductSubscriptionsType = "NGC_ADMIN_COMMERCIAL"
+	OrgResponseOrganizationsProductSubscriptionsTypeNgcAdminEval       OrgResponseOrganizationsProductSubscriptionsType = "NGC_ADMIN_EVAL"
+	OrgResponseOrganizationsProductSubscriptionsTypeNgcAdminNfr        OrgResponseOrganizationsProductSubscriptionsType = "NGC_ADMIN_NFR"
+	OrgResponseOrganizationsProductSubscriptionsTypeNgcAdminCommercial OrgResponseOrganizationsProductSubscriptionsType = "NGC_ADMIN_COMMERCIAL"
 )
 
-func (r UserListUsersRolesOrgProductSubscriptionsType) IsKnown() bool {
+func (r OrgResponseOrganizationsProductSubscriptionsType) IsKnown() bool {
 	switch r {
-	case UserListUsersRolesOrgProductSubscriptionsTypeNgcAdminEval, UserListUsersRolesOrgProductSubscriptionsTypeNgcAdminNfr, UserListUsersRolesOrgProductSubscriptionsTypeNgcAdminCommercial:
+	case OrgResponseOrganizationsProductSubscriptionsTypeNgcAdminEval, OrgResponseOrganizationsProductSubscriptionsTypeNgcAdminNfr, OrgResponseOrganizationsProductSubscriptionsTypeNgcAdminCommercial:
 		return true
 	}
 	return false
 }
 
 // Repo scan setting definition
-type UserListUsersRolesOrgRepoScanSettings struct {
+type OrgResponseOrganizationsRepoScanSettings struct {
 	// Allow org admin to override the org level repo scan settings
 	RepoScanAllowOverride bool `json:"repoScanAllowOverride"`
 	// Allow repository scanning by default
@@ -2210,13 +1010,13 @@ type UserListUsersRolesOrgRepoScanSettings struct {
 	// Allow override settings at team level. Only used in org level object
 	RepoScanEnableTeamOverride bool `json:"repoScanEnableTeamOverride"`
 	// Allow showing scan results to CLI or UI
-	RepoScanShowResults bool                                      `json:"repoScanShowResults"`
-	JSON                userListUsersRolesOrgRepoScanSettingsJSON `json:"-"`
+	RepoScanShowResults bool                                         `json:"repoScanShowResults"`
+	JSON                orgResponseOrganizationsRepoScanSettingsJSON `json:"-"`
 }
 
-// userListUsersRolesOrgRepoScanSettingsJSON contains the JSON metadata for the
-// struct [UserListUsersRolesOrgRepoScanSettings]
-type userListUsersRolesOrgRepoScanSettingsJSON struct {
+// orgResponseOrganizationsRepoScanSettingsJSON contains the JSON metadata for the
+// struct [OrgResponseOrganizationsRepoScanSettings]
+type orgResponseOrganizationsRepoScanSettingsJSON struct {
 	RepoScanAllowOverride       apijson.Field
 	RepoScanByDefault           apijson.Field
 	RepoScanEnabled             apijson.Field
@@ -2227,298 +1027,116 @@ type userListUsersRolesOrgRepoScanSettingsJSON struct {
 	ExtraFields                 map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesOrgRepoScanSettings) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseOrganizationsRepoScanSettings) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesOrgRepoScanSettingsJSON) RawJSON() string {
+func (r orgResponseOrganizationsRepoScanSettingsJSON) RawJSON() string {
 	return r.raw
 }
 
-type UserListUsersRolesOrgType string
+type OrgResponseOrganizationsType string
 
 const (
-	UserListUsersRolesOrgTypeUnknown    UserListUsersRolesOrgType = "UNKNOWN"
-	UserListUsersRolesOrgTypeCloud      UserListUsersRolesOrgType = "CLOUD"
-	UserListUsersRolesOrgTypeEnterprise UserListUsersRolesOrgType = "ENTERPRISE"
-	UserListUsersRolesOrgTypeIndividual UserListUsersRolesOrgType = "INDIVIDUAL"
+	OrgResponseOrganizationsTypeUnknown    OrgResponseOrganizationsType = "UNKNOWN"
+	OrgResponseOrganizationsTypeCloud      OrgResponseOrganizationsType = "CLOUD"
+	OrgResponseOrganizationsTypeEnterprise OrgResponseOrganizationsType = "ENTERPRISE"
+	OrgResponseOrganizationsTypeIndividual OrgResponseOrganizationsType = "INDIVIDUAL"
 )
 
-func (r UserListUsersRolesOrgType) IsKnown() bool {
+func (r OrgResponseOrganizationsType) IsKnown() bool {
 	switch r {
-	case UserListUsersRolesOrgTypeUnknown, UserListUsersRolesOrgTypeCloud, UserListUsersRolesOrgTypeEnterprise, UserListUsersRolesOrgTypeIndividual:
+	case OrgResponseOrganizationsTypeUnknown, OrgResponseOrganizationsTypeCloud, OrgResponseOrganizationsTypeEnterprise, OrgResponseOrganizationsTypeIndividual:
 		return true
 	}
 	return false
 }
 
 // Users information.
-type UserListUsersRolesOrgUsersInfo struct {
+type OrgResponseOrganizationsUsersInfo struct {
 	// Total number of users.
-	TotalUsers int64                              `json:"totalUsers"`
-	JSON       userListUsersRolesOrgUsersInfoJSON `json:"-"`
+	TotalUsers int64                                 `json:"totalUsers"`
+	JSON       orgResponseOrganizationsUsersInfoJSON `json:"-"`
 }
 
-// userListUsersRolesOrgUsersInfoJSON contains the JSON metadata for the struct
-// [UserListUsersRolesOrgUsersInfo]
-type userListUsersRolesOrgUsersInfoJSON struct {
+// orgResponseOrganizationsUsersInfoJSON contains the JSON metadata for the struct
+// [OrgResponseOrganizationsUsersInfo]
+type orgResponseOrganizationsUsersInfoJSON struct {
 	TotalUsers  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesOrgUsersInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseOrganizationsUsersInfo) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesOrgUsersInfoJSON) RawJSON() string {
+func (r orgResponseOrganizationsUsersInfoJSON) RawJSON() string {
 	return r.raw
 }
 
-// Information about the user who is attempting to run the job
-type UserListUsersRolesTargetSystemUserIdentifier struct {
-	// gid of the user on this team
-	Gid int64 `json:"gid"`
-	// Org context for the job
-	OrgName string `json:"orgName"`
-	// Starfleet ID of the user creating the job.
-	StarfleetID string `json:"starfleetId"`
-	// Team context for the job
-	TeamName string `json:"teamName"`
-	// uid of the user on this team
-	Uid int64 `json:"uid"`
-	// Unique ID of the user who submitted the job
-	UserID int64                                            `json:"userId"`
-	JSON   userListUsersRolesTargetSystemUserIdentifierJSON `json:"-"`
+type OrgResponseRequestStatus struct {
+	RequestID string `json:"requestId"`
+	ServerID  string `json:"serverId"`
+	// Describes response status reported by the server.
+	StatusCode        OrgResponseRequestStatusStatusCode `json:"statusCode"`
+	StatusDescription string                             `json:"statusDescription"`
+	JSON              orgResponseRequestStatusJSON       `json:"-"`
 }
 
-// userListUsersRolesTargetSystemUserIdentifierJSON contains the JSON metadata for
-// the struct [UserListUsersRolesTargetSystemUserIdentifier]
-type userListUsersRolesTargetSystemUserIdentifierJSON struct {
-	Gid         apijson.Field
-	OrgName     apijson.Field
-	StarfleetID apijson.Field
-	TeamName    apijson.Field
-	Uid         apijson.Field
-	UserID      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+// orgResponseRequestStatusJSON contains the JSON metadata for the struct
+// [OrgResponseRequestStatus]
+type orgResponseRequestStatusJSON struct {
+	RequestID         apijson.Field
+	ServerID          apijson.Field
+	StatusCode        apijson.Field
+	StatusDescription apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
 }
 
-func (r *UserListUsersRolesTargetSystemUserIdentifier) UnmarshalJSON(data []byte) (err error) {
+func (r *OrgResponseRequestStatus) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r userListUsersRolesTargetSystemUserIdentifierJSON) RawJSON() string {
+func (r orgResponseRequestStatusJSON) RawJSON() string {
 	return r.raw
 }
 
-// Information about the team
-type UserListUsersRolesTeam struct {
-	// unique Id of this team.
-	ID int64 `json:"id"`
-	// description of the team
-	Description string `json:"description"`
-	// Infinity manager setting definition
-	InfinityManagerSettings UserListUsersRolesTeamInfinityManagerSettings `json:"infinityManagerSettings"`
-	// indicates if the team is deleted or not
-	IsDeleted bool `json:"isDeleted"`
-	// team name
-	Name string `json:"name"`
-	// Repo scan setting definition
-	RepoScanSettings UserListUsersRolesTeamRepoScanSettings `json:"repoScanSettings"`
-	JSON             userListUsersRolesTeamJSON             `json:"-"`
-}
+// Describes response status reported by the server.
+type OrgResponseRequestStatusStatusCode string
 
-// userListUsersRolesTeamJSON contains the JSON metadata for the struct
-// [UserListUsersRolesTeam]
-type userListUsersRolesTeamJSON struct {
-	ID                      apijson.Field
-	Description             apijson.Field
-	InfinityManagerSettings apijson.Field
-	IsDeleted               apijson.Field
-	Name                    apijson.Field
-	RepoScanSettings        apijson.Field
-	raw                     string
-	ExtraFields             map[string]apijson.Field
-}
+const (
+	OrgResponseRequestStatusStatusCodeUnknown                    OrgResponseRequestStatusStatusCode = "UNKNOWN"
+	OrgResponseRequestStatusStatusCodeSuccess                    OrgResponseRequestStatusStatusCode = "SUCCESS"
+	OrgResponseRequestStatusStatusCodeUnauthorized               OrgResponseRequestStatusStatusCode = "UNAUTHORIZED"
+	OrgResponseRequestStatusStatusCodePaymentRequired            OrgResponseRequestStatusStatusCode = "PAYMENT_REQUIRED"
+	OrgResponseRequestStatusStatusCodeForbidden                  OrgResponseRequestStatusStatusCode = "FORBIDDEN"
+	OrgResponseRequestStatusStatusCodeTimeout                    OrgResponseRequestStatusStatusCode = "TIMEOUT"
+	OrgResponseRequestStatusStatusCodeExists                     OrgResponseRequestStatusStatusCode = "EXISTS"
+	OrgResponseRequestStatusStatusCodeNotFound                   OrgResponseRequestStatusStatusCode = "NOT_FOUND"
+	OrgResponseRequestStatusStatusCodeInternalError              OrgResponseRequestStatusStatusCode = "INTERNAL_ERROR"
+	OrgResponseRequestStatusStatusCodeInvalidRequest             OrgResponseRequestStatusStatusCode = "INVALID_REQUEST"
+	OrgResponseRequestStatusStatusCodeInvalidRequestVersion      OrgResponseRequestStatusStatusCode = "INVALID_REQUEST_VERSION"
+	OrgResponseRequestStatusStatusCodeInvalidRequestData         OrgResponseRequestStatusStatusCode = "INVALID_REQUEST_DATA"
+	OrgResponseRequestStatusStatusCodeMethodNotAllowed           OrgResponseRequestStatusStatusCode = "METHOD_NOT_ALLOWED"
+	OrgResponseRequestStatusStatusCodeConflict                   OrgResponseRequestStatusStatusCode = "CONFLICT"
+	OrgResponseRequestStatusStatusCodeUnprocessableEntity        OrgResponseRequestStatusStatusCode = "UNPROCESSABLE_ENTITY"
+	OrgResponseRequestStatusStatusCodeTooManyRequests            OrgResponseRequestStatusStatusCode = "TOO_MANY_REQUESTS"
+	OrgResponseRequestStatusStatusCodeInsufficientStorage        OrgResponseRequestStatusStatusCode = "INSUFFICIENT_STORAGE"
+	OrgResponseRequestStatusStatusCodeServiceUnavailable         OrgResponseRequestStatusStatusCode = "SERVICE_UNAVAILABLE"
+	OrgResponseRequestStatusStatusCodePayloadTooLarge            OrgResponseRequestStatusStatusCode = "PAYLOAD_TOO_LARGE"
+	OrgResponseRequestStatusStatusCodeNotAcceptable              OrgResponseRequestStatusStatusCode = "NOT_ACCEPTABLE"
+	OrgResponseRequestStatusStatusCodeUnavailableForLegalReasons OrgResponseRequestStatusStatusCode = "UNAVAILABLE_FOR_LEGAL_REASONS"
+	OrgResponseRequestStatusStatusCodeBadGateway                 OrgResponseRequestStatusStatusCode = "BAD_GATEWAY"
+)
 
-func (r *UserListUsersRolesTeam) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListUsersRolesTeamJSON) RawJSON() string {
-	return r.raw
-}
-
-// Infinity manager setting definition
-type UserListUsersRolesTeamInfinityManagerSettings struct {
-	// Enable the infinity manager or not. Used both in org and team level object
-	InfinityManagerEnabled bool `json:"infinityManagerEnabled"`
-	// Allow override settings at team level. Only used in org level object
-	InfinityManagerEnableTeamOverride bool                                              `json:"infinityManagerEnableTeamOverride"`
-	JSON                              userListUsersRolesTeamInfinityManagerSettingsJSON `json:"-"`
-}
-
-// userListUsersRolesTeamInfinityManagerSettingsJSON contains the JSON metadata for
-// the struct [UserListUsersRolesTeamInfinityManagerSettings]
-type userListUsersRolesTeamInfinityManagerSettingsJSON struct {
-	InfinityManagerEnabled            apijson.Field
-	InfinityManagerEnableTeamOverride apijson.Field
-	raw                               string
-	ExtraFields                       map[string]apijson.Field
-}
-
-func (r *UserListUsersRolesTeamInfinityManagerSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListUsersRolesTeamInfinityManagerSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Repo scan setting definition
-type UserListUsersRolesTeamRepoScanSettings struct {
-	// Allow org admin to override the org level repo scan settings
-	RepoScanAllowOverride bool `json:"repoScanAllowOverride"`
-	// Allow repository scanning by default
-	RepoScanByDefault bool `json:"repoScanByDefault"`
-	// Enable the repository scan or not. Only used in org level object
-	RepoScanEnabled bool `json:"repoScanEnabled"`
-	// Sends notification to end user after scanning is done
-	RepoScanEnableNotifications bool `json:"repoScanEnableNotifications"`
-	// Allow override settings at team level. Only used in org level object
-	RepoScanEnableTeamOverride bool `json:"repoScanEnableTeamOverride"`
-	// Allow showing scan results to CLI or UI
-	RepoScanShowResults bool                                       `json:"repoScanShowResults"`
-	JSON                userListUsersRolesTeamRepoScanSettingsJSON `json:"-"`
-}
-
-// userListUsersRolesTeamRepoScanSettingsJSON contains the JSON metadata for the
-// struct [UserListUsersRolesTeamRepoScanSettings]
-type userListUsersRolesTeamRepoScanSettingsJSON struct {
-	RepoScanAllowOverride       apijson.Field
-	RepoScanByDefault           apijson.Field
-	RepoScanEnabled             apijson.Field
-	RepoScanEnableNotifications apijson.Field
-	RepoScanEnableTeamOverride  apijson.Field
-	RepoScanShowResults         apijson.Field
-	raw                         string
-	ExtraFields                 map[string]apijson.Field
-}
-
-func (r *UserListUsersRolesTeamRepoScanSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListUsersRolesTeamRepoScanSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// represents user storage quota for a given ace and available unused storage
-type UserListUsersStorageQuota struct {
-	// id of the ace
-	AceID int64 `json:"aceId"`
-	// name of the ace
-	AceName string `json:"aceName"`
-	// Available space in bytes
-	Available int64 `json:"available"`
-	// Number of datasets that are a part of user's used storage
-	DatasetCount int64 `json:"datasetCount"`
-	// Space used by datasets in bytes
-	DatasetsUsage int64 `json:"datasetsUsage"`
-	// The org name that this user quota tied to. This is needed for analytics
-	OrgName string `json:"orgName"`
-	// Assigned quota in bytes
-	Quota int64 `json:"quota"`
-	// Number of resultsets that are a part of user's used storage
-	ResultsetCount int64 `json:"resultsetCount"`
-	// Space used by resultsets in bytes
-	ResultsetsUsage int64 `json:"resultsetsUsage"`
-	// Description of this storage cluster
-	StorageClusterDescription string `json:"storageClusterDescription"`
-	// Name of storage cluster
-	StorageClusterName string `json:"storageClusterName"`
-	// Identifier to this storage cluster
-	StorageClusterUuid string `json:"storageClusterUuid"`
-	// Number of workspaces that are a part of user's used storage
-	WorkspacesCount int64 `json:"workspacesCount"`
-	// Space used by workspaces in bytes
-	WorkspacesUsage int64                         `json:"workspacesUsage"`
-	JSON            userListUsersStorageQuotaJSON `json:"-"`
-}
-
-// userListUsersStorageQuotaJSON contains the JSON metadata for the struct
-// [UserListUsersStorageQuota]
-type userListUsersStorageQuotaJSON struct {
-	AceID                     apijson.Field
-	AceName                   apijson.Field
-	Available                 apijson.Field
-	DatasetCount              apijson.Field
-	DatasetsUsage             apijson.Field
-	OrgName                   apijson.Field
-	Quota                     apijson.Field
-	ResultsetCount            apijson.Field
-	ResultsetsUsage           apijson.Field
-	StorageClusterDescription apijson.Field
-	StorageClusterName        apijson.Field
-	StorageClusterUuid        apijson.Field
-	WorkspacesCount           apijson.Field
-	WorkspacesUsage           apijson.Field
-	raw                       string
-	ExtraFields               map[string]apijson.Field
-}
-
-func (r *UserListUsersStorageQuota) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListUsersStorageQuotaJSON) RawJSON() string {
-	return r.raw
-}
-
-// Metadata information about the user.
-type UserListUsersUserMetadata struct {
-	// Name of the company
-	Company string `json:"company"`
-	// Company URL
-	CompanyURL string `json:"companyUrl"`
-	// Country of the user
-	Country string `json:"country"`
-	// User's first name
-	FirstName string `json:"firstName"`
-	// Industry segment
-	Industry string `json:"industry"`
-	// List of development areas that user has interest
-	Interest []string `json:"interest"`
-	// User's last name
-	LastName string `json:"lastName"`
-	// Role of the user in the company
-	Role string                        `json:"role"`
-	JSON userListUsersUserMetadataJSON `json:"-"`
-}
-
-// userListUsersUserMetadataJSON contains the JSON metadata for the struct
-// [UserListUsersUserMetadata]
-type userListUsersUserMetadataJSON struct {
-	Company     apijson.Field
-	CompanyURL  apijson.Field
-	Country     apijson.Field
-	FirstName   apijson.Field
-	Industry    apijson.Field
-	Interest    apijson.Field
-	LastName    apijson.Field
-	Role        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *UserListUsersUserMetadata) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r userListUsersUserMetadataJSON) RawJSON() string {
-	return r.raw
+func (r OrgResponseRequestStatusStatusCode) IsKnown() bool {
+	switch r {
+	case OrgResponseRequestStatusStatusCodeUnknown, OrgResponseRequestStatusStatusCodeSuccess, OrgResponseRequestStatusStatusCodeUnauthorized, OrgResponseRequestStatusStatusCodePaymentRequired, OrgResponseRequestStatusStatusCodeForbidden, OrgResponseRequestStatusStatusCodeTimeout, OrgResponseRequestStatusStatusCodeExists, OrgResponseRequestStatusStatusCodeNotFound, OrgResponseRequestStatusStatusCodeInternalError, OrgResponseRequestStatusStatusCodeInvalidRequest, OrgResponseRequestStatusStatusCodeInvalidRequestVersion, OrgResponseRequestStatusStatusCodeInvalidRequestData, OrgResponseRequestStatusStatusCodeMethodNotAllowed, OrgResponseRequestStatusStatusCodeConflict, OrgResponseRequestStatusStatusCodeUnprocessableEntity, OrgResponseRequestStatusStatusCodeTooManyRequests, OrgResponseRequestStatusStatusCodeInsufficientStorage, OrgResponseRequestStatusStatusCodeServiceUnavailable, OrgResponseRequestStatusStatusCodePayloadTooLarge, OrgResponseRequestStatusStatusCodeNotAcceptable, OrgResponseRequestStatusStatusCodeUnavailableForLegalReasons, OrgResponseRequestStatusStatusCodeBadGateway:
+		return true
+	}
+	return false
 }
 
 type OrgNewParams struct {
